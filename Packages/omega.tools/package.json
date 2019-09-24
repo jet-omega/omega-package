@@ -1,0 +1,19 @@
+{
+	"name": "omega.tools",
+	"version": "0.0.0",
+	"displayName": "Omega Tools",
+	"description": "Tools for scripting unity projects by Omega",
+	"unity": "2018.3",
+	"keywords": [
+		"tools",
+		"scripting",
+		"code",
+		"utility",
+		"extensions"
+	],
+	"author": {
+    		"name": "sergey-cs",
+    		"email": "prozerox2@yandex.ru",
+    		"url": "https://github.com/omega-vr-ar/unity-tools"
+  	} 
+}
