@@ -1,0 +1,28 @@
+{
+  "name": "omega.tools",
+  "version": "0.0.0",
+  "displayName": "Omega Tools",
+  "description": "Tools for scripting unity projects by Omega",
+  "unity": "2018.3",
+  "keywords": [
+    "tools",
+    "scripting",
+    "code",
+    "utility",
+    "extensions"
+  ],
+  "author": "sergey-cs <prozerox2@yandex.ru> (https://github.com/omega-vr-ar/unity-tools)",
+  "main": " ",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/omega-vr-ar/unity-tools.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/omega-vr-ar/unity-tools/issues"
+  },
+  "homepage": "https://github.com/omega-vr-ar/unity-tools#readme"
+}
