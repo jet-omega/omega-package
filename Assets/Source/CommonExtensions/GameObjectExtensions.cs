@@ -15,8 +15,8 @@ public static class GameObjectExtensions
     /// <param name="gameObject">Игровой объект</param>
     /// <typeparam name="T">Тип компонента</typeparam>
     /// <returns>Экземпляр компонента</returns>
-    /// <exception cref="ArgumentNullException">Параметр <param name="gameObject"/>>gameObject указывает на null</exception>
-    /// <exception cref="MissingReferenceException">Параметр <param name="gameObject"/>>gameObject указывает на уничтоженный объект</exception>
+    /// <exception cref="ArgumentNullException">Параметр <param name="gameObject"/>>указывает на null</exception>
+    /// <exception cref="MissingReferenceException">Параметр <param name="gameObject"/>>указывает на уничтоженный объект</exception>
     [NotNull]
     public static T MissingComponent<T>([NotNull] this GameObject gameObject) where T : Component
     {
@@ -36,8 +36,8 @@ public static class GameObjectExtensions
     /// <param name="component">Ссылка на найденный объект (null, если объект не найден)</param>
     /// <typeparam name="T">Тип компонента</typeparam>
     /// <returns>true - компонент найден, false - объект не найден</returns>
-    /// <exception cref="ArgumentNullException">Параметр <param name="gameObject"/>>gameObject указывает на null</exception>
-    /// <exception cref="MissingReferenceException">Параметр <param name="gameObject"/>>gameObject указывает на уничтоженный объект</exception>
+    /// <exception cref="ArgumentNullException">Параметр <param name="gameObject"/>>указывает на null</exception>
+    /// <exception cref="MissingReferenceException">Параметр <param name="gameObject"/>>указывает на уничтоженный объект</exception>
     public static bool TryGetComponent<T>([NotNull] this GameObject gameObject, [CanBeNull] out T component)
         where T : Component
     {
@@ -47,5 +47,21 @@ public static class GameObjectExtensions
             throw new MissingReferenceException(nameof(gameObject));
 
         return GameObjectUtility.TryGetComponentWithoutChecks(gameObject, out component);
+    }
+    
+    /// <summary>
+    /// Возвращает всех потомков для игрового объекта
+    /// </summary>
+    /// <returns>Массив потомков</returns>
+    /// <exception cref="NullReferenceException">Параметр <param name="gameObject"/>>указывает на null</exception>
+    /// <exception cref="MissingReferenceException">Параметр <param name="gameObject"/>>указывает на уничтоженный объект</exception>
+    public static Transform[] GetChildes(this GameObject gameObject)
+    {
+        if (ReferenceEquals(gameObject, null))
+            throw new NullReferenceException(nameof(gameObject));
+        if (!gameObject)
+            throw new MissingReferenceException(nameof(gameObject));
+        
+        return TransformUtility.GetChildesWithoutChecks(gameObject.transform);
     }
 }
