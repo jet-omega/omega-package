@@ -14,8 +14,8 @@ namespace Omega.Tools
         /// <param name="gameObject">Игровой объект</param>
         /// <typeparam name="T">Тип компонента</typeparam>
         /// <returns>Экземпляр компонента</returns>
-        /// <exception cref="ArgumentNullException">Параметр <param name="gameObject"/>>gameObject указывает на null</exception>
-        /// <exception cref="MissingReferenceException">Параметр <param name="gameObject"/>>gameObject указывает на уничтоженный объект</exception>
+        /// <exception cref="ArgumentNullException">Параметр <param name="gameObject"/>> указывает на null</exception>
+        /// <exception cref="MissingReferenceException">Параметр <param name="gameObject"/>> указывает на уничтоженный объект</exception>
         [NotNull]
         public static T MissingComponent<T>([NotNull] GameObject gameObject) where T : Component
         {
@@ -63,8 +63,8 @@ namespace Omega.Tools
         /// <param name="component">Ссылка на найденный объект (null, если объект не найден)</param>
         /// <typeparam name="T">Тип компонента</typeparam>
         /// <returns>true - компонент найден, false - объект не найден</returns>
-        /// <exception cref="ArgumentNullException">Параметр <param name="gameObject"/>>gameObject указывает на null</exception>
-        /// <exception cref="MissingReferenceException">Параметр <param name="gameObject"/>>gameObject указывает на уничтоженный объект</exception>
+        /// <exception cref="ArgumentNullException">Параметр <param name="gameObject"/>> указывает на null</exception>
+        /// <exception cref="MissingReferenceException">Параметр <param name="gameObject"/>> указывает на уничтоженный объект</exception>
         public static bool TryGetComponent<T>([NotNull] GameObject gameObject, [CanBeNull] out T component)
             where T : Component
         {
@@ -82,8 +82,8 @@ namespace Omega.Tools
         /// <param name="gameObject">Игровой объект</param>
         /// <typeparam name="T">Тип компонента</typeparam>
         /// <returns>true - компонент с заданном типом присутствует на объекте, иначе false</returns>
-        /// <exception cref="ArgumentNullException">Параметр <param name="gameObject"/>>gameObject указывает на null</exception>
-        /// <exception cref="MissingReferenceException">Параметр <param name="gameObject"/>>gameObject указывает на уничтоженный объект</exception>
+        /// <exception cref="ArgumentNullException">Параметр <param name="gameObject"/>>указывает на null</exception>
+        /// <exception cref="MissingReferenceException">Параметр <param name="gameObject"/>>указывает на уничтоженный объект</exception>
         public static bool ContainsComponent<T>([NotNull] GameObject gameObject) where T : Component
         {
             if (ReferenceEquals(gameObject, null))
