@@ -42,7 +42,7 @@ namespace Omega.Tools.Tests
         public void MissingComponentShouldThrowMissingReferenceExceptionWhenParameterIsDestroyedGameObjectTest()
         {
             var gameObjectInstance =
-                new GameObject(nameof(MissingComponentShouldNotAddComponentWhenItIsOnGameObjectTest));
+                new GameObject(nameof(MissingComponentShouldThrowMissingReferenceExceptionWhenParameterIsDestroyedGameObjectTest));
 
             var boxCollider = gameObjectInstance.AddComponent<BoxCollider>();
 
