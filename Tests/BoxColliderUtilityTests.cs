@@ -17,6 +17,8 @@ namespace Omega.Tools.Tests
             BoxColliderUtility.SetAsBounds(boxCollider, bounds);
 
             Assert.AreEqual(bounds, boxCollider.bounds);
+            
+            Object.Destroy(gameObjectInstance);
         }
 
         [Test]
