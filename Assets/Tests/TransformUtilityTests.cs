@@ -18,6 +18,8 @@ namespace Omega.Tools.Tests
             Assert.Zero(childes.Length);
 
             Assert.AreEqual(childes, Array.Empty<Transform>());
+            
+            Object.Destroy(gameObjectInstance);
         }
 
         [Test]
