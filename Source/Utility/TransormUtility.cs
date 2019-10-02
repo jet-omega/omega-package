@@ -30,8 +30,11 @@ namespace Omega.Tools
         internal static Transform[] GetChildesWithoutChecks([NotNull] Transform root)
         {
             var childesCount = root.childCount;
-            var childes = childesCount == 0 ? Array.Empty<Transform>() : new Transform[childesCount];
-            for (int i = 0; i < childesCount; i++)
+            if (childesCount == 0)
+                return Array.Empty<Transform>();
+
+            var childes = new Transform[childesCount];
+            for (int i = 0; i < childes.Length; i++)
                 childes[i] = root.GetChild(i);
 
             return childes;
