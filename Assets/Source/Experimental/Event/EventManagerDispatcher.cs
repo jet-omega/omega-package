@@ -31,10 +31,7 @@ namespace Omega.Tools.Experimental.Events
 
         public static void SetEventManager(IEventManager<TEvent> eventManager)
         {
-            if (eventManager == null)
-                throw new ArgumentNullException(nameof(eventManager));
-
-            _eventManager = eventManager;
+            _eventManager = eventManager ?? throw new ArgumentNullException(nameof(eventManager));
 
             _supportActionHandlers = _eventManager is IActionHandlerInterface<TEvent>;
             if (SupportActionHandlers)
@@ -44,12 +41,13 @@ namespace Omega.Tools.Experimental.Events
         private static void EventManagerNullCheck()
         {
             if (_eventManager == null)
-                _eventManager = Create();
+                SetEventManager(Create());
         }
-        
+
         private static IEventManager<TEvent> Create()
-        {
-            throw new NotImplementedException();
-        }
+            => new DefaultEventManager<TEvent>();
+        
+        internal static void RemoveEventManagerInternal()
+            => _eventManager = null;
     }
 }

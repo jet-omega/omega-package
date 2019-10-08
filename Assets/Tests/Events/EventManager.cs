@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using UnityEngine;
@@ -10,59 +8,70 @@ namespace Omega.Tools.Experimental.Events.Tests
     public class EventManagerTests
     {
         [Test]
-        public void EventManagerShouldAddHandleTest()
+        public void EventManagerShouldCreateDefaultInstanceForEventTypeTest()
         {
-//            var handler = HandlerBuilder.ByAction<EventManagerTestsEvent>(() => { });
-//            EventManager.AddHandler(handler);
-//
-//            var handlersCollection =  HandlersDispatcher<EventManagerTestsEvent>.Provider.GetHandlers();
-//            Assert.True(handlersCollection.ToList().Contains(handler));
-
-            Assert.Fail();
+            ClearEventManager();
+            var eventManager = EventManagerDispatcher<EventManagerTestsEvent>.GetEventManager();
+            Assert.NotNull(eventManager);
         }
 
         [Test]
-        public void EventManagerShouldNotifyHandlersTest()
+        public void EventManagerShouldAddHandleTest()
         {
-//            bool handlerFlag = false;
-//            EventManager.AddHandler<EventManagerTestsEvent>(() => handlerFlag = true);
-//            EventManager.Event(new EventManagerTestsEvent());
-//
-//            Assert.True(handlerFlag);
+            bool handlerFlag = false;
+
+            var eventManager = EventManagerDispatcher<EventManagerTestsEvent>.GetEventManager();
+            var handler = new ActionHandler<EventManagerTestsEvent>
+            {
+                Action = _ => handlerFlag = true
+            };
+
+            eventManager.AddHandler(handler);
+            eventManager.Event(default);
+
+            Assert.True(handlerFlag);
         }
 
         [Test]
         public void EventManagerShouldNotNotifyHandlersUntilPastEventNotifyHasEndedTest()
         {
-//            var state = 0;
-//            EventManager.AddHandler<EventManagerTestsEvent>(() =>
-//            {
-//                state++;
-//                if (state == 1)
-//                {
-//                    EventManager.Event<EventManagerTestsEvent>(default);
-//                    Assert.AreEqual(state, 1);
-//                }
-//            });
-//
-//            EventManager.Event<EventManagerTestsEvent>(default);
-//
-//            Assert.AreEqual(state, 2);
+            var state = 0;
+            EventManager.AddHandler<EventManagerTestsEvent>(_ =>
+            {
+                if (++state == 1)
+                {
+                    EventManager.Event<EventManagerTestsEvent>(default);
+                    Assert.AreEqual(state, 1);
+                }
+            });
+
+            EventManager.Event<EventManagerTestsEvent>(default);
+
+            Assert.AreEqual(state, 2);
         }
 
         [Test]
         public void EventManagerShouldNotNotifyRemovedHandlerTest()
         {
-//            var handler = EventManager.AddHandler<EventManagerTestsEvent>(Assert.Fail);
-//            EventManager.RemoveHandler(handler);
-//            EventManager.Event<EventManagerTestsEvent>(default);
+            var handler = new Action<EventManagerTestsEvent>(_ => Assert.Fail());
+            
+            EventManager.AddHandler<EventManagerTestsEvent>(handler);
+            EventManager.RemoveHandler(handler);
+            
+            EventManager.Event<EventManagerTestsEvent>(default);
         }
 
         [TearDown]
         [SetUp]
-        public void ClearProvider()
+        public void ClearEventManager()
+            => EventManagerDispatcher<EventManagerTestsEvent>.RemoveEventManagerInternal();
+
+        private sealed class ActionHandler<TEvent> : IEventHandler<TEvent>
         {
-//            HandlersDispatcher<EventManagerTestsEvent>.SetProvider(null);
+            public Action<TEvent> Action;
+
+            public void Execute(TEvent arg)
+                => Action?.Invoke(arg);
         }
 
         private struct EventManagerTestsEvent
