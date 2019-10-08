@@ -13,27 +13,27 @@ namespace Omega.Tools.Experimental.Events
 
     public sealed class DefaultHandlersProvider<TEvent> : IHandlersProvider<TEvent>
     {
-        private LinkedList<IEventHandler<TEvent>> _mainHandlers;
+        private readonly LinkedList<IEventHandler<TEvent>> _handlers;
 
         public DefaultHandlersProvider()
         {
-            _mainHandlers = new LinkedList<IEventHandler<TEvent>>();
+            _handlers = new LinkedList<IEventHandler<TEvent>>();
         }
 
         public void AddHandler(IEventHandler<TEvent> handler)
         {
-            _mainHandlers.AddLast(handler);
+            _handlers.AddLast(handler);
         }
 
         public void RemoveHandler(IEventHandler<TEvent> handler)
         {
-            _mainHandlers.Remove(handler);
+            _handlers.Remove(handler);
         }
 
         public IEnumerable<IEventHandler<TEvent>> GetHandlers()
         {
-            // TODO: [CRITICAL] Create revision collection 
-            return _mainHandlers.ToList();
+            // TODO: Create revision collection?
+            return _handlers.ToList();
         }
     }
 }

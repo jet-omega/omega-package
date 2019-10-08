@@ -1,4 +1,6 @@
 using System;
+using System.Reflection;
+using UnityEngine;
 
 namespace Omega.Tools.Experimental.Events
 {
@@ -28,5 +30,11 @@ namespace Omega.Tools.Experimental.Events
             => _action = action ?? throw new ArgumentNullException(nameof(action));
         
         public void Execute(T arg) => _action();
+        
+        
+    }
+
+    public sealed class EventHandlerAttribute : Attribute
+    {
     }
 }
