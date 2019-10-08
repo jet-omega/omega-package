@@ -1,7 +1,7 @@
 namespace Omega.Tools.Experimental.Events
 {
-    public interface IEventHandler<T>
+    public interface IEventHandler<TEvent>
     {
-        void Execute(T arg);
+        void Execute(TEvent arg);
     }
 }

@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("Omega.Tools.Runtime.Tests")]
 
 namespace Omega.Tools.Experimental.Events
 {
