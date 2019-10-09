@@ -19,7 +19,7 @@ namespace Omega.Tools.Tests
 
             Assert.AreEqual(childes, Array.Empty<Transform>());
             
-            Object.Destroy(gameObjectInstance);
+            Object.DestroyImmediate(gameObjectInstance);
         }
 
         [Test]

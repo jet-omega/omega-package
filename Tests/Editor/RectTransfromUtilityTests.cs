@@ -28,7 +28,7 @@ namespace Omega.Tools.Tests
 
             Assert.AreEqual(childes.Length, countChildesWithRectTransform);
 
-            Object.Destroy(gameObjectInstance);
+            Object.DestroyImmediate(gameObjectInstance);
         }
 
         [Test]
