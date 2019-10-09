@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Omega.Tools.Experimental.Events
 {
+    [Obsolete]
     public interface IHandlersProvider<TEvent>
     {
         void AddHandler(IEventHandler<TEvent> handler);
@@ -11,6 +13,7 @@ namespace Omega.Tools.Experimental.Events
         IEnumerable<IEventHandler<TEvent>> GetHandlers();
     }
 
+    [Obsolete]
     public sealed class DefaultHandlersProvider<TEvent> : IHandlersProvider<TEvent>
     {
         private readonly LinkedList<IEventHandler<TEvent>> _handlers;

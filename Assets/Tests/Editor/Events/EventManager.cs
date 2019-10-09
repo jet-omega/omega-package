@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using NUnit.Framework;
+using Omega.Tools.Experimental.Events.Internals;
 using UnityEngine;
 
 namespace Omega.Tools.Experimental.Events.Tests
@@ -36,16 +37,16 @@ namespace Omega.Tools.Experimental.Events.Tests
         public void EventManagerShouldNotNotifyHandlersUntilPastEventNotifyHasEndedTest()
         {
             var state = 0;
-            EventManager.AddHandler<EventManagerTestsEvent>(_ =>
+            EventAggregator.AddHandler<EventManagerTestsEvent>(_ =>
             {
                 if (++state == 1)
                 {
-                    EventManager.Event<EventManagerTestsEvent>(default);
+                    EventAggregator.Event<EventManagerTestsEvent>(default);
                     Assert.AreEqual(state, 1);
                 }
             });
 
-            EventManager.Event<EventManagerTestsEvent>(default);
+            EventAggregator.Event<EventManagerTestsEvent>(default);
 
             Assert.AreEqual(state, 2);
         }
@@ -55,10 +56,10 @@ namespace Omega.Tools.Experimental.Events.Tests
         {
             var handler = new Action<EventManagerTestsEvent>(_ => Assert.Fail());
             
-            EventManager.AddHandler<EventManagerTestsEvent>(handler);
-            EventManager.RemoveHandler(handler);
+            EventAggregator.AddHandler<EventManagerTestsEvent>(handler);
+            EventAggregator.RemoveHandler(handler);
             
-            EventManager.Event<EventManagerTestsEvent>(default);
+            EventAggregator.Event<EventManagerTestsEvent>(default);
         }
 
         [TearDown]

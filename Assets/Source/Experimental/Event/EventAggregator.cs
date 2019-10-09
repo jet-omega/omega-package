@@ -1,8 +1,9 @@
 using System;
+using Omega.Tools.Experimental.Events.Internals;
 
 namespace Omega.Tools.Experimental.Events
 {
-    public static class EventManager
+    public static class EventAggregator
     {
         public static void Event<TEvent>(TEvent arg)
             => EventManagerDispatcher<TEvent>.GetEventManager().Event(arg);
@@ -16,7 +17,7 @@ namespace Omega.Tools.Experimental.Events
             if (actionHandlersProvider == null)
                 throw new NotSupportedException(
                     $"Current EventManager of {typeof(TEvent)} not supported Action handlers." +
-                    $"Implement interface {nameof(IActionHandlerInterface<TEvent>)} in EventManager to support Action handlers");
+                    $"Implement interface {nameof(IEventManagerActionHandlerProvider<TEvent>)} in EventManager to support Action handlers");
             
             actionHandlersProvider.AddHandler(handler);
         }
@@ -27,7 +28,7 @@ namespace Omega.Tools.Experimental.Events
             if (actionHandlersProvider == null)
                 throw new NotSupportedException(
                     $"Current EventManager of {typeof(TEvent)} not supported Action handlers." +
-                    $"Implement interface {nameof(IActionHandlerInterface<TEvent>)} in EventManager to support Action handlers");
+                    $"Implement interface {nameof(IEventManagerActionHandlerProvider<TEvent>)} in EventManager to support Action handlers");
             
             actionHandlersProvider.RemoveHandler(handler);
         }
