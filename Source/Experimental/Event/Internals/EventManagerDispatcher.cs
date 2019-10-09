@@ -1,13 +1,17 @@
 using System;
+using JetBrains.Annotations;
+using Omega.Tools.Experimental.Events.Internals;
 
-namespace Omega.Tools.Experimental.Events
+namespace Omega.Tools.Experimental.Events.Internals
 {
-    public static class EventManagerDispatcher<TEvent>
+    internal static class EventManagerDispatcher<TEvent>
     {
         private static bool _supportActionHandlers;
         private static IEventManager<TEvent> _eventManager;
-        private static IActionHandlerInterface<TEvent> _eventManagerActionInterface;
+        private static IEventManagerActionHandlerProvider<TEvent> _eventManagerActionInterface;
 
+        internal static bool InUndefinedEventManager => _eventManager == null;
+        
         public static bool SupportActionHandlers
         {
             get
@@ -23,29 +27,29 @@ namespace Omega.Tools.Experimental.Events
             return _eventManager;
         }
 
-        internal static IActionHandlerInterface<TEvent> GetEventManagerActionInterface()
+        internal static IEventManagerActionHandlerProvider<TEvent> GetEventManagerActionInterface()
         {
             EventManagerNullCheck();
             return _eventManagerActionInterface;
         }
 
-        public static void SetEventManager(IEventManager<TEvent> eventManager)
+        internal static void SetEventManagerInternal(IEventManager<TEvent> eventManager)
         {
             _eventManager = eventManager ?? throw new ArgumentNullException(nameof(eventManager));
 
-            _supportActionHandlers = _eventManager is IActionHandlerInterface<TEvent>;
+            _supportActionHandlers = _eventManager is IEventManagerActionHandlerProvider<TEvent>;
             if (SupportActionHandlers)
-                _eventManagerActionInterface = (IActionHandlerInterface<TEvent>) _eventManager;
+                _eventManagerActionInterface = (IEventManagerActionHandlerProvider<TEvent>) _eventManager;
         }
 
         private static void EventManagerNullCheck()
         {
             if (_eventManager == null)
-                SetEventManager(Create());
+                SetEventManagerInternal(Create());
         }
 
         private static IEventManager<TEvent> Create()
-            => new DefaultEventManager<TEvent>();
+            => EventManagerBuilder.Build<TEvent>();
         
         internal static void RemoveEventManagerInternal()
             => _eventManager = null;
