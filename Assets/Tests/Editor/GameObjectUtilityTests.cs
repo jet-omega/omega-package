@@ -21,7 +21,7 @@ namespace Omega.Tools.Tests
 
             Assert.AreEqual(boxCollider, boxColliderByMissingComponent);
 
-            Object.Destroy(gameObjectInstance);
+            Object.DestroyImmediate(gameObjectInstance);
         }
 
         [Test]
@@ -35,7 +35,7 @@ namespace Omega.Tools.Tests
 
             Assert.AreEqual(boxCollider, boxColliderByMissingComponent);
 
-            Object.Destroy(gameObjectInstance);
+            Object.DestroyImmediate(gameObjectInstance);
         }
 
         [Test]
