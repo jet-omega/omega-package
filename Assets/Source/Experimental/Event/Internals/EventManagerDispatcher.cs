@@ -8,9 +8,6 @@ namespace Omega.Tools.Experimental.Events.Internals
     {
         private static bool _supportActionHandlers;
         private static IEventManager<TEvent> _eventManager;
-        private static IEventManagerActionHandlerProvider<TEvent> _eventManagerActionInterface;
-
-        internal static bool InUndefinedEventManager => _eventManager == null;
         
         public static bool SupportActionHandlers
         {
@@ -27,19 +24,9 @@ namespace Omega.Tools.Experimental.Events.Internals
             return _eventManager;
         }
 
-        internal static IEventManagerActionHandlerProvider<TEvent> GetEventManagerActionInterface()
-        {
-            EventManagerNullCheck();
-            return _eventManagerActionInterface;
-        }
-
         internal static void SetEventManagerInternal(IEventManager<TEvent> eventManager)
         {
             _eventManager = eventManager ?? throw new ArgumentNullException(nameof(eventManager));
-
-            _supportActionHandlers = _eventManager is IEventManagerActionHandlerProvider<TEvent>;
-            if (SupportActionHandlers)
-                _eventManagerActionInterface = (IEventManagerActionHandlerProvider<TEvent>) _eventManager;
         }
 
         private static void EventManagerNullCheck()

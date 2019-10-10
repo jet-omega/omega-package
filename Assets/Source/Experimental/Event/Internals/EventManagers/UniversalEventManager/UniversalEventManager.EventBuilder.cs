@@ -8,7 +8,7 @@ namespace Omega.Tools.Experimental.Events.Internals.EventManagers
     {
         private static class EventBuilder
         {
-            internal static IEvent CreateEventInternal<T>(IEnumerable<IEventHandler<T>> handlers, T arg)
+            internal static IEvent CreateEvent<T>(IEnumerable<IEventHandler<T>> handlers, T arg)
             {
                 var @event = new Event<T>(handlers, arg);
                 return @event;

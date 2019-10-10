@@ -22,7 +22,7 @@ namespace Omega.Tools.Experimental.Events.Tests
             bool handlerFlag = false;
 
             var eventManager = EventManagerDispatcher<EventManagerTestsEvent>.GetEventManager();
-            var handler = new ActionHandler<EventManagerTestsEvent>
+            var handler = new CustomActionHandler<EventManagerTestsEvent>
             {
                 Action = _ => handlerFlag = true
             };
@@ -56,7 +56,7 @@ namespace Omega.Tools.Experimental.Events.Tests
         {
             var handler = new Action<EventManagerTestsEvent>(_ => Assert.Fail());
             
-            EventAggregator.AddHandler<EventManagerTestsEvent>(handler);
+            EventAggregator.AddHandler(handler);
             EventAggregator.RemoveHandler(handler);
             
             EventAggregator.Event<EventManagerTestsEvent>(default);
@@ -67,7 +67,7 @@ namespace Omega.Tools.Experimental.Events.Tests
         public void ClearEventManager()
             => EventManagerDispatcher<EventManagerTestsEvent>.RemoveEventManagerInternal();
 
-        private sealed class ActionHandler<TEvent> : IEventHandler<TEvent>
+        private sealed class CustomActionHandler<TEvent> : IEventHandler<TEvent>
         {
             public Action<TEvent> Action;
 
