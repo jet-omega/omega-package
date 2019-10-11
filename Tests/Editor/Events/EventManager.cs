@@ -70,6 +70,8 @@ namespace Omega.Tools.Experimental.Events.Tests
             });
 
             EventAggregator.Event<EventManagerTestsEvent>(default);
+            
+            EventManagerDispatcher<EventManagerTestsSecondEvent>.RemoveEventManagerInternal();
         }
 
         [Test]
@@ -86,7 +88,9 @@ namespace Omega.Tools.Experimental.Events.Tests
         [TearDown]
         [SetUp]
         public void ClearEventManager()
-            => EventManagerDispatcher<EventManagerTestsEvent>.RemoveEventManagerInternal();
+        {
+            EventManagerDispatcher<EventManagerTestsEvent>.RemoveEventManagerInternal();
+        }
 
         private sealed class CustomActionHandler<TEvent> : IEventHandler<TEvent>
         {
