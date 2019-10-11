@@ -2,6 +2,7 @@
 using System.Linq;
 using NUnit.Framework;
 using Omega.Tools.Experimental.Events.Internals;
+using UnityEditor.VersionControl;
 using UnityEngine;
 
 namespace Omega.Tools.Experimental.Events.Tests
@@ -52,13 +53,33 @@ namespace Omega.Tools.Experimental.Events.Tests
         }
 
         [Test]
+        public void EventManagerShouldNotNotifyHandlersUntilPastEventNotifyHasEndedSecondTest()
+        {
+            var flag = false;
+            EventAggregator.AddHandler<EventManagerTestsEvent>(_ =>
+            {
+                flag = true;
+                EventAggregator.Event<EventManagerTestsSecondEvent>(default);
+                flag = false;
+            });
+
+            EventAggregator.AddHandler<EventManagerTestsSecondEvent>(_ =>
+            {
+                if(flag)
+                    Assert.Fail();
+            });
+
+            EventAggregator.Event<EventManagerTestsEvent>(default);
+        }
+
+        [Test]
         public void EventManagerShouldNotNotifyRemovedHandlerTest()
         {
             var handler = new Action<EventManagerTestsEvent>(_ => Assert.Fail());
-            
+
             EventAggregator.AddHandler(handler);
             EventAggregator.RemoveHandler(handler);
-            
+
             EventAggregator.Event<EventManagerTestsEvent>(default);
         }
 
@@ -76,6 +97,10 @@ namespace Omega.Tools.Experimental.Events.Tests
         }
 
         private struct EventManagerTestsEvent
+        {
+        }
+
+        private struct EventManagerTestsSecondEvent
         {
         }
     }

@@ -9,12 +9,11 @@ namespace Omega.Tools.Experimental.Events.Internals.EventManagers
 {
     internal partial class UniversalEventManager<TEvent> : IEventManager<TEvent>
     {
-        private Queue<IEvent> _queueEvents;
+        
         private List<IEventHandler<TEvent>> _eventHandlers;
 
         public UniversalEventManager()
         {
-            _queueEvents = new Queue<IEvent>();
             _eventHandlers = new List<IEventHandler<TEvent>>();
         }
 
@@ -23,11 +22,8 @@ namespace Omega.Tools.Experimental.Events.Internals.EventManagers
             var handlersOfEvent = _eventHandlers.ToArray();
 
             var @event = EventBuilder.CreateEvent(handlersOfEvent, arg);
-
-            _queueEvents.Enqueue(@event);
-
-            if (_queueEvents.Count == 1)
-                EventMoveNext();
+            
+            EventScheduler.Schedule(@event);
         }
 
         public void AddHandler(IEventHandler<TEvent> handler)
@@ -38,16 +34,6 @@ namespace Omega.Tools.Experimental.Events.Internals.EventManagers
         public void RemoveHandler(IEventHandler<TEvent> handler)
         {
             _eventHandlers.Remove(handler);
-        }
-
-        private void EventMoveNext()
-        {
-            while (_queueEvents.Count != 0)
-            {
-                var @event = _queueEvents.Peek();
-                @event.Release();
-                _queueEvents.Dequeue();
-            }
         }
     }
 }
