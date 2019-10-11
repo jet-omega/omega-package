@@ -54,6 +54,7 @@ namespace Omega.Tools.Experimental.Events.Tests
 
             Object.DestroyImmediate(gameObject);
 
+            
             Assert.Throws<Exception>(() => EventAggregator.Event(new TestEvent()));
             
             Assert.False(target.invokedPreventInvocationFromDestroyedObject);
