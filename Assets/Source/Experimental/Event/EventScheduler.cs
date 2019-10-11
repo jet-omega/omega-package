@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,6 +18,14 @@ namespace Omega.Tools.Experimental.Event
                 EventMoveNext();
         }
 
+        public static IEnumerator ExecuteAsync(IEvent @event)
+        {
+            Schedule(@event);
+
+            while (_current == @event || _queueEvents.Contains(@event))
+                yield return null;
+        }
+        
         private static void EventMoveNext()
         {
             while (_queueEvents.Count > 0)
