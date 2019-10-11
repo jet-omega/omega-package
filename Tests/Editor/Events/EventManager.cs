@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
 using NUnit.Framework;
 using Omega.Tools.Experimental.Events.Internals;
 using UnityEditor.VersionControl;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace Omega.Tools.Experimental.Events.Tests
 {
@@ -74,6 +76,21 @@ namespace Omega.Tools.Experimental.Events.Tests
             EventManagerDispatcher<EventManagerTestsSecondEvent>.RemoveEventManagerInternal();
         }
 
+        [UnityTest]
+        public IEnumerator EventManagerShouldWaitCoroutineTest()
+        {
+            bool flag = false;
+            
+            EventAggregator.AddHandler((EventManagerTestsEvent e)=>
+            {
+                if(!flag)
+                    EventAggregator.Event(new EventManagerTestsEvent());
+                flag = true;
+            });
+            
+            yield return EventAggregator.EventAsync<EventManagerTestsSecondEvent>(default);
+        }
+        
         [Test]
         public void EventManagerShouldNotNotifyRemovedHandlerTest()
         {
