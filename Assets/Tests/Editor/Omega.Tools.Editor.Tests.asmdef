@@ -1,12 +1,14 @@
 {
-    "name": "Omega.Tools.Runtime.Tests",
+    "name": "Omega.Tools.Editor.Tests",
     "references": [
         "Omega.Tools.Runtime"
     ],
     "optionalUnityReferences": [
         "TestAssemblies"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
