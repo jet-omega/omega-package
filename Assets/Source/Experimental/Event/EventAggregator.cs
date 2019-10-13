@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Omega.Tools.Experimental.Event;
 using Omega.Tools.Experimental.Events.Internals;
+using Object = UnityEngine.Object;
 
 namespace Omega.Tools.Experimental.Events
 {
@@ -12,12 +13,24 @@ namespace Omega.Tools.Experimental.Events
 
         public static IEnumerator EventAsync<TEvent>(TEvent arg)
             => EventManagerDispatcher<TEvent>.GetEventManager().EventAsync(arg);
-        
+
+
         public static void AddHandler<TEvent>(IEventHandler<TEvent> handler)
-            => EventManagerDispatcher<TEvent>.GetEventManager().AddHandler(handler);
+        {
+            if (handler is Object target)
+                handler = new UnityHandlerAdapter<TEvent>(handler, target);
+            
+            EventManagerDispatcher<TEvent>.GetEventManager().AddHandler(handler);
+        }
+
         public static void RemoveHandler<TEvent>(IEventHandler<TEvent> handler)
-            => EventManagerDispatcher<TEvent>.GetEventManager().RemoveHandler(handler);
-        
+        {
+            if (handler is Object target)
+                handler = new UnityHandlerAdapter<TEvent>(handler, target);
+            
+            EventManagerDispatcher<TEvent>.GetEventManager().RemoveHandler(handler);
+        }
+
         public static void AddHandler<TEvent>(Action<TEvent> handler)
         {
             var actionHandlerAdapter = ActionHandlerAdapterBuilder.Build(handler);
