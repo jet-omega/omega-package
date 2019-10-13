@@ -21,16 +21,20 @@ namespace Omega.Tools.Experimental.Events.Tests
         {
             int handlerInvocationCount = 0;
 
-            var initialScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            var initialScene = SceneManager.CreateScene("initial",
+                new CreateSceneParameters {localPhysicsMode = LocalPhysicsMode.None});
             initialScene.name = $"Initial scene for {nameof(EventManagerDispatcherShouldCreateNewEventManagerWhenSceneWereSwitchedTest)}";
-
+            SceneManager.SetActiveScene(initialScene);
+            
             EventAggregator.AddHandler<TestSceneWithAttributeEvent>(_ => handlerInvocationCount++);
             EventAggregator.Event<TestSceneWithAttributeEvent>(default);
 
             Assert.AreEqual(1, handlerInvocationCount);
 
-            var secondScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            var secondScene = SceneManager.CreateScene("second",
+                new CreateSceneParameters {localPhysicsMode = LocalPhysicsMode.None});
             secondScene.name = $"Second scene for {nameof(EventManagerDispatcherShouldCreateNewEventManagerWhenSceneWereSwitchedTest)}";
+            SceneManager.SetActiveScene(secondScene);
 
             EventAggregator.Event<TestSceneWithAttributeEvent>(default);
 
