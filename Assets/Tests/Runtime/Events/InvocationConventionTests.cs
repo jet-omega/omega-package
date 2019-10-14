@@ -44,18 +44,19 @@ namespace Omega.Tools.Experimental.Events.Tests
 
         [Test]
         //TODO: "ThrowException", Exception?
-        public void EventManagerShouldThrowExceptionWhenTryNotifyActionWithDestroyedTargetTest()
+        public void EventManagerShouldLogExceptionWhenTryNotifyActionWithDestroyedTargetTest()
         {
             var gameObject =
-                new GameObject(nameof(EventManagerShouldThrowExceptionWhenTryNotifyActionWithDestroyedTargetTest));
+                new GameObject(nameof(EventManagerShouldLogExceptionWhenTryNotifyActionWithDestroyedTargetTest));
             var target = gameObject.AddComponent<TestHelperMonoBehaviour>();
 
             EventAggregator.AddHandler<TestEvent>(target.ActionWithPreventInvocationFromDestroyedObject);
 
             Object.DestroyImmediate(gameObject);
 
+            LogAssert.Expect(LogType.Exception, new Regex("."));
             
-            Assert.Throws<Exception>(() => EventAggregator.Event(new TestEvent()));
+            EventAggregator.Event(new TestEvent());
             
             Assert.False(target.invokedPreventInvocationFromDestroyedObject);
         }
@@ -71,8 +72,10 @@ namespace Omega.Tools.Experimental.Events.Tests
             EventAggregator.AddHandler<TestEvent>(target.ActionWithoutInvocationConvention);
 
             Object.DestroyImmediate(gameObject);
-
-            Assert.Throws<Exception>(() => EventAggregator.Event(new TestEvent()));
+            
+            LogAssert.Expect(LogType.Exception, new Regex("."));
+            
+            EventAggregator.Event(new TestEvent());
             
             Assert.False(target.invokedWithoutInvocationConvention);
         }
