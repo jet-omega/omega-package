@@ -11,32 +11,37 @@ namespace Omega.Tools.Experimental.Event
         private readonly IEventHandler<TEvent> _handler;
         private readonly Object _targetObject;
         private readonly InvocationConvention _invocationConvention;
+
+        public Object TargetObject => _targetObject;
         public bool TargetObjectIsDestroyed => !_targetObject;
+        public InvocationConvention InvocationPolicy => _invocationConvention;
+        public IEventHandler<TEvent> AdaptiveHandler => _handler;
 
-        public UnityHandlerAdapter(IEventHandler<TEvent> handler)
+        public UnityHandlerAdapter(IEventHandler<TEvent> handler, InvocationConvention invocationPolicy)
         {
-            _handler = handler;
-            _targetObject = handler as Object ?? throw new Exception();
-            _invocationConvention =
-                _targetObject.GetType().GetCustomAttribute<EventHandlerAttribute>()?.InvocationConvention ?? default;
+            _handler = handler ?? throw new ArgumentNullException(nameof(handler));
+            _targetObject = handler as Object ?? throw new InvalidCastException();
+            _invocationConvention = invocationPolicy;
         }
 
-        public UnityHandlerAdapter(Object handler)
+        public UnityHandlerAdapter(Object handler, InvocationConvention invocationPolicy)
         {
-            _handler = handler as IEventHandler<TEvent> ?? throw new Exception();
+            if(ReferenceEquals(handler,null))
+                throw new ArgumentNullException(nameof(handler));
+                
+            _handler = handler as IEventHandler<TEvent> ?? throw new InvalidCastException();
             _targetObject = handler;
-            _invocationConvention =
-                _targetObject.GetType().GetCustomAttribute<EventHandlerAttribute>()?.InvocationConvention ?? default;
+            _invocationConvention = invocationPolicy;
         }
-        
-        internal UnityHandlerAdapter(IEventHandler<TEvent> handlerInterface, Object targetObject)
+
+        internal UnityHandlerAdapter(IEventHandler<TEvent> handlerInterface, InvocationConvention invocationPolicy,
+            Object targetObject)
         {
             _handler = handlerInterface;
             _targetObject = targetObject;
-            _invocationConvention =
-                _targetObject.GetType().GetCustomAttribute<EventHandlerAttribute>()?.InvocationConvention ?? default;
+            _invocationConvention = invocationPolicy;
         }
-        
+
         public void Execute(TEvent arg)
         {
             if (TargetObjectIsDestroyed)
@@ -55,7 +60,7 @@ namespace Omega.Tools.Experimental.Event
 
         public override int GetHashCode()
         {
-            return _targetObject.GetHashCode() + _invocationConvention.GetHashCode();
+            return _targetObject.GetHashCode();
         }
     }
 }
