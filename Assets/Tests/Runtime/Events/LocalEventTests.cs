@@ -1,22 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using NUnit.Framework;
+using Omega.Tools.Experimental.Event;
 using Omega.Tools.Experimental.Events.Attributes;
-using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
-using UnityEngine.TestTools;
 
 namespace Omega.Tools.Experimental.Events.Tests
 {
     public class SceneEventTests
     {
-        [Test]
-        [MaxTime(2500)]
         /*
          * По хорошему нужно использовать UnityTest, но по каким то причинам, при переключении сцен UnityTest перестают
          * корректно работать
          */
+        [Test]
+        [MaxTime(2500)]
         public void EventManagerDispatcherShouldCreateNewEventManagerWhenSceneWereSwitchedTest()
         {
             int handlerInvocationCount = 0;
@@ -42,7 +38,7 @@ namespace Omega.Tools.Experimental.Events.Tests
         }
 
 
-        [SceneEvent]
+        [EventCoverage(EventCoverage.Scene)]
         private struct TestSceneWithAttributeEvent
         {
         }

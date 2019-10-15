@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using Omega.Tools.Experimental.Event;
 using Omega.Tools.Experimental.Events.Attributes;
 using Omega.Tools.Experimental.Events.Internals.EventManagers;
 
@@ -14,10 +15,9 @@ namespace Omega.Tools.Experimental.Events.Internals
         {
             var eventType = typeof(TEvent);
 
-            var sceneEventAttribute = eventType.GetCustomAttribute<SceneEventAttribute>();
-//            var globalEventAttribute = eventType.GetCustomAttribute<GlobalEventAttribute>();
+            var sceneEventAttribute = eventType.GetCustomAttribute<EventCoverageAttribute>();
 
-            if (sceneEventAttribute == null)
+            if (sceneEventAttribute == null || sceneEventAttribute.Coverage == EventCoverage.Global)
                 return BuildGlobalEventManager<TEvent>();
             
             return BuildSceneEventManager<TEvent>();

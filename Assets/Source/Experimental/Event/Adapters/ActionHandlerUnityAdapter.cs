@@ -6,53 +6,38 @@ using Object = UnityEngine.Object;
 
 namespace Omega.Tools.Experimental.Event
 {
-    internal static class ActionHandlerAdapterBuilder
-    {
-        public static IEventHandler<TEvent> Build<TEvent>(Action<TEvent> action)
-        {
-            if(action.Target is Object)
-                return new ActionHandlerUnityAdapter<TEvent>(action);
-            
-            return new ActionHandlerAdapter<TEvent>(action);
-        }
-    }
-    
-    internal sealed class ActionHandlerAdapter<TEvent> : IEventHandler<TEvent>
-    {
-        private readonly Action<TEvent> _action;
-
-        public ActionHandlerAdapter(Action<TEvent> action)
-            => _action = action ?? throw new ArgumentNullException(nameof(action));
-
-        public void Execute(TEvent arg)
-            => _action(arg);
-
-        public override bool Equals(object obj)
-            => obj is ActionHandlerAdapter<TEvent> other && other._action == _action;
-
-        public override int GetHashCode()
-            => _action.GetHashCode();
-    }
-
-    internal sealed class ActionHandlerUnityAdapter<TEvent> : IEventHandler<TEvent>
+    public sealed class ActionHandlerUnityAdapter<TEvent> : IEventHandler<TEvent>
     {
         private readonly Action<TEvent> _action;
         private readonly Object _targetObject;
         private readonly InvocationConvention _invocationConvention;
+        
+        public Object TargetObject => _targetObject;
         public bool TargetObjectIsDestroyed => !_targetObject;
+        public InvocationConvention InvocationPolicy => _invocationConvention;
+        public Action<TEvent> AdaptiveAction => _action;
 
-        public ActionHandlerUnityAdapter(Action<TEvent> action)
+        public ActionHandlerUnityAdapter(Action<TEvent> action, InvocationConvention invocationConvention)
         {
+            if(action == null)
+                throw new ArgumentNullException(nameof(action)); 
+            
             if (!(action.Target is Object unityObject))
                 throw new ArgumentException(nameof(action)); //TODO: add exception message
 
             _targetObject = unityObject;
 
             _action = action;
-            _invocationConvention =
-                action.Method.GetCustomAttribute<EventHandlerAttribute>()?.InvocationConvention ?? default;
+            _invocationConvention = invocationConvention;
         }
 
+        internal ActionHandlerUnityAdapter(Action<TEvent> action, Object target,InvocationConvention invocationConvention)
+        {
+            _targetObject = target;
+            _action = action;
+            _invocationConvention = invocationConvention;
+        }
+        
         public void Execute(TEvent arg)
         {
             if (TargetObjectIsDestroyed)

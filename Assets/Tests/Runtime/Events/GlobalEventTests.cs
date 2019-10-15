@@ -53,7 +53,7 @@ namespace Omega.Tools.Experimental.Events.Tests
             EventManagerDispatcher<TestGlobalWithAttributeEvent>.RemoveEventManagerInternal();
         }
 
-        [GlobalEvent]
+        [EventCoverage(EventCoverage.Global)]
         private struct TestGlobalWithAttributeEvent
         {
         }
