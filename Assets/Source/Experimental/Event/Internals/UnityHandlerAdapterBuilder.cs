@@ -9,7 +9,7 @@ namespace Omega.Tools.Experimental.Event.Internals
         public static IEventHandler<TEvent> Build<TEvent>(IEventHandler<TEvent> handler, Object targetObject)
         {
             var invocationPolicy =
-                handler.GetType().GetCustomAttribute<EventHandlerAttribute>()?.InvocationConvention ?? default;
+                handler.GetType().GetCustomAttribute<EventHandlerAttribute>()?.InvocationPolicy ?? default;
 
             return new UnityHandlerAdapter<TEvent>(handler, invocationPolicy, targetObject);
         }

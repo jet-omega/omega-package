@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 
 namespace Omega.Tools.Experimental.Events.Tests
 {
-    public class InvocationConventionTests
+    public class InvocationPolicyTests
     {
         [Test]
         public void EventManagerShouldNotifyActionWithDestroyedTargetTest()
@@ -69,7 +69,7 @@ namespace Omega.Tools.Experimental.Events.Tests
                 new GameObject(nameof(EventManagerShouldThrowExceptionWhenTryNotifyActionWithDestroyedTargetWithoutAttributeTest));
             var target = gameObject.AddComponent<TestHelperMonoBehaviour>();
 
-            EventAggregator.AddHandler<TestEvent>(target.ActionWithoutInvocationConvention);
+            EventAggregator.AddHandler<TestEvent>(target.ActionWithoutInvocationPolicy);
 
             Object.DestroyImmediate(gameObject);
             
@@ -77,7 +77,7 @@ namespace Omega.Tools.Experimental.Events.Tests
             
             EventAggregator.Event(new TestEvent());
             
-            Assert.False(target.invokedWithoutInvocationConvention);
+            Assert.False(target.invokedWithoutInvocationPolicy);
         }
 
         [SetUp]
@@ -94,22 +94,22 @@ namespace Omega.Tools.Experimental.Events.Tests
             public bool invokedAllowInvocationFromDestroyedObject;
             public bool invokedAllowInvocationFromDestroyedObjectButLogWarning;
             public bool invokedPreventInvocationFromDestroyedObject;
-            public bool invokedWithoutInvocationConvention;
+            public bool invokedWithoutInvocationPolicy;
 
-            [EventHandler(InvocationConvention.AllowInvocationFromDestroyedObject)]
+            [EventHandler(InvocationPolicy.AllowInvocationFromDestroyedObject)]
             public void ActionWithAllowInvocationFromDestroyedObject(TestEvent e)
                 => invokedAllowInvocationFromDestroyedObject = true;
 
-            [EventHandler(InvocationConvention.AllowInvocationFromDestroyedObjectButLogWarning)]
+            [EventHandler(InvocationPolicy.AllowInvocationFromDestroyedObjectButLogWarning)]
             public void ActionWithAllowInvocationFromDestroyedObjectButLogWarning(TestEvent e)
                 => invokedAllowInvocationFromDestroyedObjectButLogWarning = true;
 
-            [EventHandler(InvocationConvention.PreventInvocationFromDestroyedObject)]
+            [EventHandler(InvocationPolicy.PreventInvocationFromDestroyedObject)]
             public void ActionWithPreventInvocationFromDestroyedObject(TestEvent e)
                 => invokedAllowInvocationFromDestroyedObjectButLogWarning = true;
 
-            public void ActionWithoutInvocationConvention(TestEvent e)
-                => invokedWithoutInvocationConvention = true;
+            public void ActionWithoutInvocationPolicy(TestEvent e)
+                => invokedWithoutInvocationPolicy = true;
         }
     }
 }
