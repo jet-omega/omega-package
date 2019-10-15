@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Omega.Tools.Experimental.Event;
+using Omega.Tools.Experimental.Event.Internals;
 using Omega.Tools.Experimental.Events.Internals;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -43,7 +44,7 @@ namespace Omega.Tools.Experimental.Events
 #endif
             
             if (handler is Object target)
-                handler = new UnityHandlerAdapter<TEvent>(handler, target);
+                handler = UnityHandlerAdapterBuilder.Build(handler, target);
             
             EventManagerDispatcher<TEvent>.GetEventManager().AddHandler(handler);
         }
@@ -55,7 +56,7 @@ namespace Omega.Tools.Experimental.Events
                 throw new PlatformNotSupportedException();
 #endif
             if (handler is Object target)
-                handler = new UnityHandlerAdapter<TEvent>(handler, target);
+                handler = UnityHandlerAdapterBuilder.Build(handler, target);
             
             EventManagerDispatcher<TEvent>.GetEventManager().RemoveHandler(handler);
         }

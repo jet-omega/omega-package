@@ -2,21 +2,18 @@ using System;
 
 namespace Omega.Tools.Experimental.Event
 {
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method | AttributeTargets.Struct)]
     public sealed class EventHandlerAttribute : Attribute
     {
-        public readonly InvocationConvention InvocationConvention;
+        public readonly InvocationPolicy InvocationPolicy;
 
-        public EventHandlerAttribute(InvocationConvention invocationConvention)
+        public EventHandlerAttribute(InvocationPolicy invocationPolicy)
         {
-            InvocationConvention = invocationConvention;
-        }
-
-        public EventHandlerAttribute()
-        {
+            InvocationPolicy = invocationPolicy;
         }
     }
 
-    public enum InvocationConvention
+    public enum InvocationPolicy
     {
         PreventInvocationFromDestroyedObject = 0,
         AllowInvocationFromDestroyedObjectButLogWarning,
