@@ -3,6 +3,7 @@ using System.Collections;
 using Omega.Tools.Experimental.Event;
 using Omega.Tools.Experimental.Events.Internals;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Omega.Tools.Experimental.Events
 {
@@ -14,17 +15,25 @@ namespace Omega.Tools.Experimental.Events
             if (!Application.isPlaying)
                 throw new PlatformNotSupportedException();
 #endif
-            EventManagerDispatcher<TEvent>.GetEventManager().Event(arg);
+            
+            var handlers = EventManagerDispatcher<TEvent>.GetEventManager().GetEventHandlers();
+            var runner = EventHandlerRunnerProvider<TEvent>.CreateRunner(handlers, arg);
+            EventScheduler.Schedule(runner);
         }
+        
 
         public static IEnumerator EventAsync<TEvent>(TEvent arg)
         {
 #if UNITY_EDITOR
-            if (!Application.isPlaying) 
+            if (!Application.isPlaying)
                 throw new PlatformNotSupportedException();
 #endif
-            return EventManagerDispatcher<TEvent>.GetEventManager().EventAsync(arg);
+            
+            var handlers = EventManagerDispatcher<TEvent>.GetEventManager().GetEventHandlers();
+            var runner = EventHandlerRunnerProvider<TEvent>.CreateRunner(handlers, arg);
+            return EventScheduler.ExecuteAsync(runner);
         }
+
 
         public static void AddHandler<TEvent>(IEventHandler<TEvent> handler)
         {
@@ -32,6 +41,10 @@ namespace Omega.Tools.Experimental.Events
             if (!Application.isPlaying)
                 throw new PlatformNotSupportedException();
 #endif
+            
+            if (handler is Object target)
+                handler = new UnityHandlerAdapter<TEvent>(handler, target);
+            
             EventManagerDispatcher<TEvent>.GetEventManager().AddHandler(handler);
         }
 
@@ -41,6 +54,9 @@ namespace Omega.Tools.Experimental.Events
             if (!Application.isPlaying)
                 throw new PlatformNotSupportedException();
 #endif
+            if (handler is Object target)
+                handler = new UnityHandlerAdapter<TEvent>(handler, target);
+            
             EventManagerDispatcher<TEvent>.GetEventManager().RemoveHandler(handler);
         }
 

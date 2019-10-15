@@ -22,18 +22,11 @@ namespace Omega.Tools.Experimental.Events.Tests
         [Test]
         public void EventManagerShouldAddHandleTest()
         {
-            bool handlerFlag = false;
-
             var eventManager = EventManagerDispatcher<EventManagerTestsEvent>.GetEventManager();
-            var handler = new CustomActionHandler<EventManagerTestsEvent>
-            {
-                Action = _ => handlerFlag = true
-            };
+            var handler = new CustomActionHandler<EventManagerTestsEvent>();
 
             eventManager.AddHandler(handler);
-            eventManager.Event(default);
-
-            Assert.True(handlerFlag);
+            Assert.Contains(handler, eventManager.GetEventHandlers().ToArray());
         }
 
         [Test]
@@ -67,12 +60,12 @@ namespace Omega.Tools.Experimental.Events.Tests
 
             EventAggregator.AddHandler<EventManagerTestsSecondEvent>(_ =>
             {
-                if(flag)
+                if (flag)
                     Assert.Fail();
             });
 
             EventAggregator.Event<EventManagerTestsEvent>(default);
-            
+
             EventManagerDispatcher<EventManagerTestsSecondEvent>.RemoveEventManagerInternal();
         }
 
@@ -80,17 +73,17 @@ namespace Omega.Tools.Experimental.Events.Tests
         public IEnumerator EventManagerShouldWaitCoroutineTest()
         {
             bool flag = false;
-            
-            EventAggregator.AddHandler((EventManagerTestsEvent e)=>
+
+            EventAggregator.AddHandler((EventManagerTestsEvent e) =>
             {
-                if(!flag)
+                if (!flag)
                     EventAggregator.Event(new EventManagerTestsEvent());
                 flag = true;
             });
-            
+
             yield return EventAggregator.EventAsync<EventManagerTestsSecondEvent>(default);
         }
-        
+
         [Test]
         public void EventManagerShouldNotNotifyRemovedHandlerTest()
         {
