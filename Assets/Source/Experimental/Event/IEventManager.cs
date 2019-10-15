@@ -5,11 +5,10 @@ using System.Runtime.CompilerServices;
 
 namespace Omega.Tools.Experimental.Events
 {
-    public interface IEventManager<TEvent>
+    internal interface IEventManager<TEvent>
     {
-        void Event(TEvent arg);
         void AddHandler(IEventHandler<TEvent> handler);
         void RemoveHandler(IEventHandler<TEvent> handler);
-        IEnumerator EventAsync(TEvent arg);
+        IEnumerable<IEventHandler<TEvent>> GetEventHandlers();
     }
 }
