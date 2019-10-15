@@ -23,7 +23,7 @@ namespace Omega.Tools.Experimental.Event
                 throw new ArgumentNullException(nameof(action)); 
             
             if (!(action.Target is Object unityObject))
-                throw new ArgumentException(nameof(action)); //TODO: add exception message
+                throw new InvalidCastException(nameof(action.Target)); //TODO: add exception message
 
             _targetObject = unityObject;
 
