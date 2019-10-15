@@ -1,6 +1,6 @@
 {
   "name": "omega.tools",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "displayName": "Omega Tools",
   "description": "Tools for scripting unity projects by Omega",
   "unity": "2018.3",
