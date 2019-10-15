@@ -55,29 +55,37 @@ namespace Omega.Tools.Experimental.Events.Tests
             Object.DestroyImmediate(gameObject);
 
             LogAssert.Expect(LogType.Exception, new Regex("."));
-            
+
             EventAggregator.Event(new TestEvent());
-            
+
             Assert.False(target.invokedPreventInvocationFromDestroyedObject);
         }
-        
+
         [Test]
         //TODO: "ThrowException", Exception?
         public void EventManagerShouldThrowExceptionWhenTryNotifyActionWithDestroyedTargetWithoutAttributeTest()
         {
             var gameObject =
-                new GameObject(nameof(EventManagerShouldThrowExceptionWhenTryNotifyActionWithDestroyedTargetWithoutAttributeTest));
+                new GameObject(
+                    nameof(EventManagerShouldThrowExceptionWhenTryNotifyActionWithDestroyedTargetWithoutAttributeTest));
             var target = gameObject.AddComponent<TestHelperMonoBehaviour>();
 
             EventAggregator.AddHandler<TestEvent>(target.ActionWithoutInvocationPolicy);
 
             Object.DestroyImmediate(gameObject);
-            
+
             LogAssert.Expect(LogType.Exception, new Regex("."));
-            
+
             EventAggregator.Event(new TestEvent());
-            
+
             Assert.False(target.invokedWithoutInvocationPolicy);
+        }
+
+        [Test]
+        public void ActionHandlerUnityAdapterShouldThrowInvalidCastException()
+        {
+            // ReSharper disable once ObjectCreationAsStatement
+            Assert.Throws<InvalidCastException>(() => new ActionHandlerUnityAdapter<TestEvent>(e => Assert.Fail(), default));
         }
 
         [SetUp]
