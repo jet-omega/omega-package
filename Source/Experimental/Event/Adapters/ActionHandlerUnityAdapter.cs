@@ -10,14 +10,14 @@ namespace Omega.Tools.Experimental.Event
     {
         private readonly Action<TEvent> _action;
         private readonly Object _targetObject;
-        private readonly InvocationConvention _invocationConvention;
+        private readonly InvocationPolicy _invocationPolicy;
         
         public Object TargetObject => _targetObject;
         public bool TargetObjectIsDestroyed => !_targetObject;
-        public InvocationConvention InvocationPolicy => _invocationConvention;
+        public InvocationPolicy InvocationPolicy => _invocationPolicy;
         public Action<TEvent> AdaptiveAction => _action;
 
-        public ActionHandlerUnityAdapter(Action<TEvent> action, InvocationConvention invocationConvention)
+        public ActionHandlerUnityAdapter(Action<TEvent> action, InvocationPolicy invocationPolicy)
         {
             if(action == null)
                 throw new ArgumentNullException(nameof(action)); 
@@ -28,22 +28,22 @@ namespace Omega.Tools.Experimental.Event
             _targetObject = unityObject;
 
             _action = action;
-            _invocationConvention = invocationConvention;
+            _invocationPolicy = invocationPolicy;
         }
 
-        internal ActionHandlerUnityAdapter(Action<TEvent> action, Object target,InvocationConvention invocationConvention)
+        internal ActionHandlerUnityAdapter(Action<TEvent> action, Object target,InvocationPolicy invocationPolicy)
         {
             _targetObject = target;
             _action = action;
-            _invocationConvention = invocationConvention;
+            _invocationPolicy = invocationPolicy;
         }
         
         public void Execute(TEvent arg)
         {
             if (TargetObjectIsDestroyed)
-                if (_invocationConvention == InvocationConvention.PreventInvocationFromDestroyedObject)
+                if (_invocationPolicy == InvocationPolicy.PreventInvocationFromDestroyedObject)
                     throw new Exception(); //TODO
-                else if (_invocationConvention == InvocationConvention.AllowInvocationFromDestroyedObjectButLogWarning)
+                else if (_invocationPolicy == InvocationPolicy.AllowInvocationFromDestroyedObjectButLogWarning)
                     Debug.LogWarning("TODO: write message"); //TODO
 
             _action(arg);

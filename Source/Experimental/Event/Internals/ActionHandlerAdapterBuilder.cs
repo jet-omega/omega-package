@@ -13,7 +13,7 @@ namespace Omega.Tools.Experimental.Event.Internals
             if (action.Target is Object unityObject)
             {
                 var invocationPolicy =
-                    action.Method.GetCustomAttribute<EventHandlerAttribute>()?.InvocationConvention ??
+                    action.Method.GetCustomAttribute<EventHandlerAttribute>()?.InvocationPolicy ??
                     default;
                 
                 return new ActionHandlerUnityAdapter<TEvent>(action, unityObject, invocationPolicy);
