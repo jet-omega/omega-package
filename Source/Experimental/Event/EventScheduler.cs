@@ -39,7 +39,8 @@ namespace Omega.Tools.Experimental.Event
                 {
                     _current = null;
                     _queueEvents.Clear();
-                    throw;
+                    Debug.LogException(e);
+                    return;
                 }
                 
                 _current = null;

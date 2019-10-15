@@ -8,31 +8,13 @@ using Object = UnityEngine.Object;
 
 namespace Omega.Tools.Experimental.Events.Internals.EventManagers
 {
-    internal partial class UniversalEventManager<TEvent> : IEventManager<TEvent>
+    internal class UniversalEventManager<TEvent> : IEventManager<TEvent>
     {
         private List<IEventHandler<TEvent>> _eventHandlers;
 
         public UniversalEventManager()
         {
             _eventHandlers = new List<IEventHandler<TEvent>>();
-        }
-
-        public void Event(TEvent arg)
-        {
-            var handlersOfEvent = _eventHandlers.ToArray();
-
-            var @event = EventBuilder.CreateEvent(handlersOfEvent, arg);
-            
-            EventScheduler.Schedule(@event);
-        }
-
-        public IEnumerator EventAsync(TEvent arg)
-        {
-            var handlersOfEvent = _eventHandlers.ToArray();
-
-            var @event = EventBuilder.CreateEvent(handlersOfEvent, arg);
-            
-            return EventScheduler.ExecuteAsync(@event);
         }
 
         public void AddHandler(IEventHandler<TEvent> handler)
@@ -43,6 +25,11 @@ namespace Omega.Tools.Experimental.Events.Internals.EventManagers
         public void RemoveHandler(IEventHandler<TEvent> handler)
         {
             _eventHandlers.Remove(handler);
+        }
+
+        public IEnumerable<IEventHandler<TEvent>> GetEventHandlers()
+        {
+            return _eventHandlers.ToArray();
         }
     }
 }
