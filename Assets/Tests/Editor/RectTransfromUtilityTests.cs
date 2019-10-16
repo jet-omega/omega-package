@@ -9,68 +9,68 @@ namespace Omega.Tools.Tests
     public class RectTransformUtilityTests
     {
         [Test]
-        public void GetChildesShouldReturnArrayWithTwoElementsWhenEightChildesIsRectAndTenChildesIsTransformTest()
+        public void GetChildsShouldReturnArrayWithTwoElementsWhenEightChildsIsRectAndTenChildsIsTransformTest()
         {
             //Test params
-            const int countChildesWithRectTransform = 8;
-            const int countChildesWithTransform = 10;
+            const int countChildsWithRectTransform = 8;
+            const int countChildsWithTransform = 10;
 
-            var gameObjectInstance = new GameObject("GetChildesShouldReturnArrayWithTwoElementsTest");
+            var gameObjectInstance = new GameObject("GetChildsShouldReturnArrayWithTwoElementsTest");
             gameObjectInstance.AddComponent<RectTransform>();
 
-            foreach (var num in Enumerable.Range(0, countChildesWithRectTransform))
+            foreach (var num in Enumerable.Range(0, countChildsWithRectTransform))
                 gameObjectInstance.Attach(new GameObject("Test " + num)).AddComponent<RectTransform>();
 
-            foreach (var num in Enumerable.Range(countChildesWithRectTransform, countChildesWithTransform))
+            foreach (var num in Enumerable.Range(countChildsWithRectTransform, countChildsWithTransform))
                 gameObjectInstance.Attach(new GameObject("Test " + num));
 
-            var childes = RectTransformUtility.GetChildes(gameObjectInstance.GetComponent<RectTransform>());
+            var childs = RectTransformUtility.GetChilds(gameObjectInstance.GetComponent<RectTransform>());
 
-            Assert.AreEqual(childes.Length, countChildesWithRectTransform);
+            Assert.AreEqual(childs.Length, countChildsWithRectTransform);
 
             Object.DestroyImmediate(gameObjectInstance);
         }
 
         [Test]
-        public void GetChildesShouldReturnEmptyArrayWhenChildesWereDestroyedTest()
+        public void GetChildsShouldReturnEmptyArrayWhenChildsWereDestroyedTest()
         {
-            const int countChildes = 3;
+            const int countChilds = 3;
 
             var gameObjectInstance =
-                new GameObject(nameof(GetChildesShouldReturnEmptyArrayWhenChildesWereDestroyedTest));
+                new GameObject(nameof(GetChildsShouldReturnEmptyArrayWhenChildsWereDestroyedTest));
 
             gameObjectInstance.AddComponent<RectTransform>();
 
-            foreach (var num in Enumerable.Range(0, countChildes))
+            foreach (var num in Enumerable.Range(0, countChilds))
                 gameObjectInstance.Attach(new GameObject("Test " + num)).AddComponent<RectTransform>();
 
-            gameObjectInstance.GetChildes().Select(e => e.gameObject).ToList().ForEach(Object.DestroyImmediate);
+            gameObjectInstance.GetChilds().Select(e => e.gameObject).ToList().ForEach(Object.DestroyImmediate);
 
-            var childes = RectTransformUtility.GetChildes(gameObjectInstance.GetComponent<RectTransform>());
+            var childs = RectTransformUtility.GetChilds(gameObjectInstance.GetComponent<RectTransform>());
 
-            Assert.Zero(childes.Length);
+            Assert.Zero(childs.Length);
         }
 
         [Test]
-        public void GetChildesShouldThrowMissingReferenceExceptionWhenParameterIsDestroyedGameObjectTest()
+        public void GetChildsShouldThrowMissingReferenceExceptionWhenParameterIsDestroyedGameObjectTest()
         {
             var gameObjectInstance =
                 new GameObject(
-                    nameof(GetChildesShouldThrowMissingReferenceExceptionWhenParameterIsDestroyedGameObjectTest));
+                    nameof(GetChildsShouldThrowMissingReferenceExceptionWhenParameterIsDestroyedGameObjectTest));
 
             var rectTransform = gameObjectInstance.AddComponent<RectTransform>();
 
             Object.DestroyImmediate(gameObjectInstance);
 
-            Assert.Throws<MissingReferenceException>(() => RectTransformUtility.GetChildes(rectTransform));
+            Assert.Throws<MissingReferenceException>(() => RectTransformUtility.GetChilds(rectTransform));
         }
         
         [Test]
-        public void GetChildesShouldThrowArgumentNullExceptionWhenParameterIsNullTest()
+        public void GetChildsShouldThrowArgumentNullExceptionWhenParameterIsNullTest()
         {
             Assert.Throws<ArgumentNullException>(() =>
                 // ReSharper disable once AssignNullToNotNullAttribute
-                RectTransformUtility.GetChildes(null));
+                RectTransformUtility.GetChilds(null));
         }
     }
 }

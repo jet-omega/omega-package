@@ -8,37 +8,37 @@ namespace Omega.Tools.Tests
     public sealed class TransformUtilityTests
     {
         [Test]
-        public void GetChildesShouldReturnEmptyArrayFromSystemArrayEmpty()
+        public void GetChildsShouldReturnEmptyArrayFromSystemArrayEmpty()
         {
-            var gameObjectInstance = new GameObject(nameof(GetChildesShouldReturnEmptyArrayFromSystemArrayEmpty));
+            var gameObjectInstance = new GameObject(nameof(GetChildsShouldReturnEmptyArrayFromSystemArrayEmpty));
 
-            var childes = TransformUtility.GetChildes(gameObjectInstance.transform);
+            var childs = TransformUtility.GetChilds(gameObjectInstance.transform);
 
-            Assert.NotNull(childes);
-            Assert.Zero(childes.Length);
+            Assert.NotNull(childs);
+            Assert.Zero(childs.Length);
 
-            Assert.AreEqual(childes, Array.Empty<Transform>());
+            Assert.AreEqual(childs, Array.Empty<Transform>());
             
             Object.DestroyImmediate(gameObjectInstance);
         }
 
         [Test]
-        public void GetChildesShouldThrowArgumentNullExceptionWhenParameterIsNull()
+        public void GetChildsShouldThrowArgumentNullExceptionWhenParameterIsNull()
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => TransformUtility.GetChildes(null));
+            Assert.Throws<ArgumentNullException>(() => TransformUtility.GetChilds(null));
         }
 
         [Test]
-        public void GetChildesShouldThrowMissingReferenceExceptionWhenParameterWereDestroyed()
+        public void GetChildsShouldThrowMissingReferenceExceptionWhenParameterWereDestroyed()
         {
             var gameObjectInstance =
-                new GameObject(nameof(GetChildesShouldThrowMissingReferenceExceptionWhenParameterWereDestroyed));
+                new GameObject(nameof(GetChildsShouldThrowMissingReferenceExceptionWhenParameterWereDestroyed));
 
             Object.DestroyImmediate(gameObjectInstance);
 
             Assert.Throws<MissingReferenceException>(() =>
-                TransformUtility.GetChildes(gameObjectInstance.transform));
+                TransformUtility.GetChilds(gameObjectInstance.transform));
         }
     }
 }
