@@ -5,6 +5,14 @@ using UnityEngine;
 
 public static class TransformExtensions
 {
+    # region DEPRECATED
+
+    [Obsolete("Use GetChilds")]
+    public static Transform[] GetChildes(this Transform transform)
+        => GetChilds(transform);
+
+    #endregion
+
     /// <summary>
     /// Возвращает всех потомков 
     /// </summary>
@@ -13,14 +21,14 @@ public static class TransformExtensions
     /// 
     /// <exception cref="NullReferenceException">Параметр <param name="root"/>>указывает на null</exception>
     /// <exception cref="MissingReferenceException">Параметр <param name="root"/>>указывает на уничтоженный объект</exception>
-    public static Transform[] GetChildes(this Transform transform)
+    public static Transform[] GetChilds(this Transform transform)
     {
         if (ReferenceEquals(transform, null))
             throw new NullReferenceException(nameof(transform));
         if (!transform)
             throw new MissingReferenceException(nameof(transform));
 
-        return TransformUtility.GetChildesWithoutChecks(transform);
+        return TransformUtility.GetChildsWithoutChecks(transform);
     }
 
     /// <summary>
