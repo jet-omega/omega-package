@@ -8,6 +8,14 @@ using UnityEngine;
 /// </summary>
 public static class GameObjectExtensions
 {
+    #region DEPRECATED
+
+    [Obsolete("GetChilds")]
+    public static Transform[] GetChildes(this GameObject gameObject)
+        => GetChilds(gameObject);
+
+    #endregion
+
     /// <summary>
     /// Возвращает компонент, прикрепленный к объекту. Если экземпляр компонента заданного типа отсутствует на объекте
     /// то он будет добавлен к объекту. 
@@ -65,14 +73,14 @@ public static class GameObjectExtensions
     /// 
     /// <exception cref="NullReferenceException">Параметр <param name="gameObject"/>>указывает на null</exception>
     /// <exception cref="MissingReferenceException">Параметр <param name="gameObject"/>>указывает на уничтоженный объект</exception>
-    public static Transform[] GetChildes(this GameObject gameObject)
+    public static Transform[] GetChilds(this GameObject gameObject)
     {
         if (ReferenceEquals(gameObject, null))
             throw new NullReferenceException(nameof(gameObject));
         if (!gameObject)
             throw new MissingReferenceException(nameof(gameObject));
 
-        return TransformUtility.GetChildesWithoutChecks(gameObject.transform);
+        return TransformUtility.GetChildsWithoutChecks(gameObject.transform);
     }
 
     /// <summary>
@@ -102,7 +110,7 @@ public static class GameObjectExtensions
             throw new MissingReferenceException(nameof(transform));
 
         var attachToTransform = attachTo.transform;
-        
+
         // transform и attachTo указывают на один и тот же компонент
         if (transform == attachToTransform)
             throw new ArgumentException(
@@ -112,7 +120,7 @@ public static class GameObjectExtensions
 
         return transform;
     }
-    
+
     /// <summary>
     /// Устанавливает себя в качестве потомка для gameObject и возвращает его
     /// </summary>

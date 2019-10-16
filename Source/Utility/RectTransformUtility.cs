@@ -8,6 +8,14 @@ namespace Omega.Tools
 {
     public static class RectTransformUtility
     {
+        #region DEPRECATED
+
+        [Obsolete("Use GetChilds")]
+        public static RectTransform[] GetChildes([NotNull] RectTransform root)
+            => GetChilds(root);
+
+        #endregion
+        
         /// <summary>
         /// Возвращает всех потомков указанного трансформа, если потомок этого трансформа не кастится к RectTransfrom,
         /// то он не будет добавлен в конечный массив  
@@ -17,30 +25,30 @@ namespace Omega.Tools
         /// <exception cref="ArgumentNullException">Параметр <param name="root"/>>указывает на null</exception>
         /// <exception cref="MissingReferenceException">Параметр <param name="root"/>>указывает на уничтоженный объект</exception>
         [NotNull]
-        public static RectTransform[] GetChildes([NotNull] RectTransform root)
+        public static RectTransform[] GetChilds([NotNull] RectTransform root)
         {
             if (ReferenceEquals(root, null))
                 throw new ArgumentNullException(nameof(root));
             if (!root)
                 throw new MissingReferenceException(nameof(root));
 
-            return GetChildesWithoutChecks(root);
+            return GetChildsWithoutChecks(root);
         }
 
         [NotNull]
-        internal static RectTransform[] GetChildesWithoutChecks([NotNull] RectTransform rectTransform)
+        internal static RectTransform[] GetChildsWithoutChecks([NotNull] RectTransform rectTransform)
         {
-            var transformChildes = TransformUtility.GetChildesWithoutChecks(rectTransform);
+            var transformChilds = TransformUtility.GetChildsWithoutChecks(rectTransform);
 
-            var rectTransformChildesList = new List<RectTransform>(transformChildes.Length);
+            var rectTransformChildsList = new List<RectTransform>(transformChilds.Length);
 
-            foreach (var child in transformChildes)
+            foreach (var child in transformChilds)
                 if (child is RectTransform rectTransformChild)
-                    rectTransformChildesList.Add(rectTransformChild);
+                    rectTransformChildsList.Add(rectTransformChild);
 
-            var rectTransformChildes = rectTransformChildesList.ToArray();
+            var rectTransformChilds = rectTransformChildsList.ToArray();
 
-            return rectTransformChildes;
+            return rectTransformChilds;
         }
     }
 }
