@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using Omega.Tools.Experimental.Event;
 using Omega.Tools.Experimental.Event.Internals;
-using Omega.Tools.Experimental.Events.Internals;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
