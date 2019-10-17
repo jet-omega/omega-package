@@ -16,7 +16,7 @@ namespace Omega.Tools.Experimental.Event.Internals
         public void Release()
         {
             foreach (var handler in _handlers)
-                handler.Execute(_eventArg);
+                handler.OnEvent(_eventArg);
         }
     }
 }

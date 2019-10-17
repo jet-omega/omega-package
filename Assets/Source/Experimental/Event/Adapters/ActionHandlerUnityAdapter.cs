@@ -36,7 +36,7 @@ namespace Omega.Tools.Experimental.Event
             _invocationPolicy = invocationPolicy;
         }
         
-        public void Execute(TEvent arg)
+        public void OnEvent(TEvent arg)
         {
             if (TargetObjectIsDestroyed)
                 if (_invocationPolicy == InvocationPolicy.PreventInvocationFromDestroyedObject)

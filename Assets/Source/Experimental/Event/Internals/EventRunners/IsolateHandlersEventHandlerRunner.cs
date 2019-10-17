@@ -23,7 +23,7 @@ namespace Omega.Tools.Experimental.Event.Internals
             foreach (var handler in _handlers)
                 try
                 {
-                    handler.Execute(_eventArg);
+                    handler.OnEvent(_eventArg);
                 }
                 catch (Exception e)
                 {

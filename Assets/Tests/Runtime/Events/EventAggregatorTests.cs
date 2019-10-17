@@ -52,7 +52,7 @@ namespace Omega.Tools.Experimental.Event.Tests
         {
             public Action callback;
 
-            public void Execute(TestEvent arg)
+            public void OnEvent(TestEvent arg)
             {
                 callback.Invoke();
             }

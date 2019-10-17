@@ -104,7 +104,7 @@ namespace Omega.Tools.Experimental.Event.Tests
         {
             public Action<TEvent> Action;
 
-            public void Execute(TEvent arg)
+            public void OnEvent(TEvent arg)
                 => Action?.Invoke(arg);
         }
 
