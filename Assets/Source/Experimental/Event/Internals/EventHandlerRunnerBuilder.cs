@@ -18,9 +18,11 @@ namespace Omega.Tools.Experimental.Event.Internals
             if (eventHandlingAttribute.Handling == EventHandling.IsolateEvent)
                 return new IsolateEventEventHandlerRunner<TEvent>(handlers, eventArg, Debug.LogException);
             if (eventHandlingAttribute.Handling == EventHandling.IsolateHandlers)
-                return new IsolateHandlersEventHandlerRunner<TEvent>(handlers, eventArg, (h, e) => Debug.LogException(e));
+                return new IsolateHandlersEventHandlerRunner<TEvent>(handlers, eventArg,
+                    (h, e) => Debug.LogException(e));
 
-            throw new Exception();
+            throw new ArgumentOutOfRangeException(nameof(eventHandlingAttribute.Handling),
+                eventHandlingAttribute.Handling, "Handling field value in attribute had an invalid value");
         }
     }
 }
