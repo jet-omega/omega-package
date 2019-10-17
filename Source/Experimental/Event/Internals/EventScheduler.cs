@@ -7,12 +7,12 @@ namespace Omega.Tools.Experimental.Event.Internals
 {
     internal static class EventScheduler
     {
-        private static Queue<IEvent> _queueEvents = new Queue<IEvent>();
+        private static readonly Queue<IEvent> QueueEvents = new Queue<IEvent>();
         private static IEvent _current;
 
         public static void Schedule(IEvent @event)
         {
-            _queueEvents.Enqueue(@event);
+            QueueEvents.Enqueue(@event);
 
             if (_current == null)
                 EventMoveNext();
@@ -22,15 +22,15 @@ namespace Omega.Tools.Experimental.Event.Internals
         {
             Schedule(@event);
 
-            while (_current == @event || _queueEvents.Contains(@event))
+            while (_current == @event || QueueEvents.Contains(@event))
                 yield return null;
         }
         
         private static void EventMoveNext()
         {
-            while (_queueEvents.Count > 0)
+            while (QueueEvents.Count > 0)
             {
-                _current = _queueEvents.Dequeue();
+                _current = QueueEvents.Dequeue();
                 try
                 {
                     _current.Release();
@@ -38,10 +38,8 @@ namespace Omega.Tools.Experimental.Event.Internals
                 catch (Exception e)
                 {
                     _current = null;
-                    _queueEvents.Clear();
+                    QueueEvents.Clear();
                     Debug.LogException(e);
-//                    var schedulerException = new Exception("Some handler throw exception" , e);
-//                    Debug.LogException(schedulerException);
                     return;
                 }
                 

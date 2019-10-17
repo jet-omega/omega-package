@@ -18,17 +18,22 @@ namespace Omega.Tools.Experimental.Event
         public UnityHandlerAdapter(IEventHandler<TEvent> handler, InvocationPolicy invocationPolicy)
         {
             _handler = handler ?? throw new ArgumentNullException(nameof(handler));
-            _targetObject = handler as Object ?? throw new InvalidCastException();
+            
+            _targetObject = handler as Object ?? throw ExceptionHelper.HandlerIsNotInstanceOfUnityObject;
+
             _invocationPolicy = invocationPolicy;
         }
 
         public UnityHandlerAdapter(Object handler, InvocationPolicy invocationPolicy)
         {
-            if(ReferenceEquals(handler,null))
+            if (ReferenceEquals(handler, null))
                 throw new ArgumentNullException(nameof(handler));
-                
-            _handler = handler as IEventHandler<TEvent> ?? throw new InvalidCastException();
+
+            _handler = handler as IEventHandler<TEvent> ??
+                       throw ExceptionHelper.ObjectIsNotInstanceOfIEventHandler(typeof(TEvent));
+
             _targetObject = handler;
+            
             _invocationPolicy = invocationPolicy;
         }
 
@@ -44,9 +49,9 @@ namespace Omega.Tools.Experimental.Event
         {
             if (TargetObjectIsDestroyed)
                 if (_invocationPolicy == InvocationPolicy.PreventInvocationFromDestroyedObject)
-                    throw new Exception(); //TODO
-                else if (_invocationPolicy == InvocationPolicy.AllowInvocationFromDestroyedObjectButLogWarning)
-                    Debug.LogWarning("TODO: write message"); //TODO
+                    throw ExceptionHelper.MethodCannotCalledWhenObjectIsDestroyed;
+                else if (_invocationPolicy == InvocationPolicy.AllowInvocationFromDestroyedObjectButLogError)
+                    Debug.LogWarning(ExceptionHelper.Messages.MethodWasCalledInTheDestroyedObject);
 
             _handler.OnEvent(arg);
         }
