@@ -40,7 +40,7 @@ namespace Omega.Tools.Experimental.Event
             _invocationPolicy = invocationPolicy;
         }
 
-        public void Execute(TEvent arg)
+        public void OnEvent(TEvent arg)
         {
             if (TargetObjectIsDestroyed)
                 if (_invocationPolicy == InvocationPolicy.PreventInvocationFromDestroyedObject)
@@ -48,7 +48,7 @@ namespace Omega.Tools.Experimental.Event
                 else if (_invocationPolicy == InvocationPolicy.AllowInvocationFromDestroyedObjectButLogWarning)
                     Debug.LogWarning("TODO: write message"); //TODO
 
-            _handler.Execute(arg);
+            _handler.OnEvent(arg);
         }
 
         public override bool Equals(object obj)
