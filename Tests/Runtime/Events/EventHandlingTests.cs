@@ -1,12 +1,12 @@
 using System;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
-using Omega.Tools.Experimental.Event;
+using Omega.Tools.Experimental.Event.Attributes;
 using Omega.Tools.Experimental.Event.Internals;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Omega.Tools.Experimental.Events.Tests
+namespace Omega.Tools.Experimental.Event.Tests
 {
     public class EventHandlingTests
     {

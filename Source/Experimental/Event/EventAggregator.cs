@@ -1,11 +1,10 @@
 using System;
 using System.Collections;
-using Omega.Tools.Experimental.Event;
 using Omega.Tools.Experimental.Event.Internals;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Omega.Tools.Experimental.Events
+namespace Omega.Tools.Experimental.Event
 {
     public static class EventAggregator
     {

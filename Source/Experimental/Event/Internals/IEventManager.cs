@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace Omega.Tools.Experimental.Events
+namespace Omega.Tools.Experimental.Event.Internals
 {
     internal interface IEventManager<TEvent>
     {

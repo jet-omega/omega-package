@@ -1,5 +1,4 @@
 using System;
-using Omega.Tools.Experimental.Events;
 
 namespace Omega.Tools.Experimental.Event
 {

@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Omega.Tools.Experimental.Events;
 using UnityEngine;
 
-namespace Omega.Tools.Experimental.Event
+namespace Omega.Tools.Experimental.Event.Internals
 {
     internal class IsolateEventEventHandlerRunner<TEvent> : IEvent
     {

@@ -4,7 +4,7 @@ using Omega.Tools.Experimental.Event.Internals;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Omega.Tools.Experimental.Events.Tests
+namespace Omega.Tools.Experimental.Event.Tests
 {
     public class EventAggregatorTests
     {

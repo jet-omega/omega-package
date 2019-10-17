@@ -1,9 +1,8 @@
 using NUnit.Framework;
-using Omega.Tools.Experimental.Event;
-using Omega.Tools.Experimental.Events.Attributes;
+using Omega.Tools.Experimental.Event.Attributes;
 using UnityEngine.SceneManagement;
 
-namespace Omega.Tools.Experimental.Events.Tests
+namespace Omega.Tools.Experimental.Event.Tests
 {
     public class SceneEventTests
     {
