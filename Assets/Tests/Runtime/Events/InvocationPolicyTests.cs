@@ -54,7 +54,8 @@ namespace Omega.Tools.Experimental.Event.Tests
 
             Object.DestroyImmediate(gameObject);
 
-            LogAssert.Expect(LogType.Exception, new Regex("."));
+            LogAssert.Expect(LogType.Exception,
+                new Regex("." + ExceptionHelper.Messages.ActionCannotCalledWhenObjectIsDestroyed));
 
             EventAggregator.Event(new TestEvent());
 
@@ -74,7 +75,8 @@ namespace Omega.Tools.Experimental.Event.Tests
 
             Object.DestroyImmediate(gameObject);
 
-            LogAssert.Expect(LogType.Exception, new Regex("."));
+            LogAssert.Expect(LogType.Exception,
+                new Regex("." + ExceptionHelper.Messages.ActionCannotCalledWhenObjectIsDestroyed));
 
             EventAggregator.Event(new TestEvent());
 
@@ -85,7 +87,8 @@ namespace Omega.Tools.Experimental.Event.Tests
         public void ActionHandlerUnityAdapterShouldThrowInvalidCastException()
         {
             // ReSharper disable once ObjectCreationAsStatement
-            Assert.Throws<InvalidCastException>(() => new ActionHandlerUnityAdapter<TestEvent>(e => Assert.Fail(), default));
+            Assert.Throws<InvalidCastException>(() =>
+                new ActionHandlerUnityAdapter<TestEvent>(e => Assert.Fail(), default));
         }
 
         [SetUp]

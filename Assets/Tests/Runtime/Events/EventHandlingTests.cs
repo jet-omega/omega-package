@@ -13,13 +13,15 @@ namespace Omega.Tools.Experimental.Event.Tests
         [Test]
         public void ShouldLogExceptionAndResetQueueEventsWhenHandlerThrowExceptionTest()
         {
+            string keyMessage = nameof(keyMessage); 
+            
             EventAggregator.AddHandler<NotIsolateEvent>(_ => EventAggregator.Event<IsolateEvent>(new IsolateEvent()));
             EventAggregator.AddHandler<IsolateEvent>(_ => Assert.Fail());
             
-            EventAggregator.AddHandler<NotIsolateEvent>(_ => throw new Exception());
+            EventAggregator.AddHandler<NotIsolateEvent>(_ => throw new Exception(keyMessage));
             EventAggregator.AddHandler<NotIsolateEvent>(_ => Assert.Fail());
 
-            LogAssert.Expect(LogType.Exception, new Regex("."));
+            LogAssert.Expect(LogType.Exception, new Regex(".keyMessage"));
             EventAggregator.Event(new NotIsolateEvent());
 
             EventManagerDispatcher<NotIsolateEvent>.RemoveEventManagerInternal();
@@ -29,15 +31,16 @@ namespace Omega.Tools.Experimental.Event.Tests
         [Test]
         public void ShouldLogExceptionAndShouldNotResetQueueEventsWhenHandlerThrowExceptionTest()
         {
+            string keyMessage = nameof(keyMessage); 
             bool flag = false;
             
             EventAggregator.AddHandler<NotIsolateEvent>(_ => flag = true);
             
             EventAggregator.AddHandler<IsolateEvent>(_ => EventAggregator.Event(new NotIsolateEvent()));
-            EventAggregator.AddHandler<IsolateEvent>(_ => throw new Exception());
+            EventAggregator.AddHandler<IsolateEvent>(_ => throw new Exception(keyMessage));
             EventAggregator.AddHandler<IsolateEvent>(_ => Assert.Fail());
 
-            LogAssert.Expect(LogType.Exception, new Regex("."));
+            LogAssert.Expect(LogType.Exception, new Regex(".keyMessage"));
             EventAggregator.Event(new IsolateEvent());
             Assert.True(flag);
 
@@ -48,15 +51,16 @@ namespace Omega.Tools.Experimental.Event.Tests
         [Test]
         public void ShouldLogExceptionAndShouldNotResetQueueEventsAndNotStopCurrentEventWhenHandlerThrowExceptionTest()
         {
+            string keyMessage = nameof(keyMessage); 
             bool flagFromIsolateHandlers = false;
             bool flagFromIsolateEvent = false;
             
-            EventAggregator.AddHandler<IsolateHandlersEvent>(_ => throw new Exception());
+            EventAggregator.AddHandler<IsolateHandlersEvent>(_ => throw new Exception(keyMessage));
             EventAggregator.AddHandler<IsolateHandlersEvent>(_ => flagFromIsolateHandlers = true);
             EventAggregator.AddHandler<IsolateHandlersEvent>(_ => EventAggregator.Event(new IsolateEvent()));
             EventAggregator.AddHandler<IsolateEvent>(_ => flagFromIsolateEvent = true);
 
-            LogAssert.Expect(LogType.Exception, new Regex("."));
+            LogAssert.Expect(LogType.Exception, new Regex(".keyMessage"));
             EventAggregator.Event(new IsolateHandlersEvent());
             
             Assert.True(flagFromIsolateHandlers);
