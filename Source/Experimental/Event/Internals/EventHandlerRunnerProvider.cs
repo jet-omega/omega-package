@@ -5,7 +5,7 @@ using System.Reflection;
 using Omega.Tools.Experimental.Events;
 using UnityEngine;
 
-namespace Omega.Tools.Experimental.Event
+namespace Omega.Tools.Experimental.Event.Internals
 {
     internal static class EventHandlerRunnerProvider<TEvent>
     {
@@ -15,11 +15,11 @@ namespace Omega.Tools.Experimental.Event
             var eventHandlingAttribute = eventType.GetCustomAttribute<EventHandlingAttribute>();
 
             if (eventHandlingAttribute == null || eventHandlingAttribute.Handling == EventHandling.NotIsolate)
-                return new SafeEventHandlerRunner<TEvent>(handlers, eventArg);
+                return new NotIsolateEventHandlerRunner<TEvent>(handlers, eventArg);
             if (eventHandlingAttribute.Handling == EventHandling.IsolateEvent)
-                return new HierarchyEventHandlerRunner<TEvent>(handlers, eventArg, Debug.LogException);
+                return new IsolateEventEventHandlerRunner<TEvent>(handlers, eventArg, Debug.LogException);
             if (eventHandlingAttribute.Handling == EventHandling.IsolateHandlers)
-                return new AggressiveEventHandlerRunner<TEvent>(handlers, eventArg, (h, e) => Debug.LogException(e));
+                return new IsolateHandlersEventHandlerRunner<TEvent>(handlers, eventArg, (h, e) => Debug.LogException(e));
 
             throw new Exception();
         }

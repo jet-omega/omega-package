@@ -2,9 +2,7 @@
 using System.Collections;
 using System.Linq;
 using NUnit.Framework;
-using Omega.Tools.Experimental.Events.Internals;
-using UnityEditor.VersionControl;
-using UnityEngine;
+using Omega.Tools.Experimental.Event.Internals;
 using UnityEngine.TestTools;
 
 namespace Omega.Tools.Experimental.Events.Tests
