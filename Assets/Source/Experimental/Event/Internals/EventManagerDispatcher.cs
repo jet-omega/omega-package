@@ -1,7 +1,3 @@
-using System;
-using Omega.Tools.Experimental.Events;
-using Omega.Tools.Experimental.Events.Internals;
-
 namespace Omega.Tools.Experimental.Event.Internals
 {
     internal static class EventManagerDispatcher<TEvent>

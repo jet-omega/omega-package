@@ -1,8 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using Omega.Tools.Experimental.Events;
+using Omega.Tools.Experimental.Event.Attributes;
 using UnityEngine;
 
 namespace Omega.Tools.Experimental.Event.Internals

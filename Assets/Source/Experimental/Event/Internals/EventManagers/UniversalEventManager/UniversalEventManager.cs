@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Omega.Tools.Experimental.Events.Internals.EventManagers
+namespace Omega.Tools.Experimental.Event.Internals.EventManagers
 {
     internal class UniversalEventManager<TEvent> : IEventManager<TEvent>
     {

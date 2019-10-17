@@ -1,4 +1,4 @@
-namespace Omega.Tools.Experimental.Events
+namespace Omega.Tools.Experimental.Event
 {
     public interface IEventHandler<TEvent>
     {

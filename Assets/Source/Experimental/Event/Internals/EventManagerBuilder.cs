@@ -1,10 +1,8 @@
-using System;
 using System.Reflection;
-using Omega.Tools.Experimental.Event;
-using Omega.Tools.Experimental.Events.Attributes;
-using Omega.Tools.Experimental.Events.Internals.EventManagers;
+using Omega.Tools.Experimental.Event.Attributes;
+using Omega.Tools.Experimental.Event.Internals.EventManagers;
 
-namespace Omega.Tools.Experimental.Events.Internals
+namespace Omega.Tools.Experimental.Event.Internals
 {
     /// <summary>
     /// Вспомогательный класс для создания EventManager`ов
