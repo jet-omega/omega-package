@@ -12,11 +12,4 @@ namespace Omega.Tools.Experimental.Event
             InvocationPolicy = invocationPolicy;
         }
     }
-
-    public enum InvocationPolicy
-    {
-        PreventInvocationFromDestroyedObject = 0,
-        AllowInvocationFromDestroyedObjectButLogWarning,
-        AllowInvocationFromDestroyedObject
-    }
 }

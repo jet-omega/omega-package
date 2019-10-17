@@ -5,8 +5,8 @@ namespace Omega.Tools.Experimental.Event
 {
     internal class NotIsolateEventHandlerRunner<TEvent> : IEvent
     {
-        private IEnumerable<IEventHandler<TEvent>> _handlers;
-        private TEvent _eventArg;
+        private readonly IEnumerable<IEventHandler<TEvent>> _handlers;
+        private readonly TEvent _eventArg;
 
         public NotIsolateEventHandlerRunner(IEnumerable<IEventHandler<TEvent>> handlers, TEvent eventArg)
         {

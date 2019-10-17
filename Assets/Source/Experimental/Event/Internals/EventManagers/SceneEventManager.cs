@@ -31,7 +31,7 @@ namespace Omega.Tools.Experimental.Events.Internals.EventManagers
 
         private void GetOutFromEventManagerDispatcher()
         {
-            if (EventManagerDispatcher<TEvent>.GetEventManager() == this)
+            if (EventManagerDispatcher<TEvent>.GetEventManagerHardInternal() == this)
                 EventManagerDispatcher<TEvent>.RemoveEventManagerInternal();
         }
     }

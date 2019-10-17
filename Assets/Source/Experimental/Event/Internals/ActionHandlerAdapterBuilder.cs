@@ -8,7 +8,7 @@ namespace Omega.Tools.Experimental.Event.Internals
 {
     internal static class ActionHandlerAdapterBuilder
     {
-        public static IEventHandler<TEvent> Build<TEvent>(Action<TEvent> action)
+        public static IEventHandler<TEvent> Create<TEvent>(Action<TEvent> action)
         {
             if (action.Target is Object unityObject)
             {
