@@ -38,7 +38,7 @@ namespace Omega.Tools.Experimental.Event.Tests
 
             EventAggregator.Event(new TestEvent());
 
-            LogAssert.Expect(LogType.Warning, new Regex("."));
+            LogAssert.Expect(LogType.Error, ExceptionHelper.Messages.ActionWasCalledInTheDestroyedObject);
             Assert.True(target.invokedAllowInvocationFromDestroyedObjectButLogWarning);
         }
 
@@ -108,7 +108,7 @@ namespace Omega.Tools.Experimental.Event.Tests
             public void ActionWithAllowInvocationFromDestroyedObject(TestEvent e)
                 => invokedAllowInvocationFromDestroyedObject = true;
 
-            [EventHandler(InvocationPolicy.AllowInvocationFromDestroyedObjectButLogWarning)]
+            [EventHandler(InvocationPolicy.AllowInvocationFromDestroyedObjectButLogError)]
             public void ActionWithAllowInvocationFromDestroyedObjectButLogWarning(TestEvent e)
                 => invokedAllowInvocationFromDestroyedObjectButLogWarning = true;
 
