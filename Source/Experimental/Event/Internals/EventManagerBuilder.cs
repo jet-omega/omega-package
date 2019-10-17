@@ -11,25 +11,25 @@ namespace Omega.Tools.Experimental.Events.Internals
     /// </summary>
     internal static class EventManagerBuilder
     {
-        public static IEventManager<TEvent> Build<TEvent>()
+        public static IEventManager<TEvent> Create<TEvent>()
         {
             var eventType = typeof(TEvent);
 
             var sceneEventAttribute = eventType.GetCustomAttribute<EventCoverageAttribute>();
 
             if (sceneEventAttribute == null || sceneEventAttribute.Coverage == EventCoverage.Global)
-                return BuildGlobalEventManager<TEvent>();
+                return CreateGlobalEventManager<TEvent>();
             
-            return BuildSceneEventManager<TEvent>();
+            return CreateSceneEventManager<TEvent>();
         }
 
-        private static IEventManager<TEvent> BuildGlobalEventManager<TEvent>()
+        private static IEventManager<TEvent> CreateGlobalEventManager<TEvent>()
         {
             var eventManager = new UniversalEventManager<TEvent>();
             return eventManager;
         }
 
-        private static IEventManager<TEvent> BuildSceneEventManager<TEvent>()
+        private static IEventManager<TEvent> CreateSceneEventManager<TEvent>()
         {
             var eventManager = new SceneEventManager<TEvent>();
             return eventManager;

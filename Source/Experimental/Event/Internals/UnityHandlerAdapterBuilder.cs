@@ -6,7 +6,7 @@ namespace Omega.Tools.Experimental.Event.Internals
 {
     internal static class UnityHandlerAdapterBuilder
     {
-        public static IEventHandler<TEvent> Build<TEvent>(IEventHandler<TEvent> handler, Object targetObject)
+        public static IEventHandler<TEvent> Create<TEvent>(IEventHandler<TEvent> handler, Object targetObject)
         {
             var invocationPolicy =
                 handler.GetType().GetCustomAttribute<EventHandlerAttribute>()?.InvocationPolicy ?? default;

@@ -7,9 +7,9 @@ using UnityEngine;
 
 namespace Omega.Tools.Experimental.Event.Internals
 {
-    internal static class EventHandlerRunnerProvider<TEvent>
+    internal static class EventHandlerRunnerBuilder<TEvent>
     {
-        public static IEvent CreateRunner(IEnumerable<IEventHandler<TEvent>> handlers, TEvent eventArg)
+        public static IEvent Create(IEnumerable<IEventHandler<TEvent>> handlers, TEvent eventArg)
         {
             var eventType = typeof(TEvent);
             var eventHandlingAttribute = eventType.GetCustomAttribute<EventHandlingAttribute>();
