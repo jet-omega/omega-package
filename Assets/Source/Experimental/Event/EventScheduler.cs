@@ -40,6 +40,8 @@ namespace Omega.Tools.Experimental.Event
                     _current = null;
                     _queueEvents.Clear();
                     Debug.LogException(e);
+//                    var schedulerException = new Exception("Some handler throw exception" , e);
+//                    Debug.LogException(schedulerException);
                     return;
                 }
                 

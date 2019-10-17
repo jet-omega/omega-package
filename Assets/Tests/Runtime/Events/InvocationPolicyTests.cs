@@ -2,7 +2,7 @@ using System;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 using Omega.Tools.Experimental.Event;
-using Omega.Tools.Experimental.Events.Internals;
+using Omega.Tools.Experimental.Event.Internals;
 using UnityEngine;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;

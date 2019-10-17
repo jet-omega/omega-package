@@ -1,6 +1,6 @@
 using System;
 using NUnit.Framework;
-using Omega.Tools.Experimental.Events.Internals;
+using Omega.Tools.Experimental.Event.Internals;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
