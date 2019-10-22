@@ -22,9 +22,10 @@ namespace Omega.Experimental.Routines
                    task.Status == TaskStatus.WaitingToRun)
                 yield return null;
 
-            if (task.IsFaulted)
-                SetException(task.Exception);
-            else SetComplete(task.Result);
+            if (task.IsFaulted) 
+                throw task.Exception.InnerException;
+            
+            SetResult(task.Result);
         }
     }
 }
