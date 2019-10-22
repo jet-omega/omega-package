@@ -21,9 +21,9 @@ namespace Omega.Experimental.Routines
             while (task.Status == TaskStatus.Running || task.Status == TaskStatus.WaitingForActivation ||
                    task.Status == TaskStatus.WaitingToRun)
                 yield return null;
-            
-            if(task.IsFaulted)
-                SetException(task.Exception);
+
+            if (task.IsFaulted)
+                throw task.Exception.InnerException;
         }
     }
 }
