@@ -1,13 +1,11 @@
 using System.IO;
-using Omega.Experimental.Routines;
 
-namespace Omega.Experimental.Routines.IO
+namespace Omega.Routines.IO
 {
     public static class FileRoutine
     {
         public static Routine WriteAllTextRoutine(string path, string text)
             => Routine.Task(() => File.WriteAllText(path, text));
-
         public static Routine<string> ReadAllTextRoutine(string path)
             => Routine.Task(() => File.ReadAllText(path));
 

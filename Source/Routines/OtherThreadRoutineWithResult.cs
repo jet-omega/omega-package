@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Threading.Tasks;
 
-namespace Omega.Experimental.Routines
+namespace Omega.Routines
 {
     public sealed class OtherThreadRoutine<TResult> : Routine<TResult>
     {

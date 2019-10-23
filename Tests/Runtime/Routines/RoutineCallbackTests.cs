@@ -3,7 +3,7 @@ using System.Collections;
 using NUnit.Framework;
 using UnityEngine.TestTools;
 
-namespace Omega.Experimental.Routines.Tests
+namespace Omega.Routines.Tests
 {
     public class RoutineCallbackTests
     {

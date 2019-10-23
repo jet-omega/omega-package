@@ -1,14 +1,10 @@
-using System;
 using System.Collections;
 using System.IO;
 using NUnit.Framework;
-using Omega.Experimental.Routines;
-using Omega.Experimental.Routines.IO;
-using UnityEngine;
 using UnityEngine.TestTools;
 using Random = System.Random;
 
-namespace Omega.Experimental.IORoutines.Tests
+namespace Omega.Routines.IO.Tests
 {
     public class FileTests
     {

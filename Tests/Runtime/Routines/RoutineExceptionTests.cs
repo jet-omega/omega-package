@@ -1,11 +1,9 @@
 using System;
 using System.Collections;
-using System.Text.RegularExpressions;
 using NUnit.Framework;
-using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Omega.Experimental.Routines.Tests
+namespace Omega.Routines.Tests
 {
     public class RoutineExceptionTests
     {
