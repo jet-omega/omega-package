@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 using UnityEngine;
 
-namespace Omega.Tools.Experimental.Event
+namespace Omega.Experimental.Event
 {
     [SuppressMessage("ReSharper", "MemberHidesStaticFromOuterClass")]
     public static class ExceptionHelper

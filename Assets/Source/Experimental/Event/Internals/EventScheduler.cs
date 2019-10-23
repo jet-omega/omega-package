@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Omega.Tools.Experimental.Event.Internals
+namespace Omega.Experimental.Event.Internals
 {
     internal static class EventScheduler
     {

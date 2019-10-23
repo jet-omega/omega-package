@@ -1,8 +1,8 @@
 using System.Reflection;
-using Omega.Tools.Experimental.Event.Attributes;
+using Omega.Experimental.Event.Attributes;
 using UnityEngine;
 
-namespace Omega.Tools.Experimental.Event.Internals
+namespace Omega.Experimental.Event.Internals
 {
     internal static class UnityHandlerAdapterBuilder
     {

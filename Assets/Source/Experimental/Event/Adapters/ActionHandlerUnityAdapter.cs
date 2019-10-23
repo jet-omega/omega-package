@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Omega.Tools.Experimental.Event
+namespace Omega.Experimental.Event
 {
     public sealed class ActionHandlerUnityAdapter<TEvent> : IEventHandler<TEvent>
     {

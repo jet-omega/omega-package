@@ -1,6 +1,6 @@
 using System;
 
-namespace Omega.Tools.Experimental.Event.Attributes
+namespace Omega.Experimental.Event.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
     public sealed class EventHandlingAttribute : Attribute
