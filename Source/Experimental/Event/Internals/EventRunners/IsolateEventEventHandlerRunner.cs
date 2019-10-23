@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Omega.Tools.Experimental.Event.Internals
+namespace Omega.Experimental.Event.Internals
 {
     internal class IsolateEventEventHandlerRunner<TEvent> : IEvent
     {

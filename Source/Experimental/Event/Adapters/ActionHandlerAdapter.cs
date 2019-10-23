@@ -1,6 +1,6 @@
 using System;
 
-namespace Omega.Tools.Experimental.Event
+namespace Omega.Experimental.Event
 {
     public sealed class ActionHandlerAdapter<TEvent> : IEventHandler<TEvent>
     {

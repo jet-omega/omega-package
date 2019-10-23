@@ -1,4 +1,4 @@
-namespace Omega.Tools.Experimental.Event
+namespace Omega.Experimental.Event
 {
     public enum EventCoverage
     {

@@ -1,13 +1,13 @@
 using System;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
-using Omega.Tools.Experimental.Event.Attributes;
-using Omega.Tools.Experimental.Event.Internals;
+using Omega.Experimental.Event.Attributes;
+using Omega.Experimental.Event.Internals;
 using UnityEngine;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
 
-namespace Omega.Tools.Experimental.Event.Tests
+namespace Omega.Experimental.Event.Tests
 {
     public class InvocationPolicyTests
     {

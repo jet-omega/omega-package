@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Omega.Tools.Experimental.Event.Internals
+namespace Omega.Experimental.Event.Internals
 {
     internal class NotIsolateEventHandlerRunner<TEvent> : IEvent
     {

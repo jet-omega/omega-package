@@ -2,10 +2,10 @@
 using System.Collections;
 using System.Linq;
 using NUnit.Framework;
-using Omega.Tools.Experimental.Event.Internals;
+using Omega.Experimental.Event.Internals;
 using UnityEngine.TestTools;
 
-namespace Omega.Tools.Experimental.Event.Tests
+namespace Omega.Experimental.Event.Tests
 {
     public class EventManagerTests
     {

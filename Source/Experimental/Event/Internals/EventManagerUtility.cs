@@ -1,7 +1,8 @@
 using System;
 using System.Linq;
+using Omega.Tools;
 
-namespace Omega.Tools.Experimental.Event.Internals
+namespace Omega.Experimental.Event.Internals
 {
     internal static class EventManagerUtility
     {
