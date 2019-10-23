@@ -3,7 +3,7 @@ using System.Collections;
 using JetBrains.Annotations;
 using UnityEngine;
 
-namespace Omega.Experimental.Routines
+namespace Omega.Routines
 {
     public abstract class Routine : IEnumerator
     {

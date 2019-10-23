@@ -1,6 +1,6 @@
 using System;
 
-namespace Omega.Experimental.Routines
+namespace Omega.Routines
 {
     public static class RoutineExtension
     {
