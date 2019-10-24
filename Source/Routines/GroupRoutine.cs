@@ -4,14 +4,19 @@ using System.Linq;
 
 namespace Omega.Routines
 {
-    public sealed class ParallelsRoutine : Routine
+    public sealed class GroupRoutine : Routine
     {
         private IEnumerator[] _processingRoutines;
         private readonly Routine[] _routines;
 
-        public ParallelsRoutine(IEnumerable<Routine> routines)
+        public GroupRoutine(IEnumerable<Routine> routines)
         {
             _routines = routines.ToArray();
+        }
+
+        public GroupRoutine(params Routine[] routines)
+            : this((IEnumerable<Routine>) routines)
+        {
         }
 
         protected override IEnumerator RoutineUpdate()
@@ -21,7 +26,7 @@ namespace Omega.Routines
                 bool flag = false;
                 for (int i = 0; i < _processingRoutines.Length; i++)
                     flag |= _processingRoutines[i].MoveNext();
-                
+
                 return flag;
             }
 
@@ -32,7 +37,7 @@ namespace Omega.Routines
                 yield return null;
         }
 
-        public ParallelsRoutine ParallelsRoutines(out Routine[] routines)
+        public GroupRoutine ParallelsRoutines(out Routine[] routines)
         {
             routines = _processingRoutines.Cast<Routine>().ToArray();
             return this;
@@ -41,8 +46,7 @@ namespace Omega.Routines
         //TODO: OPTIMIZE
         private IEnumerator[] CreateEnumeratorsFromRoutines(Routine[] routines) =>
             routines
-                .Cast<IEnumerable>()
-                .Select(e => e.GetEnumerator())
+                .Cast<IEnumerator>()
                 .ToArray();
     }
 }
