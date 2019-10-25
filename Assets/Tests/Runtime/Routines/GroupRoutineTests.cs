@@ -13,18 +13,16 @@ namespace Omega.Routines.Tests
         [UnityTest]
         public IEnumerator RoutineShouldCompleteWhenHisRoutinesIsCompletedTest()
         {
-            var routineWithDelay160ms = Routine.Task(() => Thread.Sleep(160));
-            var routineWithDelay150ms = Routine.Task(() => Thread.Sleep(150));
+            var routineWithDelay160ms = Routine.Delay(0.160f);
+            var routineWithDelay150ms = Routine.Delay(0.150f);
 
-            var startTestTime = DateTime.Now;
+            var startTestTime = Time.unscaledTime;
 
             yield return Routine.Group(routineWithDelay160ms, routineWithDelay150ms);
 
-            var deltaTime = DateTime.Now - startTestTime;
+            var deltaTime = Time.unscaledTime - startTestTime;
 
-            Debug.Log("Delta: " + deltaTime.TotalMilliseconds);
-            
-            Assert.Greater(0.16 + 0.15, deltaTime.TotalSeconds);
+            Assert.Greater(0.16f + 0.15f, deltaTime);
         }
     }
 }
