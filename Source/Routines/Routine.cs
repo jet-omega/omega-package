@@ -1,8 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using JetBrains.Annotations;
-using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Omega.Routines
 {
@@ -19,7 +20,8 @@ namespace Omega.Routines
         public bool IsError => _status == RoutineStatus.Error;
         public bool IsProcessing => _status == RoutineStatus.Processing;
         public bool IsComplete => _status == RoutineStatus.Completed;
-        
+        public bool IsNotStarted => _status == RoutineStatus.ReadyToStart;
+
         public Exception Exception => IsError ? _exception : throw new Exception();
 
         protected abstract IEnumerator RoutineUpdate();
@@ -50,7 +52,7 @@ namespace Omega.Routines
                 // и обрабатываем это исключение
                 _exception = e;
                 _status = RoutineStatus.Error;
-                
+
                 _exceptionHandler.Invoke(e);
 
                 return false;
@@ -77,24 +79,44 @@ namespace Omega.Routines
 
         object IEnumerator.Current => (_routine ?? throw new Exception()).Current;
 
-        internal void AddCallbackInternal(Action callback) 
+        internal void AddCallbackInternal(Action callback)
             => _callback += callback;
+
         internal void SetExceptionHandlerInternal(Action<Exception> exceptionHandler) =>
-            _exceptionHandler = exceptionHandler; 
-        
+            _exceptionHandler = exceptionHandler;
+
         public static OtherThreadRoutine Task(Action task) => new OtherThreadRoutine(task);
+
         public static OtherThreadRoutine<TResult> Task<TResult>(Func<TResult> task) =>
             new OtherThreadRoutine<TResult>(task);
-        
+
         public static GroupRoutine Group(IEnumerable<Routine> routines) => new GroupRoutine(routines);
         public static GroupRoutine Group(params Routine[] routines) => new GroupRoutine(routines);
         
+        public static Routine Delay(float interval) => new DelayRoutine(interval);
+
         private enum RoutineStatus
         {
             ReadyToStart = 0,
             Processing,
             Error,
             Completed
+        }
+
+        public static implicit operator bool(Routine routine)
+            => routine == null || !routine.IsProcessing && !routine.IsNotStarted;
+
+        public static GroupRoutine operator +(Routine lhs, Routine rhs)
+        {
+            if(lhs==null && rhs == null)
+                return new GroupRoutine(Array.Empty<Routine>());
+
+            if (lhs == null)
+                return new GroupRoutine(rhs);
+            if(rhs == null)
+                return new GroupRoutine(lhs);
+            
+            return new GroupRoutine(rhs, lhs);
         }
     }
 }
