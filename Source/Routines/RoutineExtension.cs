@@ -52,7 +52,7 @@ namespace Omega.Routines
         {
             if (original == null)
                 throw new NullReferenceException(nameof(original));
-            if (original == null)
+            if (exceptionHandler == null)
                 throw new ArgumentNullException(nameof(exceptionHandler));
 
             original.SetExceptionHandlerInternal(exceptionHandler);
