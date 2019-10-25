@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
 
@@ -82,9 +83,11 @@ namespace Omega.Routines
             _exceptionHandler = exceptionHandler; 
         
         public static OtherThreadRoutine Task(Action task) => new OtherThreadRoutine(task);
-
         public static OtherThreadRoutine<TResult> Task<TResult>(Func<TResult> task) =>
             new OtherThreadRoutine<TResult>(task);
+        
+        public static GroupRoutine Group(IEnumerable<Routine> routines) => new GroupRoutine(routines);
+        public static GroupRoutine Group(params Routine[] routines) => new GroupRoutine(routines);
         
         private enum RoutineStatus
         {
