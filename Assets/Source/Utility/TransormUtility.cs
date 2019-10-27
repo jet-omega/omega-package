@@ -8,14 +8,6 @@ namespace Omega.Tools
 {
     public static class TransformUtility
     {
-        #region DEPRECATED
-
-        [Obsolete("Use GetChilds")]
-        public static Transform[] GetChildes([NotNull] Transform root)
-            => GetChilds(root);
-
-        #endregion
-
         /// <summary>
         /// Возвращает всех потомков указанного трансформа 
         /// </summary>

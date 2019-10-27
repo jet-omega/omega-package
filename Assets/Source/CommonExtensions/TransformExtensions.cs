@@ -5,14 +5,6 @@ using UnityEngine;
 
 public static class TransformExtensions
 {
-    # region DEPRECATED
-
-    [Obsolete("Use GetChilds")]
-    public static Transform[] GetChildes(this Transform transform)
-        => GetChilds(transform);
-
-    #endregion
-
     /// <summary>
     /// Возвращает всех потомков 
     /// </summary>
