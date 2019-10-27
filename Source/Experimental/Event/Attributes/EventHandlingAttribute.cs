@@ -1,6 +1,6 @@
 using System;
 
-namespace Omega.Tools.Experimental.Event
+namespace Omega.Experimental.Event.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
     public sealed class EventHandlingAttribute : Attribute
@@ -11,12 +11,5 @@ namespace Omega.Tools.Experimental.Event
         {
             Handling = handling;
         }
-    }
-
-    public enum EventHandling
-    {
-        NotIsolate,
-        IsolateEvent,
-        IsolateHandlers,
     }
 }

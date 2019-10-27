@@ -1,17 +1,15 @@
 using System;
-using System.Reflection;
-using Omega.Tools.Experimental.Events;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Omega.Tools.Experimental.Event
+namespace Omega.Experimental.Event
 {
     public sealed class ActionHandlerUnityAdapter<TEvent> : IEventHandler<TEvent>
     {
         private readonly Action<TEvent> _action;
         private readonly Object _targetObject;
         private readonly InvocationPolicy _invocationPolicy;
-        
+
         public Object TargetObject => _targetObject;
         public bool TargetObjectIsDestroyed => !_targetObject;
         public InvocationPolicy InvocationPolicy => _invocationPolicy;
@@ -19,11 +17,11 @@ namespace Omega.Tools.Experimental.Event
 
         public ActionHandlerUnityAdapter(Action<TEvent> action, InvocationPolicy invocationPolicy)
         {
-            if(action == null)
-                throw new ArgumentNullException(nameof(action)); 
-            
+            if (action == null)
+                throw new ArgumentNullException(nameof(action));
+
             if (!(action.Target is Object unityObject))
-                throw new InvalidCastException(nameof(action.Target)); //TODO: add exception message
+                throw ExceptionHelper.ActionIsNotInstanceOfUnityObjectMethod;
 
             _targetObject = unityObject;
 
@@ -31,20 +29,20 @@ namespace Omega.Tools.Experimental.Event
             _invocationPolicy = invocationPolicy;
         }
 
-        internal ActionHandlerUnityAdapter(Action<TEvent> action, Object target,InvocationPolicy invocationPolicy)
+        internal ActionHandlerUnityAdapter(Action<TEvent> action, Object target, InvocationPolicy invocationPolicy)
         {
             _targetObject = target;
             _action = action;
             _invocationPolicy = invocationPolicy;
         }
-        
-        public void Execute(TEvent arg)
+
+        public void OnEvent(TEvent arg)
         {
             if (TargetObjectIsDestroyed)
                 if (_invocationPolicy == InvocationPolicy.PreventInvocationFromDestroyedObject)
-                    throw new Exception(); //TODO
-                else if (_invocationPolicy == InvocationPolicy.AllowInvocationFromDestroyedObjectButLogWarning)
-                    Debug.LogWarning("TODO: write message"); //TODO
+                    throw ExceptionHelper.ActionCannotCalledWhenObjectIsDestroyed;
+                else if (_invocationPolicy == InvocationPolicy.AllowInvocationFromDestroyedObjectButLogError)
+                    Debug.LogError(ExceptionHelper.Messages.ActionWasCalledInTheDestroyedObject);
 
             _action(arg);
         }

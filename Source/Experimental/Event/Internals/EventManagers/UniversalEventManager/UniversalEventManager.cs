@@ -1,16 +1,10 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
-using Omega.Tools.Experimental.Event;
-using UnityEngine;
-using Object = UnityEngine.Object;
 
-namespace Omega.Tools.Experimental.Events.Internals.EventManagers
+namespace Omega.Experimental.Event.Internals.EventManagers
 {
     internal class UniversalEventManager<TEvent> : IEventManager<TEvent>
     {
-        private List<IEventHandler<TEvent>> _eventHandlers;
+        private readonly List<IEventHandler<TEvent>> _eventHandlers;
 
         public UniversalEventManager()
         {

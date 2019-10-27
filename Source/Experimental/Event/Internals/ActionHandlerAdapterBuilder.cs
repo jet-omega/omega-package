@@ -1,14 +1,13 @@
 using System;
 using System.Reflection;
-using Omega.Tools.Experimental.Events;
-using UnityEngine;
+using Omega.Experimental.Event.Attributes;
 using Object = UnityEngine.Object;
 
-namespace Omega.Tools.Experimental.Event.Internals
+namespace Omega.Experimental.Event.Internals
 {
     internal static class ActionHandlerAdapterBuilder
     {
-        public static IEventHandler<TEvent> Build<TEvent>(Action<TEvent> action)
+        public static IEventHandler<TEvent> Create<TEvent>(Action<TEvent> action)
         {
             if (action.Target is Object unityObject)
             {

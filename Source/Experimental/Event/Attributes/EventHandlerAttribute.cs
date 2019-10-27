@@ -1,6 +1,6 @@
 using System;
 
-namespace Omega.Tools.Experimental.Event
+namespace Omega.Experimental.Event.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method | AttributeTargets.Struct)]
     public sealed class EventHandlerAttribute : Attribute
@@ -11,12 +11,5 @@ namespace Omega.Tools.Experimental.Event
         {
             InvocationPolicy = invocationPolicy;
         }
-    }
-
-    public enum InvocationPolicy
-    {
-        PreventInvocationFromDestroyedObject = 0,
-        AllowInvocationFromDestroyedObjectButLogWarning,
-        AllowInvocationFromDestroyedObject
     }
 }

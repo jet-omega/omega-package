@@ -1,10 +1,8 @@
 using System;
-using System.Reflection;
-using Omega.Tools.Experimental.Events;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Omega.Tools.Experimental.Event
+namespace Omega.Experimental.Event
 {
     public sealed class UnityHandlerAdapter<TEvent> : IEventHandler<TEvent>
     {
@@ -20,17 +18,22 @@ namespace Omega.Tools.Experimental.Event
         public UnityHandlerAdapter(IEventHandler<TEvent> handler, InvocationPolicy invocationPolicy)
         {
             _handler = handler ?? throw new ArgumentNullException(nameof(handler));
-            _targetObject = handler as Object ?? throw new InvalidCastException();
+            
+            _targetObject = handler as Object ?? throw ExceptionHelper.HandlerIsNotInstanceOfUnityObject;
+
             _invocationPolicy = invocationPolicy;
         }
 
         public UnityHandlerAdapter(Object handler, InvocationPolicy invocationPolicy)
         {
-            if(ReferenceEquals(handler,null))
+            if (ReferenceEquals(handler, null))
                 throw new ArgumentNullException(nameof(handler));
-                
-            _handler = handler as IEventHandler<TEvent> ?? throw new InvalidCastException();
+
+            _handler = handler as IEventHandler<TEvent> ??
+                       throw ExceptionHelper.ObjectIsNotInstanceOfIEventHandler(typeof(TEvent));
+
             _targetObject = handler;
+            
             _invocationPolicy = invocationPolicy;
         }
 
@@ -42,15 +45,15 @@ namespace Omega.Tools.Experimental.Event
             _invocationPolicy = invocationPolicy;
         }
 
-        public void Execute(TEvent arg)
+        public void OnEvent(TEvent arg)
         {
             if (TargetObjectIsDestroyed)
                 if (_invocationPolicy == InvocationPolicy.PreventInvocationFromDestroyedObject)
-                    throw new Exception(); //TODO
-                else if (_invocationPolicy == InvocationPolicy.AllowInvocationFromDestroyedObjectButLogWarning)
-                    Debug.LogWarning("TODO: write message"); //TODO
+                    throw ExceptionHelper.MethodCannotCalledWhenObjectIsDestroyed;
+                else if (_invocationPolicy == InvocationPolicy.AllowInvocationFromDestroyedObjectButLogError)
+                    Debug.LogWarning(ExceptionHelper.Messages.MethodWasCalledInTheDestroyedObject);
 
-            _handler.Execute(arg);
+            _handler.OnEvent(arg);
         }
 
         public override bool Equals(object obj)

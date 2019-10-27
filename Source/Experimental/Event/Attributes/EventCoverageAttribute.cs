@@ -1,7 +1,7 @@
 using System;
-using Omega.Tools.Experimental.Event;
+using Omega.Experimental.Event;
 
-namespace Omega.Tools.Experimental.Events.Attributes
+namespace Omega.Experimental.Event.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
     public class EventCoverageAttribute : Attribute

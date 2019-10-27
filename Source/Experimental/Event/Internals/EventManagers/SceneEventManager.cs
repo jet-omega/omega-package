@@ -1,9 +1,8 @@
-using System;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Omega.Tools.Experimental.Events.Internals.EventManagers
+namespace Omega.Experimental.Event.Internals.EventManagers
 {
     internal sealed class SceneEventManager<TEvent> : UniversalEventManager<TEvent>
     {
@@ -31,7 +30,7 @@ namespace Omega.Tools.Experimental.Events.Internals.EventManagers
 
         private void GetOutFromEventManagerDispatcher()
         {
-            if (EventManagerDispatcher<TEvent>.GetEventManager() == this)
+            if (EventManagerDispatcher<TEvent>.GetEventManagerHardInternal() == this)
                 EventManagerDispatcher<TEvent>.RemoveEventManagerInternal();
         }
     }

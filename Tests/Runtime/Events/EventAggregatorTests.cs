@@ -1,10 +1,10 @@
 using System;
 using NUnit.Framework;
-using Omega.Tools.Experimental.Events.Internals;
+using Omega.Experimental.Event.Internals;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Omega.Tools.Experimental.Events.Tests
+namespace Omega.Experimental.Event.Tests
 {
     public class EventAggregatorTests
     {
@@ -52,7 +52,7 @@ namespace Omega.Tools.Experimental.Events.Tests
         {
             public Action callback;
 
-            public void Execute(TestEvent arg)
+            public void OnEvent(TestEvent arg)
             {
                 callback.Invoke();
             }

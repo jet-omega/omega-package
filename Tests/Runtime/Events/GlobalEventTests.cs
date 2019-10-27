@@ -1,16 +1,9 @@
-using System;
-using System.Collections;
 using NUnit.Framework;
-using Omega.Tools.Experimental.Event;
-using Omega.Tools.Experimental.Events.Attributes;
-using Omega.Tools.Experimental.Events.Internals;
-using UnityEditor.SceneManagement;
-using UnityEngine;
+using Omega.Experimental.Event.Attributes;
+using Omega.Experimental.Event.Internals;
 using UnityEngine.SceneManagement;
-using UnityEngine.TestTools;
-using Object = UnityEngine.Object;
 
-namespace Omega.Tools.Experimental.Events.Tests
+namespace Omega.Experimental.Event.Tests
 {
     public class GlobalEventTests
     {
