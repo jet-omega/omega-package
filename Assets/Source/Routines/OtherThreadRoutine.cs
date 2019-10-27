@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Omega.Routines
@@ -7,6 +8,7 @@ namespace Omega.Routines
     public class OtherThreadRoutine : Routine
     {
         private readonly Action _action;
+        private string _initialInvokeStackTrace;
 
         public OtherThreadRoutine(Action action)
         {
@@ -24,6 +26,12 @@ namespace Omega.Routines
 
             if (task.IsFaulted)
                 throw task.Exception.InnerException;
+        }
+
+        public OtherThreadRoutine StartTask()
+        {
+            ((IEnumerator) this).MoveNext();
+            return this;
         }
     }
 }
