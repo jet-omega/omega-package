@@ -1,13 +1,13 @@
 using System;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
-using Omega.Tools.Experimental.Event;
-using Omega.Tools.Experimental.Events.Internals;
+using Omega.Experimental.Event.Attributes;
+using Omega.Experimental.Event.Internals;
 using UnityEngine;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
 
-namespace Omega.Tools.Experimental.Events.Tests
+namespace Omega.Experimental.Event.Tests
 {
     public class InvocationPolicyTests
     {
@@ -38,7 +38,7 @@ namespace Omega.Tools.Experimental.Events.Tests
 
             EventAggregator.Event(new TestEvent());
 
-            LogAssert.Expect(LogType.Warning, new Regex("."));
+            LogAssert.Expect(LogType.Error, ExceptionHelper.Messages.ActionWasCalledInTheDestroyedObject);
             Assert.True(target.invokedAllowInvocationFromDestroyedObjectButLogWarning);
         }
 
@@ -54,7 +54,8 @@ namespace Omega.Tools.Experimental.Events.Tests
 
             Object.DestroyImmediate(gameObject);
 
-            LogAssert.Expect(LogType.Exception, new Regex("."));
+            LogAssert.Expect(LogType.Exception,
+                new Regex("." + ExceptionHelper.Messages.ActionCannotCalledWhenObjectIsDestroyed));
 
             EventAggregator.Event(new TestEvent());
 
@@ -74,7 +75,8 @@ namespace Omega.Tools.Experimental.Events.Tests
 
             Object.DestroyImmediate(gameObject);
 
-            LogAssert.Expect(LogType.Exception, new Regex("."));
+            LogAssert.Expect(LogType.Exception,
+                new Regex("." + ExceptionHelper.Messages.ActionCannotCalledWhenObjectIsDestroyed));
 
             EventAggregator.Event(new TestEvent());
 
@@ -85,7 +87,8 @@ namespace Omega.Tools.Experimental.Events.Tests
         public void ActionHandlerUnityAdapterShouldThrowInvalidCastException()
         {
             // ReSharper disable once ObjectCreationAsStatement
-            Assert.Throws<InvalidCastException>(() => new ActionHandlerUnityAdapter<TestEvent>(e => Assert.Fail(), default));
+            Assert.Throws<InvalidCastException>(() =>
+                new ActionHandlerUnityAdapter<TestEvent>(e => Assert.Fail(), default));
         }
 
         [SetUp]
@@ -108,7 +111,7 @@ namespace Omega.Tools.Experimental.Events.Tests
             public void ActionWithAllowInvocationFromDestroyedObject(TestEvent e)
                 => invokedAllowInvocationFromDestroyedObject = true;
 
-            [EventHandler(InvocationPolicy.AllowInvocationFromDestroyedObjectButLogWarning)]
+            [EventHandler(InvocationPolicy.AllowInvocationFromDestroyedObjectButLogError)]
             public void ActionWithAllowInvocationFromDestroyedObjectButLogWarning(TestEvent e)
                 => invokedAllowInvocationFromDestroyedObjectButLogWarning = true;
 

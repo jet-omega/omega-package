@@ -1,7 +1,7 @@
 {
-  "name": "omega.tools",
-  "version": "0.4.0",
-  "displayName": "Omega Tools",
+  "name": "com.ltd-profit.unity.omega-package",
+  "version": "0.5.0",
+  "displayName": "Omega Package",
   "description": "Tools for scripting unity projects by Omega",
   "unity": "2018.3",
   "keywords": [
@@ -9,9 +9,17 @@
     "scripting",
     "code",
     "utility",
-    "extensions"
+    "extensions",
+    "events",
+    "global-events",
+    "component-notification",
+    "routine",
+    "coroutine",
+    "task",
+    "multi-threading",
+    "async"
   ],
-  "author": "sergey-cs <prozerox2@yandex.ru> (https://github.com/omega-vr-ar/unity-tools)",
+  "author": "Ltd. ProfIT (https://github.com/omega-vr-ar/unity-tools)",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/omega-vr-ar/unity-tools.git"

@@ -1,7 +1,8 @@
 ﻿using System;
 using NUnit.Framework;
+using Omega.Experimental.Event;
 
-namespace Omega.Tools.Experimental.Events.Tests
+namespace Omega.Experimental.Event.Tests
 {
     public class EventsInEditorTests
     {

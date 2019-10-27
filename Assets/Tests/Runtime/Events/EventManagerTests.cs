@@ -2,12 +2,10 @@
 using System.Collections;
 using System.Linq;
 using NUnit.Framework;
-using Omega.Tools.Experimental.Events.Internals;
-using UnityEditor.VersionControl;
-using UnityEngine;
+using Omega.Experimental.Event.Internals;
 using UnityEngine.TestTools;
 
-namespace Omega.Tools.Experimental.Events.Tests
+namespace Omega.Experimental.Event.Tests
 {
     public class EventManagerTests
     {
@@ -106,7 +104,7 @@ namespace Omega.Tools.Experimental.Events.Tests
         {
             public Action<TEvent> Action;
 
-            public void Execute(TEvent arg)
+            public void OnEvent(TEvent arg)
                 => Action?.Invoke(arg);
         }
 

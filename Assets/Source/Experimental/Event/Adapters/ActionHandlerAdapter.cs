@@ -1,7 +1,6 @@
 using System;
-using Omega.Tools.Experimental.Events;
 
-namespace Omega.Tools.Experimental.Event
+namespace Omega.Experimental.Event
 {
     public sealed class ActionHandlerAdapter<TEvent> : IEventHandler<TEvent>
     {
@@ -12,7 +11,7 @@ namespace Omega.Tools.Experimental.Event
         public ActionHandlerAdapter(Action<TEvent> action)
             => _action = action ?? throw new ArgumentNullException(nameof(action));
 
-        public void Execute(TEvent arg)
+        public void OnEvent(TEvent arg)
             => _action(arg);
 
         public override bool Equals(object obj)
