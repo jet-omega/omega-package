@@ -8,14 +8,6 @@ using UnityEngine;
 /// </summary>
 public static class GameObjectExtensions
 {
-    #region DEPRECATED
-
-    [Obsolete("GetChilds")]
-    public static Transform[] GetChildes(this GameObject gameObject)
-        => GetChilds(gameObject);
-
-    #endregion
-
     /// <summary>
     /// Возвращает компонент, прикрепленный к объекту. Если экземпляр компонента заданного типа отсутствует на объекте
     /// то он будет добавлен к объекту. 

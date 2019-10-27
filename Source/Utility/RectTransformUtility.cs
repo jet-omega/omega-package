@@ -8,14 +8,6 @@ namespace Omega.Tools
 {
     public static class RectTransformUtility
     {
-        #region DEPRECATED
-
-        [Obsolete("Use GetChilds")]
-        public static RectTransform[] GetChildes([NotNull] RectTransform root)
-            => GetChilds(root);
-
-        #endregion
-        
         /// <summary>
         /// Возвращает всех потомков указанного трансформа, если потомок этого трансформа не кастится к RectTransfrom,
         /// то он не будет добавлен в конечный массив  
