@@ -18,7 +18,7 @@ namespace Omega.Routines.Tests
 
             var startTestTime = Time.unscaledTime;
 
-            yield return Routine.Group(routineWithDelay160ms, routineWithDelay150ms);
+            yield return Routine.WhenAll(routineWithDelay160ms, routineWithDelay150ms);
 
             var deltaTime = Time.unscaledTime - startTestTime;
 
