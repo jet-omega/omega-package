@@ -7,7 +7,7 @@ using Debug = UnityEngine.Debug;
 
 namespace Omega.Routines
 {
-    public abstract class Routine : IEnumerator
+    public abstract partial class Routine : IEnumerator
     {
         public static readonly Action<Exception> DefaultExceptionHandler = Debug.LogException;
 
@@ -85,16 +85,6 @@ namespace Omega.Routines
         internal void SetExceptionHandlerInternal(Action<Exception> exceptionHandler) =>
             _exceptionHandler = exceptionHandler;
 
-        public static OtherThreadRoutine Task(Action task) => new OtherThreadRoutine(task);
-
-        public static OtherThreadRoutine<TResult> Task<TResult>(Func<TResult> task) =>
-            new OtherThreadRoutine<TResult>(task);
-
-        public static GroupRoutine Group(IEnumerable<Routine> routines) => new GroupRoutine(routines);
-        public static GroupRoutine Group(params Routine[] routines) => new GroupRoutine(routines);
-        
-        public static Routine Delay(float interval) => new DelayRoutine(interval);
-
         private enum RoutineStatus
         {
             ReadyToStart = 0,
@@ -103,20 +93,18 @@ namespace Omega.Routines
             Completed
         }
 
-        public static implicit operator bool(Routine routine)
+        public static implicit operator bool([CanBeNull] Routine routine)
             => routine == null || !routine.IsProcessing && !routine.IsNotStarted;
 
-        public static GroupRoutine operator +(Routine lhs, Routine rhs)
+        [NotNull]
+        public static GroupRoutine operator +([NotNull] Routine lhs, [NotNull] Routine rhs)
         {
-            if(lhs==null && rhs == null)
-                return new GroupRoutine(Array.Empty<Routine>());
-
+            if (rhs == null)
+                throw new ArgumentNullException(nameof(rhs));
             if (lhs == null)
-                return new GroupRoutine(rhs);
-            if(rhs == null)
-                return new GroupRoutine(lhs);
-            
-            return new GroupRoutine(rhs, lhs);
+                throw new ArgumentNullException(nameof(lhs));
+
+            return new GroupRoutine(lhs, rhs);
         }
     }
 }
