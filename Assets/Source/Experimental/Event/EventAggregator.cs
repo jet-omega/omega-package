@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Omega.Experimental.Event.Internals;
+using Omega.Routines;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -21,7 +22,7 @@ namespace Omega.Experimental.Event
         }
         
 
-        public static IEnumerator EventAsync<TEvent>(TEvent arg)
+        public static Routine EventAsync<TEvent>(TEvent arg)
         {
 #if UNITY_EDITOR
             if (!Application.isPlaying)
