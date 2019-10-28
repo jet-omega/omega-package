@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -13,7 +12,7 @@ namespace Omega.Tools
         internal GameObjectFactory()
         {
         }
-
+        
         public abstract GameObject Build();
 
         public virtual GameObject[] Build(int count)
@@ -67,6 +66,16 @@ namespace Omega.Tools
             SetPrefab(prefab);
         }
 
+        public GameObjectFactoryPrefab Custom(Action<GameObject> action)
+        {
+            if(action == null)
+                throw new ArgumentNullException(nameof(action));
+            
+            var custom = new PipelineElements.Custom(action);
+            _pipeline.AddElement(custom);
+            return this;
+        }
+        
         public GameObjectFactoryPrefab AddComponent<T>() where T : Component
         {
             var element = new PipelineElements.AddComponent<T>();
@@ -162,6 +171,16 @@ namespace Omega.Tools
             if (addComponent != null)
                 _pipeline.RemoveElement(addComponent);
 
+            return this;
+        }
+
+        public GameObjectFactoryNew Custom(Action<GameObject> action)
+        {
+            if(action == null)
+                throw new ArgumentNullException(nameof(action));
+            
+            var custom = new PipelineElements.Custom(action);
+            _pipeline.AddElement(custom);
             return this;
         }
 

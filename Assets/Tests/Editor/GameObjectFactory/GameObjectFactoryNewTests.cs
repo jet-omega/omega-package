@@ -50,6 +50,20 @@ namespace Omega.Tools.Tests.GameObjectFactories
             Object.DestroyImmediate(newParent.gameObject);
         }
 
+        [Test]
+        public void CustomShouldProcessCustomLogicTest()
+        {
+            var targetName = "key name for GameObject";
+            var gameObject = GameObjectFactory.New()
+                .Custom(go => go.name = targetName)
+                .Build();
+
+            Assert.AreEqual(targetName, gameObject.name);
+            
+            Object.DestroyImmediate(gameObject);
+        }
+
+
         private class SomeComponent : MonoBehaviour
         {
         }
