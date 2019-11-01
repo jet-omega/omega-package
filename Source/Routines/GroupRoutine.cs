@@ -9,12 +9,12 @@ namespace Omega.Routines
         private IEnumerator[] _processingRoutines;
         private readonly Routine[] _routines;
 
-        public GroupRoutine(IEnumerable<Routine> routines)
+        internal GroupRoutine(IEnumerable<Routine> routines)
         {
             _routines = routines.ToArray();
         }
 
-        public GroupRoutine(params Routine[] routines)
+        internal GroupRoutine(params Routine[] routines)
             : this((IEnumerable<Routine>) routines)
         {
         }
