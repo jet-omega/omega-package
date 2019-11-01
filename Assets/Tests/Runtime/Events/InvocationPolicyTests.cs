@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using NUnit.Framework;
 using Omega.Experimental.Event.Attributes;
 using Omega.Experimental.Event.Internals;
+using Omega.Package;
 using UnityEngine;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Omega.Routines;
 using UnityEngine;
 
 namespace Omega.Experimental.Event.Internals
@@ -18,14 +19,11 @@ namespace Omega.Experimental.Event.Internals
                 EventMoveNext();
         }
 
-        public static IEnumerator ExecuteAsync(IEvent @event)
+        public static Routine ExecuteAsync(IEvent @event)
         {
-            Schedule(@event);
-
-            while (_current == @event || QueueEvents.Contains(@event))
-                yield return null;
+            return new EventExecuteRoutine(@event);
         }
-        
+
         private static void EventMoveNext()
         {
             while (QueueEvents.Count > 0)
@@ -47,9 +45,22 @@ namespace Omega.Experimental.Event.Internals
             }
         }
         
-        private enum EventState
+        private sealed class EventExecuteRoutine : Routine
         {
+            private readonly IEvent _event;
             
+            protected override IEnumerator RoutineUpdate()
+            {
+                Schedule(_event);
+
+                while (_current == _event || QueueEvents.Contains(_event))
+                    yield return null;
+            }
+
+            internal EventExecuteRoutine(IEvent @event)
+            {
+                _event = @event;
+            }
         }
     }
 }
