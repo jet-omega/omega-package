@@ -95,17 +95,17 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal T MissingComponentWithoutChecks<T>(GameObject gameObject) where T : Component
+        internal static T MissingComponentWithoutChecks<T>(GameObject gameObject) where T : Component
             => gameObject.GetComponent<T>() ?? gameObject.AddComponent<T>();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [NotNull]
-        internal Component MissingComponentWithoutChecks([NotNull] GameObject gameObject,
+        internal static Component MissingComponentWithoutChecks([NotNull] GameObject gameObject,
             [NotNull] Type componentType)
             => gameObject.GetComponent(componentType) ?? gameObject.AddComponent(componentType);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal bool TryGetComponentWithoutChecks<T>([NotNull] GameObject gameObject,
+        internal static bool TryGetComponentWithoutChecks<T>([NotNull] GameObject gameObject,
             [CanBeNull] out T component)
             where T : Component
         // Проверка на null выбрана намеренно, так как GetComponent никогда не вернет уничтоженный объект
@@ -113,20 +113,20 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
             => (component = gameObject.GetComponent<T>()) != null;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal bool TryGetComponentWithoutChecks([NotNull] GameObject gameObject, [NotNull] Type componentType,
+        internal static bool TryGetComponentWithoutChecks([NotNull] GameObject gameObject, [NotNull] Type componentType,
                 [CanBeNull] out Component component)
             // Проверка на null выбрана намеренно, так как GetComponent никогда не вернет уничтоженный объект
             // https://docs.unity3d.com/ScriptReference/GameObject.GetComponent.html
             => (component = gameObject.GetComponent(componentType)) != null;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal bool ContainsComponentWithoutChecks<T>([NotNull] GameObject gameObject) where T : Component
+        internal static bool ContainsComponentWithoutChecks<T>([NotNull] GameObject gameObject) where T : Component
         // Проверка на null выбрана намеренно, так как GetComponent никогда не вернет уничтоженный объект
         // https://docs.unity3d.com/ScriptReference/GameObject.GetComponent.html
             => gameObject.GetComponent<T>() != null;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal bool ContainsComponentWithoutChecks([NotNull] GameObject gameObject,
+        internal static bool ContainsComponentWithoutChecks([NotNull] GameObject gameObject,
                 [NotNull] Type componentType)
             // Проверка на null выбрана намеренно, так как GetComponent никогда не вернет уничтоженный объект
             // https://docs.unity3d.com/ScriptReference/GameObject.GetComponent.html

@@ -1,5 +1,6 @@
 using System;
 using JetBrains.Annotations;
+using Omega.Experimental;
 using UnityEngine;
 
 namespace Omega.Tools.Experimental.UtilitiesAggregator
@@ -9,9 +10,25 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
         internal TransfromUtilites()
         {
         }
+
+        /// <summary>
+        /// Уничтожает всех потомков переданного трансформа
+        /// </summary>
+        /// <param name="root">Трансформ, потомки которого будут удалены</param>
+        /// <exception cref="ArgumentNullException">Параметр <param name="root"/>>указывает на null</exception>
+        /// <exception cref="MissingReferenceException">Параметр <param name="root"/>>указывает на уничтоженный объект</exception>
+        public void ClearChilds([NotNull] Transform root)
+        {
+            if (ReferenceEquals(root, null))
+                throw new ArgumentNullException(nameof(root));
+            if (!root)
+                throw new MissingReferenceException(nameof(root));
+
+            ClearChildsWithoutChecks(root);
+        }
         
         /// <summary>
-        /// Возвращает всех потомков указанного трансформа 
+        /// Возвращает всех потомков переданного трансформа 
         /// </summary>
         /// <param name="root">Трансформ, относительно которого будет осуществляться поиск потомков </param>
         /// <returns>Массив потомков</returns>
@@ -29,7 +46,7 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
         }
 
         [NotNull]
-        internal Transform[] GetChildsWithoutChecks([NotNull] Transform root)
+        internal static Transform[] GetChildsWithoutChecks([NotNull] Transform root)
         {
             var childsCount = root.childCount;
             if (childsCount == 0)
@@ -40,6 +57,13 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
                 childs[i] = root.GetChild(i);
 
             return childs;
+        }
+        
+        internal static void ClearChildsWithoutChecks([NotNull] Transform root)
+        {
+            var childs = GetChildsWithoutChecks(root);
+            for (int i = 0; i < childs.Length; i++)
+                ObjectUtilities.AutoDestroyWithoutChecks(childs[i].gameObject);
         }
     }
 }
