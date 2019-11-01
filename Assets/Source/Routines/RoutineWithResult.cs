@@ -6,6 +6,11 @@ namespace Omega.Routines
     {
         private TResult _result;
 
+        internal void SetResultInternal(TResult result)
+        {
+            _result = result;
+        }
+        
         protected void SetResult(TResult result)
         {
             _result = result;
