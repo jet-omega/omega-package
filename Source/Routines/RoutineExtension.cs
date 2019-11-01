@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 
 namespace Omega.Routines
 {
@@ -46,8 +47,13 @@ namespace Omega.Routines
             result = new Routine<TResult>.ResultContainer(original);
             return original;
         }
-
+        
         public static TRoutine ExceptionHandler<TRoutine>(this TRoutine original, Action<Exception> exceptionHandler)
+            where TRoutine : Routine
+            => ExceptionHandler(original, (e, r) => exceptionHandler(e));
+
+        public static TRoutine ExceptionHandler<TRoutine>(this TRoutine original,
+            Action<Exception, Routine> exceptionHandler)
             where TRoutine : Routine
         {
             if (original == null)
@@ -56,6 +62,21 @@ namespace Omega.Routines
                 throw new ArgumentNullException(nameof(exceptionHandler));
 
             original.SetExceptionHandlerInternal(exceptionHandler);
+
+            return original;
+        }
+
+        public static TRoutine CreationStackTrace<TRoutine>(this TRoutine original)
+            where TRoutine : Routine
+        {
+            if (original == null)
+                throw new NullReferenceException(nameof(original));
+            if (!original.IsNotStarted)
+                throw new AggregateException();
+
+            var stackTrace = new StackTrace(1, true).ToString();
+
+            original.SetCreationStackTraceInternal(stackTrace);
 
             return original;
         }

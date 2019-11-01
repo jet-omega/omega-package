@@ -1,10 +1,8 @@
 using System;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
-
 using Omega.Experimental.Event;
 using Omega.Routines;
-
 using UnityEngine;
 
 
@@ -31,7 +29,7 @@ namespace Omega.Package
 
         public static Exception SetResultCannotCalledWhenRoutineIsNotDefined
             => new AggregateException(Messages.SetResultCannotCalledWhenRoutineIsNotDefined);
-        
+
         public static class Messages
         {
             #region ActionHandlerUnityAdapter
@@ -51,8 +49,7 @@ namespace Omega.Package
                 $"Action was called in the destroyed object, according to the {nameof(InvocationPolicy)}, however, this behavior is not considered correct";
 
             #endregion
-
-
+            
             // Указанный обработчик не является объектом унаследованным от UnityEngine.Object 
             public static readonly string HandlerIsNotInstanceOfUnityObject =
                 $"The specified handler is not an object inherited from {nameof(UnityEngine.Object)}";
@@ -77,6 +74,25 @@ namespace Omega.Package
                 $"It is not possible to set the result because the {nameof(Routine)} is not defined. " +
                 $"If {nameof(RoutineControl)} is used as a bridge between {nameof(IEnumerator)} and {nameof(Routine)}, " +
                 $"Then you must use {nameof(Routine)}.{nameof(Routine.ByEnumerator)}";
+
+            // В одной из рутин было выброшено исключение
+            public static readonly string ExceptionInRoutineMessageFormattable =
+                "An exception was thrown in one of the routines (routine: {0}, inner exception: {1})";
+
+            
+            
+            public static string CreateExceptionMessageForRoutine(Routine routine, Exception exception)
+            {
+                var creationStackTrace = routine.GetCreationStackTraceInternal();
+                var message = string.Format(ExceptionInRoutineMessageFormattable, routine, exception);
+
+                if (string.IsNullOrEmpty(creationStackTrace))
+                {
+                    return message + "\n\nYou can define ROUTINE_CREATION_STACKTRACE word or call CreationStackTrace method at routine to show creation stack trace";
+                }
+
+                return message + $"\n\nRoutine was creation here:\n{creationStackTrace}";
+            }
 
             public static string ObjectIsNotInstanceOfIEventHandler(Type eventType)
                 => string.Format(ObjectIsNotInstanceOfIEventHandlerFormattable,
