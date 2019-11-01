@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using NUnit.Framework;
-using Omega.Experimental.Event;
+using Omega.Package;
 using UnityEngine.TestTools;
 
 namespace Omega.Routines.Tests
@@ -10,6 +10,7 @@ namespace Omega.Routines.Tests
     {
         private bool flagByEnumeratorShouldProcessCoroutineTest;
         private bool flagByEnumeratorWithControlShouldProvideRoutineTest;
+        private bool flagByEnumeratorWithArgAndRoutineControlShouldProvideRoutine;
 
         [UnityTest]
         public IEnumerator ByEnumeratorShouldProcessCoroutineTest()
@@ -52,6 +53,41 @@ namespace Omega.Routines.Tests
                 () => routineControl.SetResult(true),
                 ExceptionHelper.Messages.SetResultCannotCalledWhenRoutineIsNotDefined,
                 Array.Empty<object>());
+        }
+
+        [UnityTest]
+        public IEnumerator ByEnumeratorWithArgAndRoutineControlShouldProvideRoutineTest()
+        {
+            flagByEnumeratorWithArgAndRoutineControlShouldProvideRoutine = false;
+            yield return Routine.ByEnumerator(ByEnumeratorWithArgAndRoutineControlShouldProvideRoutine, true);
+            flagByEnumeratorWithArgAndRoutineControlShouldProvideRoutine = false;
+        }
+
+
+        [UnityTest]
+        public IEnumerator ByEnumeratorWithArgAndRoutineControlResultShouldProvideRoutineTest()
+        {
+            yield return Routine.ByEnumerator<bool, bool>(
+                ByEnumeratorWithArgAndRoutineControlResultShouldProvideRoutine, true)
+                .Result(out var result);
+            
+            Assert.True(result.Result);
+        }
+
+        private IEnumerator ByEnumeratorWithArgAndRoutineControlShouldProvideRoutine(bool arg,
+            RoutineControl routineControl)
+        {
+            Assert.True(arg);
+            Assert.NotNull(routineControl.GetRoutine());
+            yield return null;
+        }
+
+        private IEnumerator ByEnumeratorWithArgAndRoutineControlResultShouldProvideRoutine(bool arg,
+            RoutineControl<bool> routineControl)
+        {
+            Assert.True(arg);
+            routineControl.SetResult(true);
+            yield return null;
         }
 
         private IEnumerator ByEnumeratorWithResultShouldProvideResult(RoutineControl<bool> routineControl)

@@ -54,29 +54,47 @@ namespace Omega.Routines
 
         public static Routine<T> FromResult<T>(T result) => new FromResultRoutine<T>(result);
 
-        public static EnumeratorAsRoutine ByEnumerator(IEnumerator enumerator)
+        public static ByEnumeratorRoutine ByEnumerator(IEnumerator enumerator)
         {
-            if(enumerator == null)
+            if (enumerator == null)
                 throw new ArgumentNullException(nameof(enumerator));
-            
-            return new EnumeratorAsRoutine(enumerator);
+
+            return new ByEnumeratorRoutine(enumerator);
         }
 
-        public static EnumeratorAsRoutineWithController ByEnumerator(Func<RoutineControl, IEnumerator> enumeratorGetter)
+        public static ByEnumeratorRoutine ByEnumerator(Func<RoutineControl, IEnumerator> enumeratorGetter)
         {
-            if(enumeratorGetter == null)
+            if (enumeratorGetter == null)
                 throw new ArgumentNullException(nameof(enumeratorGetter));
-            
-            return new EnumeratorAsRoutineWithController(enumeratorGetter);
+
+            return new ByEnumeratorRoutine(enumeratorGetter);
         }
 
-        public static EnumeratorAsRoutineWithResult<T> ByEnumerator<T>(
-            Func<RoutineControl<T>, IEnumerator> enumeratorGetter)
+        public static ByEnumeratorRoutine<TResult> ByEnumerator<TResult>(
+            Func<RoutineControl<TResult>, IEnumerator> enumeratorGetter)
         {
-            if(enumeratorGetter == null)
+            if (enumeratorGetter == null)
                 throw new ArgumentNullException(nameof(enumeratorGetter));
-            
-            return new EnumeratorAsRoutineWithResult<T>(enumeratorGetter);
+
+            return new ByEnumeratorRoutine<TResult>(enumeratorGetter);
+        }
+
+        public static ByEnumeratorRoutine ByEnumerator<TArg>(Func<TArg, RoutineControl, IEnumerator> enumeratorGetter,
+            TArg arg)
+        {
+            if (enumeratorGetter == null)
+                throw new ArgumentNullException(nameof(enumeratorGetter));
+
+            return new ByEnumeratorRoutine(e => enumeratorGetter(arg, e));
+        }
+
+        public static ByEnumeratorRoutine<TResult> ByEnumerator<TArg, TResult>(
+            Func<TArg, RoutineControl<TResult>, IEnumerator> enumeratorGetter, TArg arg)
+        {
+            if (enumeratorGetter == null)
+                throw new ArgumentNullException(nameof(enumeratorGetter));
+
+            return new ByEnumeratorRoutine<TResult>(e => enumeratorGetter(arg, e));
         }
     }
 }

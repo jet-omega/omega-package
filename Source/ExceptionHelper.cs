@@ -1,14 +1,17 @@
 using System;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
-using JetBrains.Annotations;
+
+using Omega.Experimental.Event;
 using Omega.Routines;
+
 using UnityEngine;
 
-namespace Omega.Experimental.Event
+
+namespace Omega.Package
 {
     [SuppressMessage("ReSharper", "MemberHidesStaticFromOuterClass")]
-    public static class ExceptionHelper
+    internal static class ExceptionHelper
     {
         public static Exception ActionIsNotInstanceOfUnityObjectMethod
             => new InvalidCastException(Messages.ActionIsNotInstanceOfUnityObjectMethod);
