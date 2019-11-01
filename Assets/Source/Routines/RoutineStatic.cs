@@ -50,5 +50,7 @@ namespace Omega.Routines
 
             return new GroupRoutine(routines);
         }
+
+        public static Routine<T> FromResult<T>(T result) => new FromResultRoutine<T>(result);
     }
 }
