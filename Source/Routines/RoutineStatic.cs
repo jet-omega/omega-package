@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
@@ -52,5 +53,30 @@ namespace Omega.Routines
         }
 
         public static Routine<T> FromResult<T>(T result) => new FromResultRoutine<T>(result);
+
+        public static EnumeratorAsRoutine ByEnumerator(IEnumerator enumerator)
+        {
+            if(enumerator == null)
+                throw new ArgumentNullException(nameof(enumerator));
+            
+            return new EnumeratorAsRoutine(enumerator);
+        }
+
+        public static EnumeratorAsRoutineWithController ByEnumerator(Func<RoutineControl, IEnumerator> enumeratorGetter)
+        {
+            if(enumeratorGetter == null)
+                throw new ArgumentNullException(nameof(enumeratorGetter));
+            
+            return new EnumeratorAsRoutineWithController(enumeratorGetter);
+        }
+
+        public static EnumeratorAsRoutineWithResult<T> ByEnumerator<T>(
+            Func<RoutineControl<T>, IEnumerator> enumeratorGetter)
+        {
+            if(enumeratorGetter == null)
+                throw new ArgumentNullException(nameof(enumeratorGetter));
+            
+            return new EnumeratorAsRoutineWithResult<T>(enumeratorGetter);
+        }
     }
 }
