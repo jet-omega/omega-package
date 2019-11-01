@@ -3,19 +3,34 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
+using Omega.Package;
 using Debug = UnityEngine.Debug;
 
 namespace Omega.Routines
 {
     public abstract partial class Routine : IEnumerator
     {
-        public static readonly Action<Exception> DefaultExceptionHandler = Debug.LogException;
+        public const bool RoutineCreationStackTraceEnabled =
+#if ROUTINE_CREATION_STACKTRACE
+            true;
+#else
+            false;
+#endif
+
+        public static readonly Action<Exception, Routine> DefaultExceptionHandler
+            = delegate(Exception exception, Routine routine)
+            {
+                var message = ExceptionHelper.Messages.CreateExceptionMessageForRoutine(routine, exception);
+                Debug.LogError(message);
+            };
 
         private RoutineStatus _status;
         [CanBeNull] private Exception _exception;
         [CanBeNull] private IEnumerator _routine;
         [CanBeNull] private Action _callback;
-        [NotNull] private Action<Exception> _exceptionHandler = DefaultExceptionHandler;
+        [NotNull] private Action<Exception, Routine> _exceptionHandler = DefaultExceptionHandler;
+
+        [CanBeNull] private string _creationStackTrace;
 
         public bool IsError => _status == RoutineStatus.Error;
         public bool IsProcessing => _status == RoutineStatus.Processing;
@@ -23,6 +38,13 @@ namespace Omega.Routines
         public bool IsNotStarted => _status == RoutineStatus.ReadyToStart;
 
         public Exception Exception => IsError ? _exception : throw new Exception();
+
+        protected Routine()
+        {
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+            if (RoutineCreationStackTraceEnabled)
+                _creationStackTrace = new StackTrace(1, true).ToString();
+        }
 
         protected abstract IEnumerator RoutineUpdate();
 
@@ -53,7 +75,7 @@ namespace Omega.Routines
                 _exception = e;
                 _status = RoutineStatus.Error;
 
-                _exceptionHandler.Invoke(e);
+                _exceptionHandler.Invoke(e, this);
 
                 return false;
             }
@@ -82,8 +104,16 @@ namespace Omega.Routines
         internal void AddCallbackInternal(Action callback)
             => _callback += callback;
 
-        internal void SetExceptionHandlerInternal(Action<Exception> exceptionHandler) =>
-            _exceptionHandler = exceptionHandler;
+        internal void SetCreationStackTraceInternal(string stackTrace)
+        {
+            _creationStackTrace = stackTrace;
+        }
+
+        internal void SetExceptionHandlerInternal(Action<Exception, Routine> exceptionHandler)
+            => _exceptionHandler = exceptionHandler;
+
+        internal string GetCreationStackTraceInternal()
+            => _creationStackTrace;
 
         private enum RoutineStatus
         {
