@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
@@ -49,6 +50,51 @@ namespace Omega.Routines
                 throw new ArgumentNullException(nameof(routines));
 
             return new GroupRoutine(routines);
+        }
+
+        public static Routine<T> FromResult<T>(T result) => new FromResultRoutine<T>(result);
+
+        public static ByEnumeratorRoutine ByEnumerator(IEnumerator enumerator)
+        {
+            if (enumerator == null)
+                throw new ArgumentNullException(nameof(enumerator));
+
+            return new ByEnumeratorRoutine(enumerator);
+        }
+
+        public static ByEnumeratorRoutine ByEnumerator(Func<RoutineControl, IEnumerator> enumeratorGetter)
+        {
+            if (enumeratorGetter == null)
+                throw new ArgumentNullException(nameof(enumeratorGetter));
+
+            return new ByEnumeratorRoutine(enumeratorGetter);
+        }
+
+        public static ByEnumeratorRoutine<TResult> ByEnumerator<TResult>(
+            Func<RoutineControl<TResult>, IEnumerator> enumeratorGetter)
+        {
+            if (enumeratorGetter == null)
+                throw new ArgumentNullException(nameof(enumeratorGetter));
+
+            return new ByEnumeratorRoutine<TResult>(enumeratorGetter);
+        }
+
+        public static ByEnumeratorRoutine ByEnumerator<TArg>(Func<TArg, RoutineControl, IEnumerator> enumeratorGetter,
+            TArg arg)
+        {
+            if (enumeratorGetter == null)
+                throw new ArgumentNullException(nameof(enumeratorGetter));
+
+            return new ByEnumeratorRoutine(e => enumeratorGetter(arg, e));
+        }
+
+        public static ByEnumeratorRoutine<TResult> ByEnumerator<TArg, TResult>(
+            Func<TArg, RoutineControl<TResult>, IEnumerator> enumeratorGetter, TArg arg)
+        {
+            if (enumeratorGetter == null)
+                throw new ArgumentNullException(nameof(enumeratorGetter));
+
+            return new ByEnumeratorRoutine<TResult>(e => enumeratorGetter(arg, e));
         }
     }
 }

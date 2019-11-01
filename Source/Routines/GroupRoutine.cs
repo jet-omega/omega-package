@@ -9,12 +9,12 @@ namespace Omega.Routines
         private IEnumerator[] _processingRoutines;
         private readonly Routine[] _routines;
 
-        public GroupRoutine(IEnumerable<Routine> routines)
+        internal GroupRoutine(IEnumerable<Routine> routines)
         {
             _routines = routines.ToArray();
         }
 
-        public GroupRoutine(params Routine[] routines)
+        internal GroupRoutine(params Routine[] routines)
             : this((IEnumerable<Routine>) routines)
         {
         }
@@ -23,7 +23,7 @@ namespace Omega.Routines
         {
             bool MoveNextAll()
             {
-                bool flag = false;
+                var flag = false;
                 for (int i = 0; i < _processingRoutines.Length; i++)
                     flag |= _processingRoutines[i].MoveNext();
 
@@ -31,22 +31,24 @@ namespace Omega.Routines
             }
 
             if (_processingRoutines == null)
-                _processingRoutines = CreateEnumeratorsFromRoutines(_routines);
+                _processingRoutines = CastToEnumerators(_routines);
 
             while (MoveNextAll())
                 yield return null;
         }
 
-        public GroupRoutine ParallelsRoutines(out Routine[] routines)
+        public GroupRoutine Routines(out Routine[] routines)
         {
-            routines = _processingRoutines.Cast<Routine>().ToArray();
+            routines = _routines.ToArray();
             return this;
         }
 
-        //TODO: OPTIMIZE
-        private IEnumerator[] CreateEnumeratorsFromRoutines(Routine[] routines) =>
-            routines
-                .Cast<IEnumerator>()
-                .ToArray();
+        private IEnumerator[] CastToEnumerators(Routine[] routines)
+        {
+            var processingResult = new IEnumerator[routines.Length];
+            for (int i = 0; i < processingResult.Length; i++)
+                processingResult[i] = routines[i];
+            return processingResult;
+        }
     }
 }

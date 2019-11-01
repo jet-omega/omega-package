@@ -10,7 +10,7 @@ namespace Omega.Routines
         private readonly Action _action;
         private string _initialInvokeStackTrace;
 
-        public TaskRoutine(Action action)
+        internal TaskRoutine(Action action)
         {
             _action = action ?? throw new ArgumentNullException(nameof(action));
         }

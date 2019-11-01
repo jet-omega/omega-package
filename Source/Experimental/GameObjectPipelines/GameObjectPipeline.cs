@@ -14,41 +14,6 @@ namespace Omega.Tools
     {
         private List<IPipelineElement> _pipelineElements = new List<IPipelineElement>();
 
-        public PipelineElements.AddComponent<T> AddComponent<T>() where T : Component
-        {
-            var element = new PipelineElements.AddComponent<T>();
-            _pipelineElements.Add(element);
-            return element;
-        }
-
-        public PipelineElements.MissingComponent<T> MissingComponent<T>() where T : Component
-        {
-            var element = new PipelineElements.MissingComponent<T>();
-            _pipelineElements.Add(element);
-            return element;
-        }
-
-        public PipelineElements.SetLayer SetLayer()
-        {
-            var element = new PipelineElements.SetLayer();
-            _pipelineElements.Add(element);
-            return element;
-        }
-
-        public PipelineElements.SetName SetName()
-        {
-            var element = new PipelineElements.SetName();
-            _pipelineElements.Add(element);
-            return element;
-        }
-
-        public PipelineElements.SetTag SetTag()
-        {
-            var element = new PipelineElements.SetTag();
-            _pipelineElements.Add(element);
-            return element;
-        }
-
         public void RemoveElement(IPipelineElement element)
             => _pipelineElements.Remove(element);
 
@@ -141,6 +106,36 @@ namespace Omega.Tools
 
             public void Execute(GameObject gameObject)
                 => gameObject.tag = _tag;
+        }
+
+        public class Custom : IPipelineElement
+        {
+            private readonly Action<GameObject> _action;
+
+            public Custom(Action<GameObject> action)
+            {
+                _action = action ?? throw new ArgumentNullException(nameof(action));
+            }
+
+            public void Execute(GameObject gameObject)
+            {
+                _action(gameObject);
+            }
+
+            protected bool Equals(Custom other)
+            {
+                return other != null && other._action == _action;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return Equals(obj as Custom);
+            }
+
+            public override int GetHashCode()
+            {
+                return _action.GetHashCode();
+            }
         }
     }
 }

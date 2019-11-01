@@ -16,6 +16,20 @@ namespace Omega.Tools.Tests.GameObjectFactories
             Object.DestroyImmediate(prefab);
         }
 
+        [Test]
+        public void CustomShouldProcessCustomLogicTest()
+        {
+            var prefab = GameObjectFactory.New().AddComponent<SomeComponent>().SetName("Hello").Build();
+            var targetName = "key name for GameObject";
+            var gameObject = GameObjectFactory.Prefab(prefab)
+                .Custom(go => go.name = targetName)
+                .Build();
+
+            Assert.AreEqual(targetName, gameObject.name);
+            
+            Object.DestroyImmediate(gameObject);
+        }
+        
         private class SomeComponent : MonoBehaviour
         {
         }
