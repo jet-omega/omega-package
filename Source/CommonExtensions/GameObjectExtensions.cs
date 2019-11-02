@@ -1,6 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 using Omega.Tools;
+using Omega.Tools.Experimental.UtilitiesAggregator;
 using UnityEngine;
 
 /// <summary>
@@ -29,7 +30,7 @@ public static class GameObjectExtensions
         if (!gameObject)
             throw new MissingReferenceException(nameof(gameObject));
 
-        return GameObjectUtility.MissingComponentWithoutChecks<T>(gameObject);
+        return GameObjectUtilities.MissingComponentWithoutChecks<T>(gameObject);
     }
 
     /// <summary>
@@ -54,7 +55,7 @@ public static class GameObjectExtensions
         if (!gameObject)
             throw new MissingReferenceException(nameof(gameObject));
 
-        return GameObjectUtility.TryGetComponentWithoutChecks(gameObject, out component);
+        return GameObjectUtilities.TryGetComponentWithoutChecks(gameObject, out component);
     }
 
     /// <summary>
@@ -72,7 +73,7 @@ public static class GameObjectExtensions
         if (!gameObject)
             throw new MissingReferenceException(nameof(gameObject));
 
-        return TransformUtility.GetChildsWithoutChecks(gameObject.transform);
+        return TransformUtilities.GetChildsWithoutChecks(gameObject.transform);
     }
 
     /// <summary>

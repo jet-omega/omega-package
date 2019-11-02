@@ -29,7 +29,7 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
         [NotNull]
         internal RectTransform[] GetChildsWithoutChecks([NotNull] RectTransform rectTransform)
         {
-            var transformChilds = TransfromUtilites.GetChildsWithoutChecks(rectTransform);
+            var transformChilds = TransformUtilities.GetChildsWithoutChecks(rectTransform);
 
             if (transformChilds.Length == 0)
                 return Array.Empty<RectTransform>();

@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections;
 using NUnit.Framework;
+using Omega.Experimental;
 using Omega.Tools;
+using Omega.Tools.Experimental.UtilitiesAggregator;
 using UnityEngine;
 using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
 
 namespace Omega.Tools.Tests
 {
-    public sealed class GameObjectUtilityTests
+    public sealed class GameObjectUtilitiesTests
     {
         [Test]
         public void MissingComponentShouldAddComponentWhenItIsNotOnGameObjectTest()
@@ -16,13 +18,12 @@ namespace Omega.Tools.Tests
             var gameObjectInstance =
                 new GameObject(nameof(MissingComponentShouldAddComponentWhenItIsNotOnGameObjectTest));
 
-            var boxColliderByMissingComponent = GameObjectUtility.MissingComponent<BoxCollider>(gameObjectInstance);
+            var boxColliderByMissingComponent = Utilities.GameObject.MissingComponent<BoxCollider>(gameObjectInstance);
             var boxCollider = gameObjectInstance.GetComponent<BoxCollider>();
 
             Assert.AreEqual(boxCollider, boxColliderByMissingComponent);
 
-            Object.DestroyImmediate(gameObjectInstance);
-        }
+            Utilities.Object.AutoDestroy(gameObjectInstance);        }
 
         [Test]
         public void MissingComponentShouldNotAddComponentWhenItIsOnGameObjectTest()
@@ -31,12 +32,11 @@ namespace Omega.Tools.Tests
                 new GameObject(nameof(MissingComponentShouldNotAddComponentWhenItIsOnGameObjectTest));
 
             var boxCollider = gameObjectInstance.AddComponent<BoxCollider>();
-            var boxColliderByMissingComponent = GameObjectUtility.MissingComponent<BoxCollider>(gameObjectInstance);
+            var boxColliderByMissingComponent = Utilities.GameObject.MissingComponent<BoxCollider>(gameObjectInstance);
 
             Assert.AreEqual(boxCollider, boxColliderByMissingComponent);
 
-            Object.DestroyImmediate(gameObjectInstance);
-        }
+            Utilities.Object.AutoDestroy(gameObjectInstance);        }
 
         [Test]
         public void MissingComponentShouldThrowMissingReferenceExceptionWhenParameterIsDestroyedGameObjectTest()
@@ -46,10 +46,10 @@ namespace Omega.Tools.Tests
 
             var boxCollider = gameObjectInstance.AddComponent<BoxCollider>();
 
-            Object.DestroyImmediate(gameObjectInstance);
-
+            Utilities.Object.AutoDestroy(gameObjectInstance);
+            
             Assert.Throws<MissingReferenceException>(() =>
-                GameObjectUtility.MissingComponent<BoxCollider>(gameObjectInstance));
+                Utilities.GameObject.MissingComponent<BoxCollider>(gameObjectInstance));
         }
 
         [Test]
@@ -57,7 +57,7 @@ namespace Omega.Tools.Tests
         {
             Assert.Throws<ArgumentNullException>(() =>
                 // ReSharper disable once AssignNullToNotNullAttribute
-                GameObjectUtility.MissingComponent<BoxCollider>(null));
+                Utilities.GameObject.MissingComponent<BoxCollider>(null));
         }
     }
 }

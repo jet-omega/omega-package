@@ -66,7 +66,6 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
         /// <exception cref="ArgumentNullException">Параметр <param name="gameObject"/>> указывает на null</exception>
         /// <exception cref="MissingReferenceException">Параметр <param name="gameObject"/>> указывает на уничтоженный объект</exception>
         public bool TryGetComponent<T>([NotNull] GameObject gameObject, [CanBeNull] out T component)
-            where T : Component
         {
             if (ReferenceEquals(gameObject, null))
                 throw new ArgumentNullException(nameof(gameObject));
@@ -84,7 +83,7 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
         /// <returns>true - компонент с заданном типом присутствует на объекте, иначе false</returns>
         /// <exception cref="ArgumentNullException">Параметр <param name="gameObject"/>>указывает на null</exception>
         /// <exception cref="MissingReferenceException">Параметр <param name="gameObject"/>>указывает на уничтоженный объект</exception>
-        public bool ContainsComponent<T>([NotNull] GameObject gameObject) where T : Component
+        public bool ContainsComponent<T>([NotNull] GameObject gameObject)
         {
             if (ReferenceEquals(gameObject, null))
                 throw new ArgumentNullException(nameof(gameObject));
@@ -106,10 +105,9 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static bool TryGetComponentWithoutChecks<T>([NotNull] GameObject gameObject,
-            [CanBeNull] out T component)
-            where T : Component
-        // Проверка на null выбрана намеренно, так как GetComponent никогда не вернет уничтоженный объект
-        // https://docs.unity3d.com/ScriptReference/GameObject.GetComponent.html
+                [CanBeNull] out T component)
+            // Проверка на null выбрана намеренно, так как GetComponent никогда не вернет уничтоженный объект
+            // https://docs.unity3d.com/ScriptReference/GameObject.GetComponent.html
             => (component = gameObject.GetComponent<T>()) != null;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -120,9 +118,9 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
             => (component = gameObject.GetComponent(componentType)) != null;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static bool ContainsComponentWithoutChecks<T>([NotNull] GameObject gameObject) where T : Component
-        // Проверка на null выбрана намеренно, так как GetComponent никогда не вернет уничтоженный объект
-        // https://docs.unity3d.com/ScriptReference/GameObject.GetComponent.html
+        internal static bool ContainsComponentWithoutChecks<T>([NotNull] GameObject gameObject)
+            // Проверка на null выбрана намеренно, так как GetComponent никогда не вернет уничтоженный объект
+            // https://docs.unity3d.com/ScriptReference/GameObject.GetComponent.html
             => gameObject.GetComponent<T>() != null;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

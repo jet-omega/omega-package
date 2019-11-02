@@ -1,13 +1,12 @@
 using System;
 using JetBrains.Annotations;
-using Omega.Experimental;
 using UnityEngine;
 
 namespace Omega.Tools.Experimental.UtilitiesAggregator
 {
-    public sealed class TransfromUtilites
+    public sealed class TransformUtilities
     {
-        internal TransfromUtilites()
+        internal TransformUtilities()
         {
         }
 

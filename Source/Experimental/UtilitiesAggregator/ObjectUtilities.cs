@@ -27,6 +27,33 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
             AutoDestroyWithoutChecks(obj);
         }
 
+        public void AutoDestroy(Object obj, bool useDestroyImmediate)
+        {
+            if (ReferenceEquals(obj, null))
+                throw new ArgumentNullException(nameof(obj));
+            if (!obj)
+                throw new MissingReferenceException(nameof(obj));
+
+            AutoDestroyWithoutChecks(obj, useDestroyImmediate);
+        }
+
+        public void AutoDestroy(params Object[] objs)
+        {
+            if (objs == null)
+                throw new ArgumentNullException(nameof(objs));
+
+            for (int i = 0; i < objs.Length; i++)
+                AutoDestroy(objs[i]);
+        }
+
+        public void AutoDestroy(bool useDestroyImmediate, params Object[] objs)
+        {
+            if (objs == null)
+                throw new ArgumentNullException(nameof(objs));
+
+            for (int i = 0; i < objs.Length; i++)
+                AutoDestroy(objs[i], useDestroyImmediate);
+        }
 
 #if !UNITY_EDITOR
         [System.Runtime.CompilerServices.MethodImpl(
@@ -40,6 +67,23 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
             else Object.Destroy(obj);
 #else
             Object.Destroy(obj);
+#endif
+        }
+
+#if !UNITY_EDITOR
+        [System.Runtime.CompilerServices.MethodImpl(
+            System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+#endif
+        internal static void AutoDestroyWithoutChecks(Object obj, bool useDestroyImmediate)
+        {
+#if UNITY_EDITOR
+            if (!Application.isPlaying || useDestroyImmediate)
+                Object.DestroyImmediate(obj, false);
+            else Object.Destroy(obj);
+#else
+            if (useDestroyImmediate)
+                Object.DestroyImmediate(obj, false);
+            else Object.Destroy(obj);
 #endif
         }
     }
