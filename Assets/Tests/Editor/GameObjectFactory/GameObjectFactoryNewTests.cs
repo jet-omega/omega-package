@@ -1,6 +1,6 @@
 using NUnit.Framework;
+using Omega.Experimental;
 using UnityEngine;
-using UnityEditor.Build.Content;
 
 namespace Omega.Tools.Tests.GameObjectFactories
 {
@@ -10,8 +10,8 @@ namespace Omega.Tools.Tests.GameObjectFactories
         public void AddComponentShouldCreateGameObjectWithComponentTest()
         {
             var gameObject = GameObjectFactory.New().AddComponent<SomeComponent>().Build();
-            Assert.True(GameObjectUtility.ContainsComponent<SomeComponent>(gameObject));
-            Object.DestroyImmediate(gameObject);
+            Assert.True(Utilities.GameObject.ContainsComponent<SomeComponent>(gameObject));
+            Utilities.Object.AutoDestroy(gameObject);
         }
 
         [Test]
@@ -19,8 +19,8 @@ namespace Omega.Tools.Tests.GameObjectFactories
         {
             var gameObject = GameObjectFactory.New().AddComponent<SomeComponent>().RemoveComponent<SomeComponent>()
                 .Build();
-            Assert.False(GameObjectUtility.ContainsComponent<SomeComponent>(gameObject));
-            Object.DestroyImmediate(gameObject);
+            Assert.False(Utilities.GameObject.ContainsComponent<SomeComponent>(gameObject));
+            Utilities.Object.AutoDestroy(gameObject);
         }
 
         [Test]
@@ -29,7 +29,7 @@ namespace Omega.Tools.Tests.GameObjectFactories
             const string testName = "TestName";
             var gameObject = GameObjectFactory.New().SetName(testName).Build();
             Assert.AreEqual(testName, gameObject.name);
-            Object.DestroyImmediate(gameObject);
+            Utilities.Object.AutoDestroy(gameObject);
         }
 
         [Test]
@@ -38,7 +38,7 @@ namespace Omega.Tools.Tests.GameObjectFactories
             const int testLayer = 0x2;
             var gameObject = GameObjectFactory.New().SetLayer(testLayer).Build();
             Assert.AreEqual(testLayer, gameObject.layer);
-            Object.DestroyImmediate(gameObject);
+            Utilities.Object.AutoDestroy(gameObject);
         }
 
         [Test]
@@ -47,7 +47,7 @@ namespace Omega.Tools.Tests.GameObjectFactories
             var newParent = new GameObject().transform;
             var gameObject = GameObjectFactory.New().SetParent(newParent, true).Build();
             Assert.AreEqual(newParent, gameObject.transform.parent);
-            Object.DestroyImmediate(newParent.gameObject);
+            Utilities.Object.AutoDestroy(newParent.gameObject);
         }
 
         [Test]
@@ -60,7 +60,7 @@ namespace Omega.Tools.Tests.GameObjectFactories
 
             Assert.AreEqual(targetName, gameObject.name);
             
-            Object.DestroyImmediate(gameObject);
+            Utilities.Object.AutoDestroy(gameObject);
         }
 
 

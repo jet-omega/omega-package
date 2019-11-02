@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace Omega.Routines.Tests
 {
-    public class OtherThreadRoutineTests
+    public class TaskRoutineTests
     {
         [Test]
         public void RoutinePropertyIsNotStartedShouldReturnFalseWhenCallStartThreadTest()
