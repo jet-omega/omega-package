@@ -77,7 +77,9 @@ namespace Omega.Package
 
             // В одной из рутин было выброшено исключение
             public static readonly string ExceptionInRoutineMessageFormattable =
-                "An exception was thrown in one of the routines (routine: {0}, inner exception: {1})";
+                "An exception was thrown in one of the routines " +
+                "\nRoutine: {0}" +
+                "\n\tException: {1})";
 
             
             
