@@ -6,12 +6,14 @@ namespace Omega.Routines
 {
     public sealed class GroupRoutine : Routine
     {
-        private IEnumerator[] _processingRoutines;
         private readonly Routine[] _routines;
+        private readonly Stack<IEnumerator>[] _enumeratorsStacks;
 
         internal GroupRoutine(IEnumerable<Routine> routines)
         {
             _routines = routines.ToArray();
+            _enumeratorsStacks = _routines.Select(e => new Stack<IEnumerator>(new[] {e}))
+                .ToArray();
         }
 
         internal GroupRoutine(params Routine[] routines)
@@ -24,14 +26,28 @@ namespace Omega.Routines
             bool MoveNextAll()
             {
                 var flag = false;
-                for (int i = 0; i < _processingRoutines.Length; i++)
-                    flag |= _processingRoutines[i].MoveNext();
-
+                for (int i = 0; i < _enumeratorsStacks.Length; i++)
+                {
+                    var stack = _enumeratorsStacks[i];
+                    if (stack.Count > 0)
+                    {
+                        var topStack = stack.Peek();
+                        if (topStack.MoveNext())
+                        {
+                            flag = true;
+                            var currentTopStackValue = topStack.Current;
+                            if (currentTopStackValue is IEnumerator enumerator)
+                                stack.Push(enumerator);
+                        }
+                        else
+                        {
+                            stack.Pop();
+                            i--;
+                        }
+                    }
+                }
                 return flag;
             }
-
-            if (_processingRoutines == null)
-                _processingRoutines = CastToEnumerators(_routines);
 
             while (MoveNextAll())
                 yield return null;
@@ -41,14 +57,6 @@ namespace Omega.Routines
         {
             routines = _routines.ToArray();
             return this;
-        }
-
-        private IEnumerator[] CastToEnumerators(Routine[] routines)
-        {
-            var processingResult = new IEnumerator[routines.Length];
-            for (int i = 0; i < processingResult.Length; i++)
-                processingResult[i] = routines[i];
-            return processingResult;
         }
     }
 }
