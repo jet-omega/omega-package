@@ -1,6 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 using Omega.Tools;
+using Omega.Tools.Experimental.UtilitiesAggregator;
 using UnityEngine;
 
 public static class TransformExtensions
@@ -20,7 +21,7 @@ public static class TransformExtensions
         if (!transform)
             throw new MissingReferenceException(nameof(transform));
 
-        return TransformUtility.GetChildsWithoutChecks(transform);
+        return TransformUtilities.GetChildsWithoutChecks(transform);
     }
 
     /// <summary>

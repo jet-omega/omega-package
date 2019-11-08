@@ -1,5 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
+using Omega.Experimental;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -18,7 +19,7 @@ namespace Omega.Tools.Tests
 
             Assert.AreEqual(bounds, boxCollider.bounds);
             
-            Object.DestroyImmediate(gameObjectInstance);
+            Utilities.Object.AutoDestroy(gameObjectInstance);
         }
 
         [Test]
@@ -36,7 +37,7 @@ namespace Omega.Tools.Tests
 
             var collider = gameObjectInstance.AddComponent<BoxCollider>();
 
-            Object.DestroyImmediate(gameObjectInstance);
+            Utilities.Object.AutoDestroy(gameObjectInstance);
 
             Assert.Throws<MissingReferenceException>(() =>
                 BoxColliderUtility.SetAsBounds(collider, default));

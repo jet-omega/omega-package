@@ -1,5 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
+using Omega.Experimental;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -10,35 +11,34 @@ namespace Omega.Tools.Tests
         [Test]
         public void GetChildsShouldReturnEmptyArrayFromSystemArrayEmpty()
         {
-            var gameObjectInstance = new GameObject(nameof(GetChildsShouldReturnEmptyArrayFromSystemArrayEmpty));
+            var gameObjectInstance = new GameObject();
 
-            var childs = TransformUtility.GetChilds(gameObjectInstance.transform);
+            var childs = Utilities.Transfrom.GetChilds(gameObjectInstance.transform);
 
             Assert.NotNull(childs);
             Assert.Zero(childs.Length);
 
             Assert.AreEqual(childs, Array.Empty<Transform>());
             
-            Object.DestroyImmediate(gameObjectInstance);
+            Utilities.Object.AutoDestroy(gameObjectInstance);
         }
 
         [Test]
         public void GetChildsShouldThrowArgumentNullExceptionWhenParameterIsNull()
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => TransformUtility.GetChilds(null));
+            Assert.Throws<ArgumentNullException>(() => Utilities.Transfrom.GetChilds(null));
         }
 
         [Test]
         public void GetChildsShouldThrowMissingReferenceExceptionWhenParameterWereDestroyed()
         {
-            var gameObjectInstance =
-                new GameObject(nameof(GetChildsShouldThrowMissingReferenceExceptionWhenParameterWereDestroyed));
+            var gameObjectInstance = new GameObject();
 
-            Object.DestroyImmediate(gameObjectInstance);
+            Utilities.Object.AutoDestroy(gameObjectInstance);
 
             Assert.Throws<MissingReferenceException>(() =>
-                TransformUtility.GetChilds(gameObjectInstance.transform));
+                Utilities.Transfrom.GetChilds(gameObjectInstance.transform));
         }
     }
 }

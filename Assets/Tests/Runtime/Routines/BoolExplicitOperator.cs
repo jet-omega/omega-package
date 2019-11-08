@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Threading;
 using NUnit.Framework;
+using Omega.Experimental;
 using UnityEngine.TestTools;
 
 namespace Omega.Routines.Tests
@@ -11,7 +12,7 @@ namespace Omega.Routines.Tests
         [UnityTest]
         public IEnumerator RoutineShouldBeTrueWhenRoutineIsNotProcessingTest()
         {
-            yield return Routine.Delay(0.050f)
+            yield return Routine.Delay(Utilities.Time.FromMilliseconds(25))
                 .GetRoutine(out var routine);
 
             Assert.True(routine);
@@ -20,7 +21,7 @@ namespace Omega.Routines.Tests
         [Test]
         public void RoutineShouldBeFalseWhenRoutineIsNotStartedTest()
         {
-            var routine = Routine.Delay(0.025f);
+            var routine = Routine.Delay(Utilities.Time.FromMilliseconds(25));
             Assert.False(routine); // not started
         }
 
@@ -34,7 +35,7 @@ namespace Omega.Routines.Tests
         [UnityTest]
         public IEnumerator RoutineShouldBeTrueWhenRoutineIsCompleted()
         {
-            var routine = Routine.Delay(0.025f);
+            var routine = Routine.Delay(Utilities.Time.FromMilliseconds(25));
             yield return routine;
             Assert.True(routine); // completed
         }
