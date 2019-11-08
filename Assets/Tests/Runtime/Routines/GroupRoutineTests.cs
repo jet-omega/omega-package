@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -24,6 +25,28 @@ namespace Omega.Routines.Tests
             var deltaTime = DateTime.Now - startTestTime;
 
             Assert.Greater(Utilities.Time.FromMilliseconds(160 + 150), deltaTime.TotalSeconds);
+        }
+
+        [UnityTest]
+        public IEnumerator RoutineShouldProcessNestedTest()
+        {
+            var routines = Enumerable.Range(0, 2).Select(e => new RoutineTest()).ToArray();
+            yield return new GroupRoutine(routines);
+            Assert.True(routines.All(e => e.Flag));
+        }
+
+        private class RoutineTest : Routine
+        {
+            public bool Flag;
+
+            protected override IEnumerator RoutineUpdate()
+            {
+                yield return Task(() =>
+                {
+                    Thread.Sleep(50);
+                    Flag = true;
+                });
+            }
         }
     }
 }
