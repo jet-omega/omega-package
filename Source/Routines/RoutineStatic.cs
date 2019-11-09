@@ -43,6 +43,11 @@ namespace Omega.Routines
             return new GroupRoutine(routines);
         }
 
+        public static Routine FromCompleted()
+        {
+            return new CompletedRoutine();
+        }
+
         [NotNull]
         public static GroupRoutine WhenAll([NotNull] params Routine[] routines)
         {
