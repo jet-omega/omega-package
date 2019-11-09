@@ -57,6 +57,12 @@ namespace Omega.Routines
             if (_routine == null)
             {
                 _routine = RoutineUpdate();
+                if (_routine == null)
+                {
+                    _status = RoutineStatus.Completed;
+                    return false;
+                }
+                
                 _status = RoutineStatus.Processing;
             }
 
