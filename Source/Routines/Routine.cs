@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
 using JetBrains.Annotations;
 using Omega.Package;
@@ -37,7 +36,7 @@ namespace Omega.Routines
         public bool IsComplete => _status == RoutineStatus.Completed;
         public bool IsNotStarted => _status == RoutineStatus.ReadyToStart;
 
-        public Exception Exception => IsError ? _exception : throw new Exception();
+        public Exception Exception => _exception;
 
         protected Routine()
         {
