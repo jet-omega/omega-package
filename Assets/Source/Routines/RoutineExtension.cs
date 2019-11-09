@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using Omega.Tools.Experimental.UtilitiesAggregator;
 
 namespace Omega.Routines
 {
@@ -47,7 +48,17 @@ namespace Omega.Routines
             result = new Routine<TResult>.ResultContainer(original);
             return original;
         }
-        
+
+        public static TRoutine Complete<TRoutine>(this TRoutine original)
+            where TRoutine : Routine
+        {
+            if (original == null)
+                throw new NullReferenceException(nameof(original));
+
+            RoutineUtilities.CompleteWithoutChecks(original);
+            return original;
+        }
+
         public static TRoutine ExceptionHandler<TRoutine>(this TRoutine original, Action<Exception> exceptionHandler)
             where TRoutine : Routine
             => ExceptionHandler(original, (e, r) => exceptionHandler(e));

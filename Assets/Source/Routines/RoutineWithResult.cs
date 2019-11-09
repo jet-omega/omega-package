@@ -1,4 +1,5 @@
-using System;
+using Omega.Routines.Exceptions;
+using Omega.Tools.Experimental.UtilitiesAggregator;
 
 namespace Omega.Routines
 {
@@ -10,7 +11,7 @@ namespace Omega.Routines
         {
             _result = result;
         }
-        
+
         protected void SetResult(TResult result)
         {
             _result = result;
@@ -19,10 +20,25 @@ namespace Omega.Routines
         public TResult GetResult()
         {
             if (IsError)
-                throw new Exception();
-            
-            if(!IsComplete)
-                throw new Exception();
+                throw new RoutineErrorException(
+                    "It is impossible to get the result of the routine, because the routine contains an error." +
+                    " Use the IsError property to determine if the routine contains an error.");
+
+            if (!IsComplete)
+                throw new RoutineNotCompleteException(
+                    "It is not possible to get a routine result because the routine has not yet been completed." +
+                    " Use the IsComplete property to determine the completion of a routine");
+
+            return _result;
+        }
+
+        public TResult WaitResult()
+        {
+            RoutineUtilities.CompleteWithoutChecks(this);
+
+            if (IsError)
+                throw new RoutineErrorException(
+                    "It is impossible to get the result of the routine, because the routine contains an error");
 
             return _result;
         }
@@ -38,10 +54,14 @@ namespace Omega.Routines
                 get
                 {
                     if (_routine.IsError)
-                        throw new Exception();
-                    
-                    if(!_routine.IsComplete)
-                        throw new Exception();
+                        throw new RoutineErrorException(
+                            "It is impossible to get the result, because the routine contains an error." +
+                            $" Use the IsError property in {nameof(Routine)} to determine if the routine contains an error.");
+
+                    if (!_routine.IsComplete)
+                        throw new RoutineNotCompleteException(
+                            "It is not possible to get a result because the routine has not yet been completed." +
+                            $" Use the IsComplete property in {nameof(Routine)} to determine the completion of a routine");
 
                     return _routine._result;
                 }

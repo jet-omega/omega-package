@@ -98,7 +98,7 @@ namespace Omega.Routines
             _callback = null;
         }
 
-        object IEnumerator.Current => (_routine ?? throw new Exception()).Current;
+        object IEnumerator.Current => (_routine ?? throw new AggregateException()).Current;
 
         internal void AddCallbackInternal(Action callback)
             => _callback += callback;
