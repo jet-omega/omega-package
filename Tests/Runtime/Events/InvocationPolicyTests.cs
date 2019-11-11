@@ -118,7 +118,7 @@ namespace Omega.Experimental.Event.Tests
 
             [EventHandler(InvocationPolicy.PreventInvocationFromDestroyedObject)]
             public void ActionWithPreventInvocationFromDestroyedObject(TestEvent e)
-                => invokedAllowInvocationFromDestroyedObjectButLogWarning = true;
+                => invokedPreventInvocationFromDestroyedObject = true;
 
             public void ActionWithoutInvocationPolicy(TestEvent e)
                 => invokedWithoutInvocationPolicy = true;

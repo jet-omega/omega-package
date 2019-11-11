@@ -102,10 +102,9 @@ namespace Omega.Experimental.Event.Tests
 
         private sealed class CustomActionHandler<TEvent> : IEventHandler<TEvent>
         {
-            public Action<TEvent> Action;
-
             public void OnEvent(TEvent arg)
-                => Action?.Invoke(arg);
+            {
+            }
         }
 
         private struct EventManagerTestsEvent
