@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.0] - 2019-11-11
+### Added 
+- New web routines. Lets use `UnityWebRequest` as routine
+- New convertions routines. Lets convert result from `Routine<T1>` to `Routine<T2> `
+
+### Fixes
+- Fix infinity loop in `DelayRoutine` (#67)
+- Solve compilation warnings in unit-test assemblies 
+
+### Deleted
+- Delete `CREATION_STACK_TRACE` word. Now you use only `CreationStackTrace` method in routine
+
 ## [0.7.4] - 2019-11-11
 ### Fiexes
 - Fix ignoring AsyncOperation nested in routine (#69)  
