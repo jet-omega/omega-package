@@ -9,13 +9,6 @@ namespace Omega.Routines
 {
     public abstract partial class Routine : IEnumerator
     {
-        public const bool RoutineCreationStackTraceEnabled =
-#if ROUTINE_CREATION_STACKTRACE
-            true;
-#else
-            false;
-#endif
-
         public static readonly Action<Exception, Routine> DefaultExceptionHandler
             = delegate(Exception exception, Routine routine)
             {
@@ -37,13 +30,6 @@ namespace Omega.Routines
         public bool IsNotStarted => _status == RoutineStatus.ReadyToStart;
 
         public Exception Exception => _exception;
-
-        protected Routine()
-        {
-            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if (RoutineCreationStackTraceEnabled)
-                _creationStackTrace = new StackTrace(1, true).ToString();
-        }
 
         protected abstract IEnumerator RoutineUpdate();
 
