@@ -8,12 +8,20 @@ namespace Omega.Routines
     public partial class Routine
     {
         [NotNull]
-        public static Routine Delay(float interval)
+        public static DelayRoutine Delay(float intervalSeconds)
         {
-            if (interval < 0 || float.IsNaN(interval))
-                throw new ArgumentOutOfRangeException(nameof(interval));
+            if (intervalSeconds < 0 || float.IsNaN(intervalSeconds))
+                throw new ArgumentOutOfRangeException(nameof(intervalSeconds));
 
-            return new DelayRoutine(interval);
+            return new DelayRoutine(TimeSpan.FromSeconds(intervalSeconds));
+        }
+        
+        [NotNull]
+        public static DelayRoutine Delay(TimeSpan interval)
+        {
+            var intervalDuration = interval.Duration();
+            
+            return new DelayRoutine(intervalDuration);
         }
 
         [NotNull]
