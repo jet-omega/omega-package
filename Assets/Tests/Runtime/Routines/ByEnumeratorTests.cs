@@ -10,7 +10,7 @@ namespace Omega.Routines.Tests
     {
         private bool flagByEnumeratorShouldProcessCoroutineTest;
         private bool flagByEnumeratorWithControlShouldProvideRoutineTest;
-        private bool flagByEnumeratorWithArgAndRoutineControlShouldProvideRoutine;
+//        private bool flagByEnumeratorWithArgAndRoutineControlShouldProvideRoutine;
 
         [UnityTest]
         public IEnumerator ByEnumeratorShouldProcessCoroutineTest()
@@ -58,9 +58,9 @@ namespace Omega.Routines.Tests
         [UnityTest]
         public IEnumerator ByEnumeratorWithArgAndRoutineControlShouldProvideRoutineTest()
         {
-            flagByEnumeratorWithArgAndRoutineControlShouldProvideRoutine = false;
+//            flagByEnumeratorWithArgAndRoutineControlShouldProvideRoutine = false;
             yield return Routine.ByEnumerator(ByEnumeratorWithArgAndRoutineControlShouldProvideRoutine, true);
-            flagByEnumeratorWithArgAndRoutineControlShouldProvideRoutine = false;
+//            flagByEnumeratorWithArgAndRoutineControlShouldProvideRoutine = false;
         }
 
 
