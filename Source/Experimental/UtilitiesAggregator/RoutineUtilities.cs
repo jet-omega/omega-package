@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using JetBrains.Annotations;
 using Omega.Routines;
+using UnityEngine;
 
 namespace Omega.Tools.Experimental.UtilitiesAggregator
 {
@@ -27,8 +28,20 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
         public static void CompleteWithoutChecks([NotNull] IEnumerator routine)
         {
             while (routine.MoveNext())
-                if (routine.Current is IEnumerator nestedRoutine)
-                    CompleteWithoutChecks(nestedRoutine);
+                switch (routine.Current)
+                {
+                    case IEnumerator nestedRoutine:
+                        CompleteWithoutChecks(nestedRoutine);
+                        break;
+                    case AsyncOperation asyncOperation:
+                        WaitAsyncOperation(asyncOperation);
+                        break;
+                }
+        }
+
+        private static void WaitAsyncOperation([NotNull] AsyncOperation asyncOperation)
+        {
+            while (!asyncOperation.isDone);
         }
     }
 }
