@@ -109,5 +109,11 @@ namespace Omega.Routines
 
             return new ByEnumeratorRoutine<TResult>(e => enumeratorGetter(arg, e));
         }
+
+        public static Routine<TResult> Convert<TSource, TResult>(Routine<TSource> sourceRoutine,
+            Func<TSource, TResult> converter)
+        {
+            return new ConvertResultRoutine<TSource,TResult>(sourceRoutine, converter);
+        }
     }
 }
