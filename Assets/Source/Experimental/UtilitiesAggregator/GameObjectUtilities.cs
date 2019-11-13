@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -93,6 +94,63 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
             return ContainsComponentWithoutChecks<T>(gameObject);
         }
 
+        [CanBeNull]
+        public Component GetComponentInChildrenFlat([NotNull] GameObject gameObject, [NotNull] Type componentType,
+            bool includeSelf = false)
+        {
+            if (ReferenceEquals(gameObject, null))
+                throw new ArgumentNullException(nameof(gameObject));
+            if (componentType == null)
+                throw new ArgumentNullException(nameof(componentType));
+            if (!gameObject)
+                throw new MissingReferenceException(nameof(gameObject));
+
+            return GetComponentFlatWithoutChecks(gameObject, componentType, includeSelf);
+        }
+
+        [CanBeNull]
+        public Component[] GetComponentsInChildrenFlat([NotNull] GameObject gameObject, [NotNull] Type componentType,
+            bool includeSelf = false)
+        {
+            if (ReferenceEquals(gameObject, null))
+                throw new ArgumentNullException(nameof(gameObject));
+            if (componentType == null)
+                throw new ArgumentNullException(nameof(componentType));
+            if (!gameObject)
+                throw new MissingReferenceException(nameof(gameObject));
+
+            var result = new List<Component>();
+
+            GetComponentsFlatWithoutChecks(gameObject, componentType, result, includeSelf);
+            return result.ToArray();
+        }
+
+        
+        [CanBeNull]
+        public T GetComponentInChildrenFlat<T>([CanBeNull] GameObject gameObject, bool includeSelf = false)
+        {
+            if (ReferenceEquals(gameObject, null))
+                throw new ArgumentNullException(nameof(gameObject));
+            if (!gameObject)
+                throw new MissingReferenceException(nameof(gameObject));
+
+            return GetComponentFlatWithoutChecks<T>(gameObject, includeSelf);
+        }
+
+        [NotNull]
+        public T[] GetComponentsFlat<T>([CanBeNull] GameObject gameObject, bool includeSelf = false)
+        {
+            if (ReferenceEquals(gameObject, null))
+                throw new ArgumentNullException(nameof(gameObject));
+            if (!gameObject)
+                throw new MissingReferenceException(nameof(gameObject));
+
+            var result = new List<T>();
+            GetComponentsFlatWithoutChecks(gameObject, result, includeSelf);
+
+            return result.ToArray();
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static T MissingComponentWithoutChecks<T>(GameObject gameObject) where T : Component
             => gameObject.GetComponent<T>() ?? gameObject.AddComponent<T>();
@@ -129,5 +187,70 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
             // Проверка на null выбрана намеренно, так как GetComponent никогда не вернет уничтоженный объект
             // https://docs.unity3d.com/ScriptReference/GameObject.GetComponent.html
             => gameObject.GetComponent(componentType) != null;
+
+        [CanBeNull]
+        internal static Component GetComponentFlatWithoutChecks([NotNull] GameObject gameObject,
+            [NotNull] Type componentType, bool includeSelf = false)
+        {
+            if (includeSelf)
+                if (TryGetComponentWithoutChecks(gameObject, componentType, out var component))
+                    return component;
+
+            var transform = gameObject.transform;
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                var childGameObject = transform.GetChild(i).gameObject;
+                if (TryGetComponentWithoutChecks(childGameObject, componentType, out var component))
+                    return component;
+            }
+
+            return default;
+        }
+
+        internal static void GetComponentsFlatWithoutChecks([NotNull] GameObject gameObject,
+            [NotNull] Type componentType, [NotNull] List<Component> result, bool includeSelf = false)
+        {
+            if (includeSelf)
+                if (TryGetComponentWithoutChecks(gameObject, componentType, out var component))
+                    result.Add(component);
+
+            var transform = gameObject.transform;
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                var childGameObject = transform.GetChild(i).gameObject;
+                childGameObject.GetComponents(componentType, result);
+            }
+        }
+
+        [CanBeNull]
+        internal static T GetComponentFlatWithoutChecks<T>([NotNull] GameObject gameObject, bool includeSelf = false)
+        {
+            if (includeSelf && TryGetComponentWithoutChecks<T>(gameObject, out var selfComponent))
+                return selfComponent;
+
+            var transform = gameObject.transform;
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                var childGameObject = transform.GetChild(i).gameObject;
+                if (TryGetComponentWithoutChecks<T>(childGameObject, out var component))
+                    return component;
+            }
+
+            return default;
+        }
+
+        internal static void GetComponentsFlatWithoutChecks<T>([NotNull] GameObject gameObject, [NotNull] List<T> result,
+            bool includeSelf = false)
+        {
+            if (includeSelf)
+                gameObject.GetComponents(result);
+
+            var transform = gameObject.transform;
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                var childGameObject = transform.GetChild(i).gameObject;
+                childGameObject.GetComponents(result);
+            }
+        }
     }
 }
