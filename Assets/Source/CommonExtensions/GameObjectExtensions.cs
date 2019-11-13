@@ -48,7 +48,6 @@ public static class GameObjectExtensions
     /// <exception cref="ArgumentNullException">Параметр <param name="gameObject"/>>указывает на null</exception>
     /// <exception cref="MissingReferenceException">Параметр <param name="gameObject"/>>указывает на уничтоженный объект</exception>
     public static bool TryGetComponent<T>([NotNull] this GameObject gameObject, [CanBeNull] out T component)
-        where T : Component
     {
         if (ReferenceEquals(gameObject, null))
             throw new ArgumentNullException(nameof(gameObject));
