@@ -19,7 +19,7 @@ namespace Omega.Tools
         [NotNull]
         public static T MissingComponent<T>([NotNull] GameObject gameObject) where T : Component
         {
-            if (ReferenceEquals(gameObject, null))
+            if (gameObject is null)
                 throw new ArgumentNullException(nameof(gameObject));
             if (!gameObject)
                 throw new MissingReferenceException(nameof(gameObject));
@@ -40,7 +40,7 @@ namespace Omega.Tools
         [NotNull]
         public static Component MissingComponent([NotNull] GameObject gameObject, [NotNull] Type componentType)
         {
-            if (ReferenceEquals(gameObject, null))
+            if (gameObject is null)
                 throw new ArgumentNullException(nameof(gameObject));
             if (!gameObject)
                 throw new MissingReferenceException(nameof(gameObject));
@@ -68,7 +68,7 @@ namespace Omega.Tools
         public static bool TryGetComponent<T>([NotNull] GameObject gameObject, [CanBeNull] out T component)
             where T : Component
         {
-            if (ReferenceEquals(gameObject, null))
+            if (gameObject is null)
                 throw new ArgumentNullException(nameof(gameObject));
             if (!gameObject)
                 throw new MissingReferenceException(nameof(gameObject));
@@ -86,7 +86,7 @@ namespace Omega.Tools
         /// <exception cref="MissingReferenceException">Параметр <param name="gameObject"/>>указывает на уничтоженный объект</exception>
         public static bool ContainsComponent<T>([NotNull] GameObject gameObject) where T : Component
         {
-            if (ReferenceEquals(gameObject, null))
+            if (gameObject is null)
                 throw new ArgumentNullException(nameof(gameObject));
             if (!gameObject)
                 throw new MissingReferenceException(nameof(gameObject));
