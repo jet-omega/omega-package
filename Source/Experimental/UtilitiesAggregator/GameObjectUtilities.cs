@@ -94,9 +94,20 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
             return ContainsComponentWithoutChecks<T>(gameObject);
         }
 
+        /// <summary>
+        /// Пытается найти компонент заданного типа среди объектов-потомков указанного объекта.
+        /// В отличии от GetComponentInChildren, проверка идет только по прямым потомкам объекта,
+        /// не выполняя поиск по всему дереву потомков.
+        /// </summary>
+        /// <param name="gameObject">Объект относительно которого нужно выполнить поиск</param>
+        /// <param name="componentType">Тип компонента</param>
+        /// <param name="searchInRoot">Нужно ли выполнить поиск внутри самого объекта gameObject</param>
+        /// <returns>Если компонент указанного типа найден то вернется экземпляр этого компонента, в противном случае - null</returns>
+        /// <exception cref="ArgumentNullException">gameObject или componentType указывают на null</exception>
+        /// <exception cref="MissingReferenceException">gameObject указывает на уничтоженный объект</exception>
         [CanBeNull]
-        public Component GetComponentInChildrenFlat([NotNull] GameObject gameObject, [NotNull] Type componentType,
-            bool includeSelf = false)
+        public Component GetComponentInDirectChildren([NotNull] GameObject gameObject, [NotNull] Type componentType,
+            bool searchInRoot = false)
         {
             if (ReferenceEquals(gameObject, null))
                 throw new ArgumentNullException(nameof(gameObject));
@@ -105,12 +116,23 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
             if (!gameObject)
                 throw new MissingReferenceException(nameof(gameObject));
 
-            return GetComponentFlatWithoutChecks(gameObject, componentType, includeSelf);
+            return GetComponentDirectWithoutChecks(gameObject, componentType, searchInRoot);
         }
 
+        /// <summary>
+        /// Пытается найти компоненты заданного типа среди объектов-потомков указанного объекта.
+        /// В отличии от GetComponentsInChildren, проверка идет только по прямым потомкам объекта,
+        /// не выполняя поиск по всему дереву потомков.
+        /// </summary>
+        /// <param name="gameObject">Объект относительно которого нужно выполнить поиск</param>
+        /// <param name="componentType">Тип компонента</param>
+        /// <param name="searchInRoot">Нужно ли выполнить поиск внутри самого объекта gameObject</param>
+        /// <returns>Массив найденных компонентов заданного типа, если ни одного объекта не найдено - пустой массив</returns>
+        /// <exception cref="ArgumentNullException">gameObject или componentType указывают на null</exception>
+        /// <exception cref="MissingReferenceException">gameObject указывает на уничтоженный объект</exception>
         [CanBeNull]
-        public Component[] GetComponentsInChildrenFlat([NotNull] GameObject gameObject, [NotNull] Type componentType,
-            bool includeSelf = false)
+        public Component[] GetComponentsInDirectChildren([NotNull] GameObject gameObject, [NotNull] Type componentType,
+            bool searchInRoot = false)
         {
             if (ReferenceEquals(gameObject, null))
                 throw new ArgumentNullException(nameof(gameObject));
@@ -121,24 +143,45 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
 
             var result = new List<Component>();
 
-            GetComponentsFlatWithoutChecks(gameObject, componentType, result, includeSelf);
-            return result.ToArray();
+            GetComponentsDirectWithoutChecks(gameObject, componentType, result, searchInRoot);
+            return result.Count == 0 ? Array.Empty<Component>() : result.ToArray();
         }
 
-        
+        /// <summary>
+        /// Пытается найти компонент заданного типа среди объектов-потомков указанного объекта.
+        /// В отличии от GetComponentInChildren, проверка идет только по прямым потомкам объекта,
+        /// не выполняя поиск по всему дереву потомков.
+        /// </summary>
+        /// <param name="gameObject">Объект относительно которого нужно выполнить поиск</param>
+        /// <param name="searchInRoot">Нужно ли выполнить поиск внутри самого объекта gameObject</param>
+        /// <typeparam name="T">Тип компонента</typeparam>
+        /// <returns>Если компонент указанного типа найден то вернется экземпляр этого компонента, в противном случае - null</returns>
+        /// <exception cref="ArgumentNullException">gameObject или componentType указывают на null</exception>
+        /// <exception cref="MissingReferenceException">gameObject указывает на уничтоженный объект</exception>
         [CanBeNull]
-        public T GetComponentInChildrenFlat<T>([CanBeNull] GameObject gameObject, bool includeSelf = false)
+        public T GetComponentInDirectChildren<T>([CanBeNull] GameObject gameObject, bool searchInRoot = false)
         {
             if (ReferenceEquals(gameObject, null))
                 throw new ArgumentNullException(nameof(gameObject));
             if (!gameObject)
                 throw new MissingReferenceException(nameof(gameObject));
 
-            return GetComponentFlatWithoutChecks<T>(gameObject, includeSelf);
+            return GetComponentDirectWithoutChecks<T>(gameObject, searchInRoot);
         }
 
+        /// <summary>
+        /// Пытается найти компоненты заданного типа среди объектов-потомков указанного объекта.
+        /// В отличии от GetComponentsInChildren, проверка идет только по прямым потомкам объекта,
+        /// не выполняя поиск по всему дереву потомков.
+        /// </summary>
+        /// <param name="gameObject">Объект относительно которого нужно выполнить поиск</param>
+        /// <param name="searchInRoot">Нужно ли выполнить поиск внутри самого объекта gameObject</param>
+        /// <typeparam name="T">Тип компонента</typeparam>
+        /// <returns>Массив найденных компонентов заданного типа, если ни одного объекта не найдено - пустой массив</returns>
+        /// <exception cref="ArgumentNullException">gameObject или componentType указывают на null</exception>
+        /// <exception cref="MissingReferenceException">gameObject указывает на уничтоженный объект</exception>
         [NotNull]
-        public T[] GetComponentsFlat<T>([CanBeNull] GameObject gameObject, bool includeSelf = false)
+        public T[] GetComponentsInDirectChildren<T>([CanBeNull] GameObject gameObject, bool searchInRoot = false)
         {
             if (ReferenceEquals(gameObject, null))
                 throw new ArgumentNullException(nameof(gameObject));
@@ -146,9 +189,9 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
                 throw new MissingReferenceException(nameof(gameObject));
 
             var result = new List<T>();
-            GetComponentsFlatWithoutChecks(gameObject, result, includeSelf);
+            GetComponentsDirectWithoutChecks(gameObject, result, searchInRoot);
 
-            return result.ToArray();
+            return result.Count == 0 ? Array.Empty<T>() : result.ToArray();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -168,7 +211,7 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
             // https://docs.unity3d.com/ScriptReference/GameObject.GetComponent.html
             // Здесь нельзя использовать "is null" так как GetComponent возвращает объект типа T, который, с точки зрения
             // компилятора может быть как ссылочным типом так и значимым, поэтому левый операнд приводится к object
-            => !((object)(component = gameObject.GetComponent<T>()) is null);
+            => !((object) (component = gameObject.GetComponent<T>()) is null);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static bool TryGetComponentWithoutChecks([NotNull] GameObject gameObject, [NotNull] Type componentType,
@@ -183,7 +226,7 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
             // https://docs.unity3d.com/ScriptReference/GameObject.GetComponent.html
             // Здесь нельзя использовать "is null" так как GetComponent возвращает объект типа T, который, с точки зрения
             // компилятора может быть как ссылочным типом так и значимым, поэтому левый операнд приводится к object
-            => !((object)gameObject.GetComponent<T>() is null);
+            => !((object) gameObject.GetComponent<T>() is null);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static bool ContainsComponentWithoutChecks([NotNull] GameObject gameObject,
@@ -193,10 +236,10 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
             => !(gameObject.GetComponent(componentType) is null);
 
         [CanBeNull]
-        internal static Component GetComponentFlatWithoutChecks([NotNull] GameObject gameObject,
-            [NotNull] Type componentType, bool includeSelf = false)
+        internal static Component GetComponentDirectWithoutChecks([NotNull] GameObject gameObject,
+            [NotNull] Type componentType, bool searchInRoot = false)
         {
-            if (includeSelf)
+            if (searchInRoot)
                 if (TryGetComponentWithoutChecks(gameObject, componentType, out var component))
                     return component;
 
@@ -211,10 +254,10 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
             return default;
         }
 
-        internal static void GetComponentsFlatWithoutChecks([NotNull] GameObject gameObject,
-            [NotNull] Type componentType, [NotNull] List<Component> result, bool includeSelf = false)
+        internal static void GetComponentsDirectWithoutChecks([NotNull] GameObject gameObject,
+            [NotNull] Type componentType, [NotNull] List<Component> result, bool searchInRoot = false)
         {
-            if (includeSelf)
+            if (searchInRoot)
                 if (TryGetComponentWithoutChecks(gameObject, componentType, out var component))
                     result.Add(component);
 
@@ -227,9 +270,9 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
         }
 
         [CanBeNull]
-        internal static T GetComponentFlatWithoutChecks<T>([NotNull] GameObject gameObject, bool includeSelf = false)
+        internal static T GetComponentDirectWithoutChecks<T>([NotNull] GameObject gameObject, bool searchInRoot = false)
         {
-            if (includeSelf && TryGetComponentWithoutChecks<T>(gameObject, out var selfComponent))
+            if (searchInRoot && TryGetComponentWithoutChecks<T>(gameObject, out var selfComponent))
                 return selfComponent;
 
             var transform = gameObject.transform;
@@ -243,10 +286,11 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
             return default;
         }
 
-        internal static void GetComponentsFlatWithoutChecks<T>([NotNull] GameObject gameObject, [NotNull] List<T> result,
-            bool includeSelf = false)
+        internal static void GetComponentsDirectWithoutChecks<T>([NotNull] GameObject gameObject,
+            [NotNull] List<T> result,
+            bool searchInRoot = false)
         {
-            if (includeSelf)
+            if (searchInRoot)
                 gameObject.GetComponents(result);
 
             var transform = gameObject.transform;
