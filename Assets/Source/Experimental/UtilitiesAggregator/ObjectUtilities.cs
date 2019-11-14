@@ -19,7 +19,7 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
         /// <exception cref="MissingReferenceException"></exception>
         public void AutoDestroy(Object obj)
         {
-            if (ReferenceEquals(obj, null))
+            if (obj is null)
                 throw new ArgumentNullException(nameof(obj));
             if (!obj)
                 throw new MissingReferenceException(nameof(obj));
@@ -29,7 +29,7 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
 
         public void AutoDestroy(Object obj, bool useDestroyImmediate)
         {
-            if (ReferenceEquals(obj, null))
+            if (obj is null)
                 throw new ArgumentNullException(nameof(obj));
             if (!obj)
                 throw new MissingReferenceException(nameof(obj));

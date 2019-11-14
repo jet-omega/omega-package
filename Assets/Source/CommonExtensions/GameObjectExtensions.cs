@@ -25,7 +25,7 @@ public static class GameObjectExtensions
     [NotNull]
     public static T MissingComponent<T>([NotNull] this GameObject gameObject) where T : Component
     {
-        if (ReferenceEquals(gameObject, null))
+        if (gameObject is null)
             throw new NullReferenceException(nameof(gameObject));
         if (!gameObject)
             throw new MissingReferenceException(nameof(gameObject));
@@ -49,7 +49,7 @@ public static class GameObjectExtensions
     /// <exception cref="MissingReferenceException">Параметр <param name="gameObject"/>>указывает на уничтоженный объект</exception>
     public static bool TryGetComponent<T>([NotNull] this GameObject gameObject, [CanBeNull] out T component)
     {
-        if (ReferenceEquals(gameObject, null))
+        if (gameObject is null)
             throw new ArgumentNullException(nameof(gameObject));
         if (!gameObject)
             throw new MissingReferenceException(nameof(gameObject));
@@ -67,7 +67,7 @@ public static class GameObjectExtensions
     /// <exception cref="MissingReferenceException">Параметр <param name="gameObject"/>>указывает на уничтоженный объект</exception>
     public static Transform[] GetChilds(this GameObject gameObject)
     {
-        if (ReferenceEquals(gameObject, null))
+        if (gameObject is null)
             throw new NullReferenceException(nameof(gameObject));
         if (!gameObject)
             throw new MissingReferenceException(nameof(gameObject));
@@ -91,12 +91,12 @@ public static class GameObjectExtensions
     [NotNull]
     public static Transform Attach(this GameObject attachTo, [NotNull] Transform transform)
     {
-        if (ReferenceEquals(attachTo, null))
+        if (attachTo is null)
             throw new NullReferenceException(nameof(attachTo));
         if (!attachTo)
             throw new MissingReferenceException(nameof(attachTo));
 
-        if (ReferenceEquals(transform, null))
+        if (transform is null)
             throw new ArgumentNullException(nameof(transform));
         if (!transform)
             throw new MissingReferenceException(nameof(transform));
@@ -128,12 +128,12 @@ public static class GameObjectExtensions
     [NotNull]
     public static GameObject Attach(this GameObject attachTo, [NotNull] GameObject gameObject)
     {
-        if (ReferenceEquals(attachTo, null))
+        if (attachTo is null)
             throw new NullReferenceException(nameof(attachTo));
         if (!attachTo)
             throw new MissingReferenceException(nameof(attachTo));
 
-        if (ReferenceEquals(gameObject, null))
+        if (gameObject is null)
             throw new ArgumentNullException(nameof(gameObject));
         if (!gameObject)
             throw new MissingReferenceException(nameof(gameObject));

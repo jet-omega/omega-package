@@ -15,7 +15,7 @@ namespace Omega.Tools
         /// <exception cref="MissingReferenceException">Параметр <param name="boxCollider"/>>указывает на уничтоженный объект</exception>
         public static void SetAsBounds([NotNull] BoxCollider boxCollider, Bounds bounds)
         {
-            if (ReferenceEquals(boxCollider, null))
+            if (boxCollider is null)
                 throw new ArgumentNullException(nameof(boxCollider));
             if (!boxCollider)
                 throw new MissingReferenceException(nameof(boxCollider));
