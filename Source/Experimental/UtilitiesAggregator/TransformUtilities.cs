@@ -18,7 +18,7 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
         /// <exception cref="MissingReferenceException">Параметр <param name="root"/>>указывает на уничтоженный объект</exception>
         public void ClearChilds([NotNull] Transform root)
         {
-            if (ReferenceEquals(root, null))
+            if (root is null)
                 throw new ArgumentNullException(nameof(root));
             if (!root)
                 throw new MissingReferenceException(nameof(root));
@@ -36,7 +36,7 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
         [NotNull]
         public Transform[] GetChilds([NotNull] Transform root)
         {
-            if (ReferenceEquals(root, null))
+            if (root is null)
                 throw new ArgumentNullException(nameof(root));
             if (!root)
                 throw new MissingReferenceException(nameof(root));
