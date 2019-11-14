@@ -19,7 +19,7 @@ namespace Omega.Tools
         [NotNull]
         public static RectTransform[] GetChilds([NotNull] RectTransform root)
         {
-            if (ReferenceEquals(root, null))
+            if (root is null)
                 throw new ArgumentNullException(nameof(root));
             if (!root)
                 throw new MissingReferenceException(nameof(root));
