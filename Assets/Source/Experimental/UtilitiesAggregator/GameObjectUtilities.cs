@@ -130,7 +130,7 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
         /// <returns>Массив найденных компонентов заданного типа, если ни одного объекта не найдено - пустой массив</returns>
         /// <exception cref="ArgumentNullException">gameObject или componentType указывают на null</exception>
         /// <exception cref="MissingReferenceException">gameObject указывает на уничтоженный объект</exception>
-        [CanBeNull]
+        [NotNull]
         public Component[] GetComponentsInDirectChildren([NotNull] GameObject gameObject, [NotNull] Type componentType,
             bool searchInRoot = false)
         {
@@ -262,10 +262,12 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
                     result.Add(component);
 
             var transform = gameObject.transform;
+            var tempList = new List<Component>();
             for (int i = 0; i < transform.childCount; i++)
             {
                 var childGameObject = transform.GetChild(i).gameObject;
-                childGameObject.GetComponents(componentType, result);
+                childGameObject.GetComponents(componentType, tempList);
+                result.AddRange(tempList);
             }
         }
 
@@ -294,10 +296,12 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
                 gameObject.GetComponents(result);
 
             var transform = gameObject.transform;
+            var tempList = new List<T>();
             for (int i = 0; i < transform.childCount; i++)
             {
                 var childGameObject = transform.GetChild(i).gameObject;
-                childGameObject.GetComponents(result);
+                childGameObject.GetComponents(tempList);
+                result.AddRange(tempList);
             }
         }
     }
