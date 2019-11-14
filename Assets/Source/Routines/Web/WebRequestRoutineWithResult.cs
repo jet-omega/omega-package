@@ -19,10 +19,12 @@ namespace Omega.Routines.Web
         protected override IEnumerator RoutineUpdate()
         {
             yield return WebRequest.SendWebRequest();
-            if (!string.IsNullOrEmpty(WebRequest.error))
-                throw new HttpRequestException(WebRequest.error);
+            if (WebRequest.isNetworkError || WebRequest.isHttpError)
+                throw new HttpRequestException(WebRequestRoutine.GetErrorMessage(WebRequest));
 
-            var result = _resultProvider(WebRequest.downloadHandler);
+            var downloadHandler = WebRequest.downloadHandler;
+            
+            var result = downloadHandler != null ? _resultProvider(WebRequest.downloadHandler) : default;
             SetResult(result);
         }
     }

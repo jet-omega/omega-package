@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.1] - 2019-11-14
+### Added 
+- Assembly attributes for `Omega.Tools.Runtime`
+- Additional information about the web request when an error occurs in `WebRequestRoutine`
+- New `GetComponentsInDirectChildren` methods. Lets find components in direct childs in `GameObject`
+
+### Improved
+- Removed restrictions for type generic argument in method `TryGetComponent`
+- Change equals operator from UnityObject.Object to System.Object for internal methods in GameObjectUtilities
+
 ## [0.8.0] - 2019-11-11
 ### Added 
 - New web routines. Lets use `UnityWebRequest` as routine
@@ -26,7 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New `WaitResult` method for `Routine<T>`. Lets you to expect the result of a routine in synchronous
 - New `FromCompleted` static method for Routine. Lets you create completed routines
 
-### Impoves
+### Improved
 - New RoutineError ad RoutineNotComplete exceptions
 
 ## [0.7.2] - 2019-11-09
@@ -81,7 +91,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Routines
 - Routines for System.IO
-### Improves
+### Improved
 - Improve messages in exceptions and logs
 ### Changed
 - Rename functions `GetChildes` to `GetChilds`   
