@@ -34,5 +34,19 @@ namespace Omega.Routines.Tests
 
             Assert.AreEqual(taskValue, resultValue);
         }
+
+        [Test]
+        public void RoutineShouldProcessCallbackWhenEnumeratorIsNull()
+        {
+            var flag = false;
+            var routine = new TestRoutine().Callback(() => flag = true);
+            routine.Complete();
+            Assert.True(flag);
+        }
+
+        private class TestRoutine : Routine
+        {
+            protected override IEnumerator RoutineUpdate() => null;
+        }
     }
 }
