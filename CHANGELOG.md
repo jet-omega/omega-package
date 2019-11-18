@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.2] - 2019-11-18
+### Fixes 
+- Fix callback invocation when routine enumerator is null
+- Fix callback invocation from `FromResultRoutine` (#86)
+
+### Improved
+- Now if you try to add a callback to a completed or error routine, an exception will be thrown 
+
 ## [0.8.1] - 2019-11-14
 ### Added 
 - Assembly attributes for `Omega.Tools.Runtime`
