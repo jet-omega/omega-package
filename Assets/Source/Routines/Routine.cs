@@ -33,6 +33,12 @@ namespace Omega.Routines
 
         protected abstract IEnumerator RoutineUpdate();
 
+        private void SetupCompleted()
+        {
+            _status = RoutineStatus.Completed;
+            _callback?.Invoke();
+        }
+
         bool IEnumerator.MoveNext()
         {
             // Если рутина содержит ошибку, то последующие ее выполнение может быть не корректным.
@@ -45,7 +51,7 @@ namespace Omega.Routines
                 _routine = RoutineUpdate();
                 if (_routine == null)
                 {
-                    _status = RoutineStatus.Completed;
+                    SetupCompleted();
                     return false;
                 }
                 
@@ -73,10 +79,7 @@ namespace Omega.Routines
 
             // Если больше не можем двигаться дольше то помечаем рутину как завершенную  
             if (!moveNextResult)
-            {
-                _status = RoutineStatus.Completed;
-                _callback?.Invoke();
-            }
+                SetupCompleted();
 
             return moveNextResult;
         }
