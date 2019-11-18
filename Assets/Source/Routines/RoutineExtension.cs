@@ -22,6 +22,11 @@ namespace Omega.Routines
                 throw new NullReferenceException(nameof(original));
             if (callback == null)
                 throw new ArgumentNullException(nameof(callback));
+            
+            if(original.IsComplete)
+                throw new InvalidOperationException("callback will never call because routine is completed");
+            if(original.IsError)
+                throw new InvalidOperationException("callback will never call because routine have error");
 
             original.AddCallbackInternal(callback);
             return original;
@@ -34,6 +39,11 @@ namespace Omega.Routines
                 throw new NullReferenceException(nameof(original));
             if (callback == null)
                 throw new ArgumentNullException(nameof(callback));
+            
+            if(original.IsComplete)
+                throw new InvalidOperationException("callback will never call because routine is completed");
+            if(original.IsError)
+                throw new InvalidOperationException("callback will never call because routine have error");
 
             original.AddCallbackInternal(() => callback.Invoke(original.GetResult()));
             return original;
