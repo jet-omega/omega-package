@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.3] - 2019-11-19
+### Added
+- New `ByAction` static methods in `Routine`. Lets create routines by delegates `Action` and `Func<T>` 
+- New `Empty` static methods in `Routine`. Lets create empty uncompleted routines
+- New `FromCompleted<T>` static methods in `Routine`. Lets create completed routines with result
+
 ## [0.8.2] - 2019-11-18
 ### Fixes 
 - Fix callback invocation when routine enumerator is null
