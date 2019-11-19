@@ -53,7 +53,18 @@ namespace Omega.Routines
 
         public static Routine FromCompleted()
         {
-            return new CompletedRoutine();
+            return new EmptyRoutine().Complete();
+        }
+
+        public static Routine<T> FromCompleted<T>(T value)
+        {
+            return new FromResultRoutine<T>(value).Complete();
+        }
+
+        
+        public static Routine Empty()
+        {
+            return new EmptyRoutine();
         }
 
         [NotNull]
