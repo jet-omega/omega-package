@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using Omega.Package;
 using UnityEngine;
 
 namespace Omega.Tools.Experimental.UtilitiesAggregator
@@ -23,29 +24,28 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
             if (!root)
                 throw new MissingReferenceException(nameof(root));
 
-            return GetChildsWithoutChecks(root);
+            if (root.childCount == 0)
+                return Array.Empty<RectTransform>();
+
+            var result = ListPool<RectTransform>.Rent(root.childCount);
+
+            GetChildsWithoutChecks(root, result);
+
+            var resultArray = result.ToArray();
+
+            return resultArray;
         }
 
-        [NotNull]
-        internal RectTransform[] GetChildsWithoutChecks([NotNull] RectTransform rectTransform)
+        internal void GetChildsWithoutChecks([NotNull] RectTransform rectTransform,
+            [NotNull] List<RectTransform> result)
         {
-            var transformChilds = TransformUtilities.GetChildsWithoutChecks(rectTransform);
-
-            if (transformChilds.Length == 0)
-                return Array.Empty<RectTransform>();
-            
-            var rectTransformChildsList = new List<RectTransform>(transformChilds.Length);
-
-            for (var i = 0; i < transformChilds.Length; i++)
+            var childsCount = rectTransform.childCount;
+            for (var i = 0; i < childsCount; i++)
             {
-                var child = transformChilds[i];
+                var child = rectTransform.GetChild(i);
                 if (child is RectTransform rectTransformChild)
-                    rectTransformChildsList.Add(rectTransformChild);
+                    result.Add(rectTransformChild);
             }
-
-            var rectTransformChilds = rectTransformChildsList.ToArray();
-
-            return rectTransformChilds;
         }
     }
 }
