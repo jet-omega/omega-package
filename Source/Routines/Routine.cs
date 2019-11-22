@@ -3,6 +3,7 @@ using System.Collections;
 using System.Diagnostics;
 using JetBrains.Annotations;
 using Omega.Package;
+using UnityEngine;
 using Debug = UnityEngine.Debug;
 
 namespace Omega.Routines
@@ -27,7 +28,7 @@ namespace Omega.Routines
         public bool IsError => _status == RoutineStatus.Error;
         public bool IsProcessing => _status == RoutineStatus.Processing;
         public bool IsComplete => _status == RoutineStatus.Completed;
-        public bool IsNotStarted => _status == RoutineStatus.ReadyToStart;
+        public bool IsNotStarted => _status == RoutineStatus.NotStarted;
 
         public Exception Exception => _exception;
 
@@ -54,7 +55,7 @@ namespace Omega.Routines
                     SetupCompleted();
                     return false;
                 }
-                
+
                 _status = RoutineStatus.Processing;
             }
 
@@ -63,7 +64,7 @@ namespace Omega.Routines
             // Для поддержки правильного состояния рутины изолируем исполнение пользовательского кода 
             try
             {
-                moveNextResult = _routine.MoveNext();
+                moveNextResult = DeepMoveNext(_routine);
             }
             catch (Exception e)
             {
@@ -84,16 +85,39 @@ namespace Omega.Routines
             return moveNextResult;
         }
 
+        /// <summary>
+        /// Обновляет состояние рутины со всеми вложениями
+        /// </summary>
+        /// <param name="enumerator"></param>
+        /// <returns></returns>
+        private bool DeepMoveNext(IEnumerator enumerator)
+        {
+            // Пытаемся получить состояние рутины 
+            var current = enumerator.Current;
+            
+            // Если текущее состояние рутины ожидает завершения другой рутины
+            if (current is IEnumerator nestedEnumerator)
+                // То ожидаем эту вложенную рутину со всеми ее вложениями
+                // Если обновить состояние рутины не удалось то двигаем рутину которая содержала в себе вложенную рутину
+                return DeepMoveNext(nestedEnumerator) || enumerator.MoveNext();
+            
+            // Если текущее состояние рутины ожидает завершения асинхронной операции, то просто ждем ее завершения
+            if (current is AsyncOperation nestedAsyncOperation)
+                return !nestedAsyncOperation.isDone;
+
+            return enumerator.MoveNext();
+        }
+
         void IEnumerator.Reset()
         {
             _exceptionHandler = DefaultExceptionHandler;
-            _status = RoutineStatus.ReadyToStart;
+            _status = RoutineStatus.NotStarted;
             _routine = null;
             _exception = null;
             _callback = null;
         }
 
-        object IEnumerator.Current => (_routine ?? throw new AggregateException()).Current;
+        object IEnumerator.Current => _routine?.Current;
 
         internal void AddCallbackInternal(Action callback)
             => _callback += callback;
@@ -111,7 +135,7 @@ namespace Omega.Routines
 
         private enum RoutineStatus
         {
-            ReadyToStart = 0,
+            NotStarted = 0,
             Processing,
             Error,
             Completed
