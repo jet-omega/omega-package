@@ -1,6 +1,8 @@
 using System;
 using System.Diagnostics;
+using System.Threading;
 using Omega.Tools.Experimental.UtilitiesAggregator;
+using UnityEngine;
 
 namespace Omega.Routines
 {
@@ -66,6 +68,31 @@ namespace Omega.Routines
                 throw new NullReferenceException(nameof(original));
 
             RoutineUtilities.CompleteWithoutChecks(original);
+            return original;
+        }
+        
+        public static TRoutine Complete<TRoutine>(this TRoutine original, TimeSpan timeout)
+            where TRoutine : Routine
+        {
+            if (original == null)
+                throw new NullReferenceException(nameof(original));
+
+            var timeoutDuration = timeout.Duration();
+            
+            RoutineUtilities.CompleteWithoutChecks(original, timeoutDuration);
+            return original;
+        }
+        
+        public static TRoutine Complete<TRoutine>(this TRoutine original, float timeoutSeconds)
+            where TRoutine : Routine
+        {
+            if (original == null)
+                throw new NullReferenceException(nameof(original));
+
+            var timeoutAbs = Mathf.Abs(timeoutSeconds);
+            var timeoutTimeSpan = TimeSpan.FromSeconds(timeoutAbs);
+            
+            RoutineUtilities.CompleteWithoutChecks(original, timeoutTimeSpan);
             return original;
         }
 
