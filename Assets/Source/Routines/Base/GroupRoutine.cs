@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace Omega.Routines
 {
-    public sealed class GroupRoutine : Routine
+    public sealed class GroupRoutine : Routine, IProgressRoutineProvider
     {
         private readonly Routine[] _routines;
         private readonly Stack<IEnumerator>[] _enumeratorsStacks;
@@ -46,6 +47,7 @@ namespace Omega.Routines
                         }
                     }
                 }
+
                 return flag;
             }
 
@@ -57,6 +59,26 @@ namespace Omega.Routines
         {
             routines = _routines.ToArray();
             return this;
+        }
+
+        public float GetProgress()
+        {
+            var totalCount = _routines.Length;
+            var progressPerRoutine = 1f / totalCount;
+
+            var totalProgress = 0f;
+            foreach (var routine in _routines)
+            {
+                if (routine.IsComplete)
+                    totalProgress += progressPerRoutine;
+                else if (routine is IProgressRoutineProvider progressRoutineProvider)
+                {
+                    var routineProgress = progressRoutineProvider.GetProgress();
+                    totalProgress += routineProgress * progressPerRoutine;
+                }
+            }
+
+            return totalProgress;
         }
     }
 }
