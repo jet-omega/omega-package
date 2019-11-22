@@ -8,6 +8,18 @@ namespace Omega.Routines
 {
     public static class RoutineExtension
     {
+        public static Routine OnChangeProgress(this Routine self, Action<float> handler)
+        {
+            if (self is null)
+                throw new NullReferenceException(nameof(self));
+            if (handler is null)
+                throw new ArgumentNullException(nameof(handler));
+
+            var progressRoutine = new ProgressRoutine(self, handler);
+            var groupRoutine = new GroupRoutine(self, progressRoutine);
+            return groupRoutine;
+        }
+
         public static TRoutine GetRoutine<TRoutine>(this TRoutine original, out TRoutine routine)
             where TRoutine : Routine
         {
@@ -24,10 +36,10 @@ namespace Omega.Routines
                 throw new NullReferenceException(nameof(original));
             if (callback == null)
                 throw new ArgumentNullException(nameof(callback));
-            
-            if(original.IsComplete)
+
+            if (original.IsComplete)
                 throw new InvalidOperationException("callback will never call because routine is completed");
-            if(original.IsError)
+            if (original.IsError)
                 throw new InvalidOperationException("callback will never call because routine have error");
 
             original.AddCallbackInternal(callback);
@@ -41,10 +53,10 @@ namespace Omega.Routines
                 throw new NullReferenceException(nameof(original));
             if (callback == null)
                 throw new ArgumentNullException(nameof(callback));
-            
-            if(original.IsComplete)
+
+            if (original.IsComplete)
                 throw new InvalidOperationException("callback will never call because routine is completed");
-            if(original.IsError)
+            if (original.IsError)
                 throw new InvalidOperationException("callback will never call because routine have error");
 
             original.AddCallbackInternal(() => callback.Invoke(original.GetResult()));
@@ -70,7 +82,7 @@ namespace Omega.Routines
             RoutineUtilities.CompleteWithoutChecks(original);
             return original;
         }
-        
+
         public static TRoutine Complete<TRoutine>(this TRoutine original, TimeSpan timeout)
             where TRoutine : Routine
         {
@@ -78,11 +90,11 @@ namespace Omega.Routines
                 throw new NullReferenceException(nameof(original));
 
             var timeoutDuration = timeout.Duration();
-            
+
             RoutineUtilities.CompleteWithoutChecks(original, timeoutDuration);
             return original;
         }
-        
+
         public static TRoutine Complete<TRoutine>(this TRoutine original, float timeoutSeconds)
             where TRoutine : Routine
         {
@@ -91,7 +103,7 @@ namespace Omega.Routines
 
             var timeoutAbs = Mathf.Abs(timeoutSeconds);
             var timeoutTimeSpan = TimeSpan.FromSeconds(timeoutAbs);
-            
+
             RoutineUtilities.CompleteWithoutChecks(original, timeoutTimeSpan);
             return original;
         }
