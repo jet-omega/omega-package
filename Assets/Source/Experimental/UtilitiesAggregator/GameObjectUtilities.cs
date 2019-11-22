@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
+using Omega.Package;
 using UnityEngine;
 
 namespace Omega.Tools.Experimental.UtilitiesAggregator
@@ -141,10 +142,17 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
             if (!gameObject)
                 throw new MissingReferenceException(nameof(gameObject));
 
-            var result = new List<Component>();
+            var result = ListPool<Component>.Rent();
 
             GetComponentsDirectWithoutChecks(gameObject, componentType, result, searchInRoot);
-            return result.Count == 0 ? Array.Empty<Component>() : result.ToArray();
+            
+            var resultArray = result.Count == 0
+                ? Array.Empty<Component>()
+                : result.ToArray();
+
+            ListPool<Component>.Push(result);
+
+            return resultArray;
         }
 
         /// <summary>
@@ -188,10 +196,16 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
             if (!gameObject)
                 throw new MissingReferenceException(nameof(gameObject));
 
-            var result = new List<T>();
+            var result = ListPool<T>.Rent();
             GetComponentsDirectWithoutChecks(gameObject, result, searchInRoot);
 
-            return result.Count == 0 ? Array.Empty<T>() : result.ToArray();
+            var resultArray = result.Count == 0
+                ? Array.Empty<T>()
+                : result.ToArray();
+
+            ListPool<T>.Push(result);
+
+            return resultArray;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -262,13 +276,15 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
                     result.Add(component);
 
             var transform = gameObject.transform;
-            var tempList = new List<Component>();
+            var tempList = ListPool<Component>.Rent();
             for (int i = 0; i < transform.childCount; i++)
             {
                 var childGameObject = transform.GetChild(i).gameObject;
                 childGameObject.GetComponents(componentType, tempList);
                 result.AddRange(tempList);
             }
+            
+            ListPool<Component>.Push(tempList);
         }
 
         [CanBeNull]
@@ -296,13 +312,15 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
                 gameObject.GetComponents(result);
 
             var transform = gameObject.transform;
-            var tempList = new List<T>();
+            var tempList = ListPool<T>.Rent();
             for (int i = 0; i < transform.childCount; i++)
             {
                 var childGameObject = transform.GetChild(i).gameObject;
                 childGameObject.GetComponents(tempList);
                 result.AddRange(tempList);
             }
+
+            ListPool<T>.Push(tempList);
         }
     }
 }

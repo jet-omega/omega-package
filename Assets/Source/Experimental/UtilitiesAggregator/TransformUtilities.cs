@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
+using Omega.Package;
 using UnityEngine;
 
 namespace Omega.Tools.Experimental.UtilitiesAggregator
@@ -43,7 +45,7 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
 
             return GetChildsWithoutChecks(root);
         }
-
+        
         [NotNull]
         internal static Transform[] GetChildsWithoutChecks([NotNull] Transform root)
         {
@@ -57,12 +59,27 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
 
             return childs;
         }
+
+        internal static void GetChildsWithoutChecks([NotNull] Transform root, [NotNull] List<Transform> result)
+        {
+            var childsCount = root.childCount;
+            for (int i = 0; i < childsCount; i++)
+                result.Add(root.GetChild(i));
+        }
         
         internal static void ClearChildsWithoutChecks([NotNull] Transform root)
         {
-            var childs = GetChildsWithoutChecks(root);
-            for (int i = 0; i < childs.Length; i++)
-                ObjectUtilities.AutoDestroyWithoutChecks(childs[i].gameObject);
+            var childesCount = root.childCount;
+            if (childesCount == 0)
+                return;
+            
+            var childs = ListPool<Transform>.Rent(childesCount);
+            GetChildsWithoutChecks(root, childs);
+            
+            foreach (var child in childs)
+                ObjectUtilities.AutoDestroyWithoutChecks(child.gameObject);
+            
+            ListPool<Transform>.Push(childs);
         }
     }
 }
