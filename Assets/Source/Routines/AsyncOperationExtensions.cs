@@ -19,5 +19,11 @@ namespace Omega.Routines
             var routine = new WaitAsyncOperationRoutine<TAsyncOperation, TResult>(self, selector);
             return routine;
         }
+
+        public static TAsyncOperation GetSelf<TAsyncOperation>(this TAsyncOperation self, out TAsyncOperation outSelf)
+            where TAsyncOperation : AsyncOperation
+        {
+            return outSelf = self;
+        }
     }
 }
