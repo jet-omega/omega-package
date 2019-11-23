@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Omega.Routines
 {
-    public sealed class DelayRoutine : Routine
+    public sealed class DelayRoutine : Routine, IProgressRoutineProvider
     {
         private readonly TimeSpan _delayInterval;
         private DateTime _releaseTimeSeconds;
@@ -22,6 +22,16 @@ namespace Omega.Routines
 
             while (DateTime.UtcNow < _releaseTimeSeconds)
                 yield return null;
+        }
+
+        public float GetProgress()
+        {
+            var startedIn = _releaseTimeSeconds - _delayInterval;
+            var delta = DateTime.UtcNow - startedIn;
+
+            var unclampedProgress = (float) (delta.TotalSeconds / _delayInterval.TotalSeconds);
+            
+            return Mathf.Clamp01(unclampedProgress);
         }
     }
 }

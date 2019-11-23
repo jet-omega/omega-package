@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Omega.Routines
 {
-    internal sealed class WaitAsyncOperationRoutine<TAsyncOperation, TResult> : Routine<TResult>
+    internal sealed class WaitAsyncOperationRoutine<TAsyncOperation, TResult> : Routine<TResult>, IProgressRoutineProvider
         where TAsyncOperation : AsyncOperation
     {
         private TAsyncOperation _asyncOperation;
@@ -24,9 +24,14 @@ namespace Omega.Routines
             var result = _resultSelector(_asyncOperation);
             SetResult(result);
         }
+
+        public float GetProgress()
+        {
+            return _asyncOperation.progress;
+        }
     }
     
-    internal sealed class WaitAsyncOperationRoutine : Routine
+    internal sealed class WaitAsyncOperationRoutine : Routine, IProgressRoutineProvider
     {
         private AsyncOperation _asyncOperation;
 
@@ -39,6 +44,11 @@ namespace Omega.Routines
         {
             while (!_asyncOperation.isDone)
                 yield return null;
+        }
+
+        public float GetProgress()
+        {
+            return _asyncOperation.progress;
         }
     }
 }

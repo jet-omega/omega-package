@@ -25,5 +25,13 @@ namespace Omega.Routines
                     throw new TimeoutException("Synchronous wait routine was canceled due to timeout");
             }
         }
+
+        internal static IProgressRoutineProvider GetProgressRoutineProvider(Routine routine)
+        {
+            return routine is IProgressRoutineProvider progressRoutineProvider
+                ? progressRoutineProvider
+                : new ProgressProviderAdapter(routine);
+        }
+        
     }
 }

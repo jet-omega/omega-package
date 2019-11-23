@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace Omega.Routines
 {
-    internal sealed class ConvertResultRoutine<TInitialResult, TTargetResult> : Routine<TTargetResult>
+    internal sealed class ConvertResultRoutine<TInitialResult, TTargetResult> : Routine<TTargetResult>, IProgressRoutineProvider
     {
         private Routine<TInitialResult> _routine;
         private Func<TInitialResult, TTargetResult> _converter;
@@ -22,6 +22,14 @@ namespace Omega.Routines
             var targetResult = _converter(initialResult);
             
             SetResult(targetResult);
+        }
+
+        public float GetProgress()
+        {
+            if (_routine is IProgressRoutineProvider progressProvider)
+                return progressProvider.GetProgress();
+
+            return _routine.IsComplete ? 1 : 0;
         }
     }
 }
