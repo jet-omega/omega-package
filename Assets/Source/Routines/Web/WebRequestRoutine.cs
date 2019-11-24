@@ -8,9 +8,10 @@ using UnityEngine.Networking;
 
 namespace Omega.Routines.Web
 {
-    public class WebRequestRoutine : Routine
+    public class WebRequestRoutine : Routine, IProgressRoutineProvider
     {
         public readonly UnityWebRequest WebRequest;
+        private AsyncOperation _asyncOperation;
 
         public WebRequestRoutine(UnityWebRequest webRequest)
         {
@@ -19,7 +20,7 @@ namespace Omega.Routines.Web
 
         protected override IEnumerator RoutineUpdate()
         {
-            yield return WebRequest.SendWebRequest();
+            yield return WebRequest.SendWebRequest().GetSelf(out _asyncOperation);
             if (WebRequest.isNetworkError || WebRequest.isHttpError)
                 throw new HttpRequestException(GetErrorMessage(WebRequest));
         }
@@ -59,6 +60,11 @@ namespace Omega.Routines.Web
                    $"Path:{webRequest.url}\n" +
                    $"Upload: {GetUploadStringPresent(webRequest.uploadHandler)}\n" +
                    $"Download: {GetDownloadStringPresent(webRequest.downloadHandler)}";
+        }
+
+        public float GetProgress()
+        {
+            return _asyncOperation?.progress ?? 0;
         }
     }
 }
