@@ -95,13 +95,13 @@ namespace Omega.Routines
         {
             // Пытаемся получить состояние рутины 
             var current = enumerator.Current;
-            
+
             // Если текущее состояние рутины ожидает завершения другой рутины
             if (current is IEnumerator nestedEnumerator)
                 // То ожидаем эту вложенную рутину со всеми ее вложениями
                 // Если обновить состояние рутины не удалось то двигаем рутину которая содержала в себе вложенную рутину
                 return DeepMoveNext(nestedEnumerator) || enumerator.MoveNext();
-            
+
             // Если текущее состояние рутины ожидает завершения асинхронной операции, то просто ждем ее завершения
             if (current is AsyncOperation nestedAsyncOperation)
                 return !nestedAsyncOperation.isDone;
@@ -146,14 +146,26 @@ namespace Omega.Routines
             => routine == null || !routine.IsProcessing && !routine.IsNotStarted;
 
         [NotNull]
-        public static GroupRoutine operator +([NotNull] Routine lhs, [NotNull] Routine rhs)
+        public static Routine operator +([NotNull] Routine lhs, [NotNull] Routine rhs)
         {
             if (rhs == null)
                 throw new ArgumentNullException(nameof(rhs));
             if (lhs == null)
                 throw new ArgumentNullException(nameof(lhs));
 
-            return new GroupRoutine(lhs, rhs);
+            var lhsConcatenation = lhs as ConcatenationRoutine;
+            var rhsConcatenation = rhs as ConcatenationRoutine;
+
+            if (lhsConcatenation is null && rhsConcatenation is null)
+                return new ConcatenationRoutine(lhs, rhs);
+
+            if (lhsConcatenation is null)
+                return rhsConcatenation.Add(lhs);
+
+            if (rhsConcatenation is null)
+                return lhsConcatenation.Add(rhs);
+
+            return lhsConcatenation.Add(rhsConcatenation);
         }
     }
 }
