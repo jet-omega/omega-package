@@ -4,6 +4,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.0] - 2019-11-24
+
+### New
+- Add overload method Complete for Routine with timeout argument. Lets setup timeout for some routine
+- Add extension methods for `AsyncOperation`. :
+  - `GetSelf` method lets get out async operation instance
+  - `AsRoutine` method lets create routine from async operation
+  - `AsRoutine` method overload with `Func<TAsyncOperation, TResult>` argument
+   lets create routine with result from specific async operation
+- Add progress for routines. Lets you to get the routine progress in float format from 0 to 1
+- Add `GetComponentIdDirectChildren` extension methods for `GameObject` 
+
+   
+### Removed 
+- Remove routine utilities from utilities aggregator
+
+### Improved
+- Now the routines themselves determine the sequence of execution of the
+ *routines / enumerators / async operations* embedded in it. So to update the routine just call the `MoveNext` method
+- New internal ListPool. Lets create tools that create fewer allocations
+- Optimized `GetChilds` method for `RectTransform` *(by ListPool)*
+- Optimized `ClearChilds` method for `Transform` *(by ListPool)*
+- Optimized routine concatenations
+
+### Fixes
+- Incorrect processing of nested *routines / enumerators / async operations* that are simultaneously update from outside
+
 ## [0.8.3] - 2019-11-19
 ### Added
 - New `ByAction` static methods in `Routine`. Lets create routines by delegates `Action` and `Func<T>` 

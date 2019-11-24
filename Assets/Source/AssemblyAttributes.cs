@@ -16,4 +16,4 @@ using System.Runtime.CompilerServices;
 //      Minor Version
 //      Build Number
 //      Revision
-[assembly: AssemblyVersion( "0.8.3.0" )]
+[assembly: AssemblyVersion( "0.9.0.0" )]
