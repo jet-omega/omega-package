@@ -294,7 +294,9 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
                 return selfComponent;
 
             var transform = gameObject.transform;
-            for (int i = 0; i < transform.childCount; i++)
+            var transformChildCount = transform.childCount;
+            
+            for (int i = 0; i < transformChildCount; i++)
             {
                 var childGameObject = transform.GetChild(i).gameObject;
                 if (TryGetComponentWithoutChecks<T>(childGameObject, out var component))

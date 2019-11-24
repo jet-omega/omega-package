@@ -1,5 +1,6 @@
 ﻿using System;
 using JetBrains.Annotations;
+using Omega.Package;
 using Omega.Tools;
 using Omega.Tools.Experimental.UtilitiesAggregator;
 using UnityEngine;
@@ -73,6 +74,34 @@ public static class GameObjectExtensions
             throw new MissingReferenceException(nameof(gameObject));
 
         return TransformUtilities.GetChildsWithoutChecks(gameObject.transform);
+    }
+
+    [CanBeNull]
+    public static T GetComponentInDirectChildren<T>(this GameObject gameObject)
+    {
+        if (gameObject is null)
+            throw new NullReferenceException(nameof(gameObject));
+        if (!gameObject)
+            throw new MissingReferenceException(nameof(gameObject));
+
+        return GameObjectUtilities.GetComponentDirectWithoutChecks<T>(gameObject);
+    }
+    
+    [NotNull]
+    public static T[] GetComponentsInDirectChildren<T>(this GameObject gameObject, bool searchInRoot)
+    {
+        if (gameObject is null)
+            throw new NullReferenceException(nameof(gameObject));
+        if (!gameObject)
+            throw new MissingReferenceException(nameof(gameObject));
+
+        var result = ListPool<T>.Rent();
+        GameObjectUtilities.GetComponentsDirectWithoutChecks(gameObject, result, searchInRoot);
+
+        var resultArray = result.Count == 0 ? Array.Empty<T>() : result.ToArray();
+        ListPool<T>.Push(result);
+
+        return resultArray;
     }
 
     /// <summary>
