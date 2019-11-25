@@ -104,7 +104,7 @@ namespace Omega.Routines
 
             // Если текущее состояние рутины ожидает завершения асинхронной операции, то просто ждем ее завершения
             if (current is AsyncOperation nestedAsyncOperation)
-                return !nestedAsyncOperation.isDone;
+                return !nestedAsyncOperation.isDone || enumerator.MoveNext();
 
             return enumerator.MoveNext();
         }
