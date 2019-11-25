@@ -4,9 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.9.0] - 2019-11-24
+## [0.9.1] - 2019-11-25
+### Fixes
+- Fix incorrect work routine with nested AsyncOperation ([40fd2c0](https://github.com/ltd-profit/omega-package/commit/40fd2c0bdd2af34501e033c645a706174c20a369))
 
-### New
+## [0.9.0] - 2019-11-24
+### Added
 - Add overload method Complete for Routine with timeout argument. Lets setup timeout for some routine
 - Add extension methods for `AsyncOperation`. :
   - `GetSelf` method lets get out async operation instance
@@ -14,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `AsRoutine` method overload with `Func<TAsyncOperation, TResult>` argument
    lets create routine with result from specific async operation
 - Add progress for routines. Lets you to get the routine progress in float format from 0 to 1
-- Add `GetComponentIdDirectChildren` extension methods for `GameObject` 
+- Add `GetComponentInDirectChildren` extension methods for `GameObject` 
 
    
 ### Removed 
