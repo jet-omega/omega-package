@@ -99,7 +99,7 @@ public static class GameObjectExtensions
         GameObjectUtilities.GetComponentsDirectWithoutChecks(gameObject, result, searchInRoot);
 
         var resultArray = result.Count == 0 ? Array.Empty<T>() : result.ToArray();
-        ListPool<T>.Push(result);
+        ListPool<T>.PushInternal(result);
 
         return resultArray;
     }
