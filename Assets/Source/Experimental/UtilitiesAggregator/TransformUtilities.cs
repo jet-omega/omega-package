@@ -79,7 +79,7 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
             foreach (var child in childs)
                 ObjectUtilities.AutoDestroyWithoutChecks(child.gameObject);
             
-            ListPool<Transform>.PushInternal(childs);
+            ListPool<Transform>.ReturnInternal(childs);
         }
     }
 }

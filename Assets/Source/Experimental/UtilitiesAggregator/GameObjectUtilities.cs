@@ -150,7 +150,7 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
                 ? Array.Empty<Component>()
                 : result.ToArray();
 
-            ListPool<Component>.PushInternal(result);
+            ListPool<Component>.ReturnInternal(result);
 
             return resultArray;
         }
@@ -203,7 +203,7 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
                 ? Array.Empty<T>()
                 : result.ToArray();
 
-            ListPool<T>.PushInternal(result);
+            ListPool<T>.ReturnInternal(result);
 
             return resultArray;
         }
@@ -284,7 +284,7 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
                 result.AddRange(tempList);
             }
             
-            ListPool<Component>.PushInternal(tempList);
+            ListPool<Component>.ReturnInternal(tempList);
         }
 
         [CanBeNull]
@@ -322,7 +322,7 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
                 result.AddRange(tempList);
             }
 
-            ListPool<T>.PushInternal(tempList);
+            ListPool<T>.ReturnInternal(tempList);
         }
     }
 }
