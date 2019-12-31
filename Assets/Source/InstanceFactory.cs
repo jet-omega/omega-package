@@ -7,8 +7,11 @@ namespace Omega.Package
     {
         private static Dictionary<Type, InstanceFactory> _factories = new Dictionary<Type, InstanceFactory>(7);
 
-        private static InstanceFactory GetFactory(Type type)
+        public static InstanceFactory GetFactory(Type type)
         {
+            if(type is null)
+                throw new ArgumentNullException(nameof(type));
+        
             if (!_factories.TryGetValue(type, out var factory))
             {
                 if (type.IsValueType)
@@ -35,24 +38,7 @@ namespace Omega.Package
 
             return GetFactory(type).Create();
         }
-
-        public static T CreateStruct<T>()
-            where T : struct
-        {
-            var type = typeof(T);
-            var factory = GetFactory(type);
-            return ((StructFactory<T>) factory).CreateNonBoxing();
-        }
-
-        public static T CreateClass<T>()
-            where T : class
-        {
-            var type = typeof(T);
-            var factory = GetFactory(type);
-            return (T) factory.Create();
-        }
-
-
+        
         public abstract object Create();
 
         private sealed class StructFactory<T> : InstanceFactory
