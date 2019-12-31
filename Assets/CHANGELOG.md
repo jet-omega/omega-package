@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.3] - 2019-12-31
+### Added
+- Add `InstanceFactory`. Lets instantiate objects of the type, its work very quickly with value types
+- Add `TypeHelper`. Lets fast get fields and get generic types
+
+### Imroved
+##### ListPool
+- Method `Push` is obsolete, use `Return`
+- Add read-only property `PoolSize`. Lets get pool size
+- Add method `Flush`. Lets clean pool
+- Add method `ReturnToArray`. Lets return list to pool and create list copy by array
+- Add method `Get`. Lets use directive `using` for list from pool
+- Value of const `DefaultListCapacity` were downgrade from 20 to 10
+
 ## [0.9.2] - 2019-12-08
 ### Added
 - New `ListPool`. Lets rent lists from pool
