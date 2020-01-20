@@ -27,7 +27,7 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
 
             ClearChildsWithoutChecks(root);
         }
-        
+
         /// <summary>
         /// Возвращает всех потомков переданного трансформа 
         /// </summary>
@@ -45,7 +45,17 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
 
             return GetChildsWithoutChecks(root);
         }
-        
+
+        public void GetChilds(Transform root, List<Transform> result)
+        {
+            if (root is null)
+                throw new ArgumentNullException(nameof(root));
+            if (!root)
+                throw new MissingReferenceException(nameof(root));
+
+            GetChildsWithoutChecks(root, result);
+        }
+
         [NotNull]
         internal static Transform[] GetChildsWithoutChecks([NotNull] Transform root)
         {
@@ -66,19 +76,19 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
             for (int i = 0; i < childsCount; i++)
                 result.Add(root.GetChild(i));
         }
-        
+
         internal static void ClearChildsWithoutChecks([NotNull] Transform root)
         {
             var childesCount = root.childCount;
             if (childesCount == 0)
                 return;
-            
+
             var childs = ListPool<Transform>.Rent(childesCount);
             GetChildsWithoutChecks(root, childs);
-            
+
             foreach (var child in childs)
                 ObjectUtilities.AutoDestroyWithoutChecks(child.gameObject);
-            
+
             ListPool<Transform>.ReturnInternal(childs);
         }
     }

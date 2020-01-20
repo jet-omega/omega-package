@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using Omega.Tools;
 using Omega.Tools.Experimental.UtilitiesAggregator;
@@ -24,6 +25,19 @@ public static class TransformExtensions
         return TransformUtilities.GetChildsWithoutChecks(transform);
     }
 
+    public static void GetChilds(this Transform transform, List<Transform> result)
+    {
+        if (transform is null)
+            throw new NullReferenceException(nameof(transform));
+        if (!transform)
+            throw new MissingReferenceException(nameof(transform));
+
+        if(result is null)
+            throw new ArgumentNullException(nameof(result));
+        
+        TransformUtilities.GetChildsWithoutChecks(transform, result);
+    }
+    
     /// <summary>
     /// Устанавливает себя в качестве потомка для gameObject и возвращает его
     /// </summary>
