@@ -4,12 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.4] - 2020-01-20
+### Added
+- Add `GetChilds` method overload for `TransformUtilities` and transform extensions. Lets get childs without allocations
+- Add `GetField` method overload for `TypeHelper`. Lets quickly find one field
+- Add methods for getting attributes on types in `TypeHelper`.
+
 ## [0.9.3] - 2019-12-31
 ### Added
 - Add `InstanceFactory`. Lets instantiate objects of the type, its work very quickly with value types
 - Add `TypeHelper`. Lets fast get fields and get generic types
 
-### Imroved
+### Improved
 ##### ListPool
 - Method `Push` is obsolete, use `Return`
 - Add read-only property `PoolSize`. Lets get pool size
