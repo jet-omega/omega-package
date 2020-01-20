@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace Omega.Package
@@ -10,7 +11,7 @@ namespace Omega.Package
 
         public static TypeHelper For(Type type)
         {
-            if(type is null)
+            if (type is null)
                 throw new ArgumentNullException(nameof(type));
 
             return ForInternal(type);
@@ -20,9 +21,62 @@ namespace Omega.Package
 
         private Type _type;
         private (FieldInfo field, BindingFlags flags)[] _fields;
+        private Attribute[] _attributes;
         private Dictionary<Type, TypeHelper> _generics;
 
         public Type Type => _type;
+
+        public void GetAttributes(List<Attribute> attributes)
+        {
+            if (_attributes is null)
+                CacheAttributes();
+
+            for (int i = 0; i < _attributes.Length; i++)
+                attributes.Add(_attributes[i]);
+        }
+
+        public void GetAttributes<T>(List<T> attributes)
+            where T : Attribute
+        {
+            if (_attributes is null)
+                CacheAttributes();
+
+            for (int i = 0; i < _attributes.Length; i++)
+            {
+                var attribute = _attributes[i];
+                if (attribute is T attributeCast)
+                    attributes.Add(attributeCast);
+            }
+        }
+
+        public T GetAttribute<T>()
+            where T : Attribute
+        {
+            if (_attributes is null)
+                CacheAttributes();
+
+            for (int i = 0; i < _attributes.Length; i++)
+            {
+                var attribute = _attributes[i];
+                if (attribute is T attributeCast)
+                    return attributeCast;
+            }
+
+            return null;
+        }
+
+        public FieldInfo GetField(string fieldName, BindingFlags fags)
+        {
+            for (var i = 0; i < _fields.Length; i++)
+            {
+                var fieldEntry = _fields[i];
+                if ((fieldEntry.flags & fags) == fieldEntry.flags)
+                    if (fieldEntry.field.Name == fieldName)
+                        return fieldEntry.field;
+            }
+
+            return null;
+        }
 
         public void GetFields(List<FieldInfo> fields, BindingFlags bindingFlags)
         {
@@ -60,6 +114,7 @@ namespace Omega.Package
 
         public TypeHelper ForGenericType<T>()
             => ForGenericType(typeof(T));
+
         public TypeHelper ForGenericType(params Type[] genericArguments)
         {
             if (_generics is null)
@@ -82,6 +137,7 @@ namespace Omega.Package
 
             return typeHelperForGenericType;
         }
+
         private TypeHelper GetTypeHelperForGenericArgs(Type[] genericArgs)
         {
             var genericType = _type.MakeGenericType(genericArgs);
@@ -105,7 +161,10 @@ namespace Omega.Package
                 _fields[i] = (field, flag);
             }
         }
-        
+
+        private void CacheAttributes() =>
+            _attributes = _type.GetCustomAttributes().ToArray();
+
         internal static TypeHelper ForInternal(Type type)
         {
             if (!_heleprs.TryGetValue(type, out var typeOfNode))
@@ -116,12 +175,12 @@ namespace Omega.Package
 
             return typeOfNode;
         }
-        
+
         public static implicit operator Type(TypeHelper typeHelper)
         {
             return typeHelper?.Type;
         }
-        
+
         /// <summary>
         /// Вспомагательный класс, для быстрого связываения типа T его TypeHelper`ом 
         /// </summary>
