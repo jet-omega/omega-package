@@ -140,5 +140,15 @@ namespace Omega.Routines
 
             return original;
         }
+
+        public static TRoutine InBackground<TRoutine>(this TRoutine self,
+            ExecutionOrder executionOrder = ExecutionOrder.Update,
+            RoutineExecutionScope scope = RoutineExecutionScope.Scene)
+            where TRoutine : Routine
+        {
+            var worker = RoutineWorker.Instance;
+            worker.Add(self, scope, executionOrder);
+            return self;
+        }
     }
 }
