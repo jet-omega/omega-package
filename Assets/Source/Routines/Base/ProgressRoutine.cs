@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using UnityEngine;
 
 namespace Omega.Routines
 {
@@ -18,18 +19,21 @@ namespace Omega.Routines
 
         protected override IEnumerator RoutineUpdate()
         {
-            while (!_targetRoutine.IsComplete && !_targetRoutine.IsError)
+            while (true)
             {
                 if (_routineProgress.TryUpdateProgress(out var progress))
                     _progressHandler.Invoke(progress);
-                
+
+                if (_targetRoutine.IsComplete || _targetRoutine.IsError)
+                    yield break;
+
                 yield return null;
             }
         }
 
         public float GetProgress()
         {
-            return 1f;
+            return _routineProgress.Progress;
         }
     }
 }
