@@ -71,6 +71,12 @@ namespace Omega.Routines
             {
                 _routine = routine;
             }
+
+            public static implicit operator TResult(ResultContainer resultContainer)
+            {
+                return resultContainer.Result;
+            }
+            
         }
     }
 }

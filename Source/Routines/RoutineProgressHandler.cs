@@ -2,7 +2,7 @@ using System;
 
 namespace Omega.Routines
 {
-    public struct RoutineProgress
+    public struct RoutineProgressHandler
     {
         private IProgressRoutineProvider _routine;
         
@@ -22,13 +22,13 @@ namespace Omega.Routines
             return true;
         }
 
-        internal RoutineProgress(IProgressRoutineProvider routine)
+        internal RoutineProgressHandler(IProgressRoutineProvider routine)
         {
             _routine = routine;
             _previousProgress = -1;
         }
 
-        public RoutineProgress(Routine routine)
+        public RoutineProgressHandler(Routine routine)
         {
             _routine = RoutineUtilities.GetProgressRoutineProvider(routine);
             _previousProgress = _routine.GetProgress();
