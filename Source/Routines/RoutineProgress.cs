@@ -31,7 +31,7 @@ namespace Omega.Routines
         public RoutineProgress(Routine routine)
         {
             _routine = RoutineUtilities.GetProgressRoutineProvider(routine);
-            _previousProgress = -1;
+            _previousProgress = _routine.GetProgress();
         }
     }
 }
