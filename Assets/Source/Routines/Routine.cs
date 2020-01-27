@@ -22,6 +22,7 @@ namespace Omega.Routines
         [CanBeNull] private Exception _exception;
         [CanBeNull] private IEnumerator _routine;
         [CanBeNull] private Action _callback;
+        [CanBeNull] private Action _update;
         [NotNull] private Action<Exception, Routine> _exceptionHandler = DefaultExceptionHandler;
 
         [CanBeNull] private string _creationStackTrace;
@@ -79,6 +80,8 @@ namespace Omega.Routines
                 return false;
             }
 
+            _update?.Invoke();
+            
             // Если больше не можем двигаться дольше то помечаем рутину как завершенную  
             if (!moveNextResult)
                 SetupCompleted();
@@ -123,16 +126,17 @@ namespace Omega.Routines
         internal void AddCallbackInternal(Action callback)
             => _callback += callback;
 
-        internal void SetCreationStackTraceInternal(string stackTrace)
-        {
-            _creationStackTrace = stackTrace;
-        }
+        internal void SetCreationStackTraceInternal(string stackTrace) 
+            => _creationStackTrace = stackTrace;
 
         internal void SetExceptionHandlerInternal(Action<Exception, Routine> exceptionHandler)
             => _exceptionHandler = exceptionHandler;
 
         internal string GetCreationStackTraceInternal()
             => _creationStackTrace;
+
+        internal void AddUpdateActionInternal(Action action)
+            => _update += action;
 
         private enum RoutineStatus
         {

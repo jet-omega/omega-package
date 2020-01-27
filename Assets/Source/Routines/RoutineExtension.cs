@@ -20,13 +20,36 @@ namespace Omega.Routines
             return groupRoutine;
         }
 
-        public static TRoutine GetRoutine<TRoutine>(this TRoutine original, out TRoutine routine)
+        public static TRoutine OnProgress<TRoutine>(this TRoutine self, Action<float> handler)
             where TRoutine : Routine
         {
-            if (original == null)
-                throw new NullReferenceException(nameof(original));
+            if (self is null)
+                throw new NullReferenceException(nameof(self));
+            if (handler is null)
+                throw new ArgumentNullException(nameof(handler));
 
-            return routine = original;
+            var p = new RoutineProgressHandler(self);
+            self.AddUpdateActionInternal(() =>
+            {
+                if (p.TryUpdateProgress(out var progress))
+                    handler.Invoke(progress);
+            });
+            
+            return self;
+        }
+
+        [Obsolete("Use GetSelf")]
+        public static TRoutine GetRoutine<TRoutine>(this TRoutine self, out TRoutine routine)
+            where TRoutine : Routine
+            => GetSelf(self, out routine);
+
+        public static TRoutine GetSelf<TRoutine>(this TRoutine self, out TRoutine routine)
+            where TRoutine : Routine
+        {
+            if (self == null)
+                throw new NullReferenceException(nameof(self));
+
+            return routine = self;
         }
 
         public static TRoutine Callback<TRoutine>(this TRoutine original, Action callback)
