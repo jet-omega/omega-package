@@ -4,6 +4,81 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.0] - 2020-02-06
+
+### Added
+- Add extension method `ToRectTransform` for Transform. Lets you easy cast Transform to RectTransform 
+    ```csharp
+    //                        Examples                          //
+    // -------------------------------------------------------- //
+
+        transform.ToRectTransform(out var rectTransform);
+        rectTransform.sizeDelta = Vector2.zero;
+        
+    // -------------------------------------------------------- //
+        
+        if(transform.ToRectTransform(out var rectTransform));
+           rectTransform.SetRect(somethingRect);
+        else throw new InvalidOperationException(); 
+    
+    // -------------------------------------------------------- //
+    ```  
+- Add `GetAllChilds` method in `TransformUtilities`. Lets you get all childs in hierarchy relative of the transform instance  
+- Add utilities for `UnityEngine.Rect`
+- Add extension method `SetRect` for `RectTransform`
+##### Routines
+- Add `WaitRoutine` (Routine.WaitOne). Lets wait the completion of the routine and provides the result 
+- Add unity background worker for routines and extension method `InBackground`. Lets you start routine in background. (You can use it instead `StartCoroutine`)
+    ```csharp
+    //                          Example                         //
+    // -------------------------------------------------------- //
+
+        var pathToImage = ...;
+        yield return Api.DownloadImage(pathToImage)
+            .Result(out var imageResult);
+            
+        Texture2D image = imageResult;
+        
+        // caching image in background
+        Routine.Task(()=>
+        {
+            var imageRaw = image.EncodeToJPG();
+            File.WriteAllBytes(pathToImage, imageRaw)
+        }).InBackground();
+        
+        itemInMenu.Image = image;
+    
+    // -------------------------------------------------------- //
+    ```
+
+### Improved
+##### Routines
+- Now all routines have virtual method `OnForcedComplete`. Lets to notify the routine of forced completion
+- When the `DelayRoutine` is forcibly completion, the flow may go to thread Sleep
+- When you try to forcefully complete an nested AsyncOperation in a routine that cannot be resolved synchronously, an exception will be thrown **(to avoid deadlock)**
+- Add implicit operator for `ResultContainer`
+    ```csharp
+    //                        Example                           //
+    // -------------------------------------------------------- //
+    
+        yield return Routine.FromResult(2020).Result(out var result);
+        int year = result; // implicit cast ResultContainer<int> to int
+        
+    // -------------------------------------------------------- //
+    ```  
+
+### Fixed
+- Fix exception throwing in `TaskRoutine` inside `Task`
+
+### Changed
+- `Omega.Experimental.Utilities` is obsolete. Now you should use `Omega.Package.Utilities`
+- Rename `RoutineProgress` to `RoutineProgressHandler`
+- `GetRoutine` extension method is obsolete. Now you should use `GetSelf`
+- `OnChangeProgress` extension method is obsolete. Now you should use `OnProgress`
+
+### Removed
+- Remove legacy static utility classes (Replaced by `Omega.Package.Utilities`)
+
 ## [0.9.4] - 2020-01-20
 ### Added
 - Add `GetChilds` method overload for `TransformUtilities` and transform extensions. Lets get childs without allocations
