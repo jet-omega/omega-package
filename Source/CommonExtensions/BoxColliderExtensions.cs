@@ -1,7 +1,7 @@
 ﻿using System;
 using Omega.Experimental;
 using Omega.Tools;
-using Omega.Tools.Experimental.UtilitiesAggregator;
+using Omega.Package.Internal;
 using UnityEngine;
 
 public static class BoxColliderExtensions
