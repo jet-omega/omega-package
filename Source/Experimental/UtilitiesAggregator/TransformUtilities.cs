@@ -56,6 +56,28 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
             GetChildsWithoutChecks(root, result);
         }
 
+        public void GetAllChilds(Transform root, List<Transform> result)
+        {
+            if (root is null)
+                throw new ArgumentNullException(nameof(root));
+            if (!root)
+                throw new MissingReferenceException(nameof(root));
+            if (result is null)
+                throw new ArgumentNullException(nameof(result));
+
+            GetAllChildsWithoutChecks(root, result);
+        }
+        
+        public int GetAllChildsCount(Transform root)
+        {
+            if (root is null)
+                throw new ArgumentNullException(nameof(root));
+            if (!root)
+                throw new MissingReferenceException(nameof(root));
+
+            return GetAllChildsCountWithoutChecks(root);
+        }
+
         [NotNull]
         internal static Transform[] GetChildsWithoutChecks([NotNull] Transform root)
         {
@@ -90,6 +112,26 @@ namespace Omega.Tools.Experimental.UtilitiesAggregator
                 ObjectUtilities.AutoDestroyWithoutChecks(child.gameObject);
 
             ListPool<Transform>.ReturnInternal(childs);
+        }
+
+        internal static void GetAllChildsWithoutChecks([NotNull] Transform root, [NotNull] List<Transform> childs)
+        {
+            var i = childs.Count;
+            GetChildsWithoutChecks(root, childs);
+            var count = childs.Count;
+            for (; i < count; i++)
+                GetAllChildsWithoutChecks(childs[i], childs);
+        }
+
+        internal static int GetAllChildsCountWithoutChecks([NotNull] Transform root)
+        {
+            int result = 0;
+            var childs = ListPool<Transform>.Rent();
+            GetAllChildsWithoutChecks(root, childs);
+            result = childs.Count;
+            ListPool<Transform>.Return(childs);
+
+            return result;
         }
     }
 }
