@@ -55,18 +55,19 @@ namespace Omega.Routines
 
         private void UpdateRoutines(List<Routine> routines)
         {
-            using (ListPool<int>.Get(out var indexes))
+            using (ListPool<int>.Get(out var removeIndexes))
             {
                 for (var i = 0; i < routines.Count; i++)
                 {
                     var routineEnumerator = (IEnumerator) routines[i];
                     if (!routineEnumerator.MoveNext()) 
-                        indexes.Add(i);
+                        removeIndexes.Add(i);
                 }
                 
-                indexes.Reverse();
+                // Удалять элементы с конца проще
+                removeIndexes.Reverse();
 
-                foreach (var index in indexes)
+                foreach (var index in removeIndexes)
                     routines.RemoveAt(index);                
             }
         }
