@@ -41,6 +41,7 @@ namespace Omega.Routines
         private void SetupCompleted()
         {
             _status = RoutineStatus.Completed;
+            _update?.Invoke();
             _callback?.Invoke();
         }
 
@@ -61,7 +62,10 @@ namespace Omega.Routines
                 }
 
                 if (_status != RoutineStatus.ForcedProcessing)
+                {
                     _status = RoutineStatus.Processing;
+                    _update?.Invoke();
+                }
             }
 
             bool moveNextResult = false;
@@ -79,14 +83,15 @@ namespace Omega.Routines
                 _status = RoutineStatus.Error;
 
                 _exceptionHandler.Invoke(e, this);
+                _update?.Invoke();
 
                 return false;
             }
 
-            _update?.Invoke();
-
             // Если больше не можем двигаться дольше то помечаем рутину как завершенную  
-            if (!moveNextResult)
+            if (moveNextResult)
+                _update?.Invoke();
+            else
                 SetupCompleted();
 
             return moveNextResult;
@@ -132,6 +137,8 @@ namespace Omega.Routines
             _status = RoutineStatus.ForcedProcessing;
 
             OnForcedComplete();
+            
+            _update?.Invoke();
         }
 
         protected virtual void OnForcedComplete()
