@@ -6,6 +6,7 @@ namespace Omega.Routines
 {
     public static class RoutineExtension
     {
+        [Obsolete("Use OnProgress")]
         public static Routine OnChangeProgress(this Routine self, Action<float> handler)
         {
             if (self is null)
