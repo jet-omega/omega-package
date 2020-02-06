@@ -1,7 +1,9 @@
-using Omega.Tools.Experimental.UtilitiesAggregator;
+using System;
+using Omega.Package.Internal;
 
 namespace Omega.Experimental
 {
+    [Obsolete("Use Utilities from Omega.Package namespace")]
     public static class Utilities
     {
         private static TransformUtilities _transfrom = new TransformUtilities();
