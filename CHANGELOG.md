@@ -22,7 +22,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         else throw new InvalidOperationException(); 
     
     // -------------------------------------------------------- //
-    ```  
+    ```
+- Add `ApportionedRoutine`. Lets you to distribute the big task into frames
+- Add `ObjectRoutines`. Lets you create routines for async instantiation objects
+    ```csharp
+    //                        Example                          //
+    // -------------------------------------------------------- //
+    
+    var factory = GameObjectFactory.Prefab(prefabItem)
+        .SetParent(transform)
+        .Custom(go => go.GetComponent<Item>().Init()) 
+    
+    // instantiate 10 000 GameObject by factory spending no more than 0.01 seconds per frame
+    yield return ObjectRoutine.Instantiate(factory, 10_000, 0.01f);
+    
+    // -------------------------------------------------------- //
+    ```
 - Add `GetAllChilds` method in `TransformUtilities`. Lets you get all childs in hierarchy relative of the transform instance  
 - Add utilities for `UnityEngine.Rect`
 - Add extension method `SetRect` for `RectTransform`
