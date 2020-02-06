@@ -13,7 +13,7 @@ namespace Omega.Routines.Tests
         public IEnumerator RoutineShouldBeTrueWhenRoutineIsNotProcessingTest()
         {
             yield return Routine.Delay(Utilities.Time.FromMilliseconds(25))
-                .GetRoutine(out var routine);
+                .GetSelf(out var routine);
 
             Assert.True(routine);
         }

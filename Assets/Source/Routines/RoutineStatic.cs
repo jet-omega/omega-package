@@ -15,12 +15,12 @@ namespace Omega.Routines
 
             return new DelayRoutine(TimeSpan.FromSeconds(intervalSeconds));
         }
-        
+
         [NotNull]
         public static DelayRoutine Delay(TimeSpan interval)
         {
             var intervalDuration = interval.Duration();
-            
+
             return new DelayRoutine(intervalDuration);
         }
 
@@ -65,6 +65,7 @@ namespace Omega.Routines
         {
             return new ActionRoutine(action);
         }
+
         public static Routine<T> ByAction<T>(Func<T> action)
         {
             return new ActionRoutine<T>(action);
@@ -132,7 +133,13 @@ namespace Omega.Routines
         public static Routine<TResult> Convert<TSource, TResult>(Routine<TSource> sourceRoutine,
             Func<TSource, TResult> converter)
         {
-            return new ConvertResultRoutine<TSource,TResult>(sourceRoutine, converter);
+            return new ConvertResultRoutine<TSource, TResult>(sourceRoutine, converter);
         }
+
+        public static Routine<TResult> WaitOne<TResult>(Routine routine, Func<TResult> resultProvider)
+        {
+            return new WaitRoutine<TResult>(routine, resultProvider);
+        }
+        
     }
 }

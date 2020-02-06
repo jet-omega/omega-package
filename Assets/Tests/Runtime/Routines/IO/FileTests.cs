@@ -18,7 +18,7 @@ namespace Omega.Routines.IO.Tests
             random.NextBytes(testData);
 
             yield return FileRoutine.WriteAllBytesRoutine(pathToTestFile, testData)
-                .GetRoutine(out var writeAllBytesRoutine);
+                .GetSelf(out var writeAllBytesRoutine);
 
             if (writeAllBytesRoutine.IsError)
             {
