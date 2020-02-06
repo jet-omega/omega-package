@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Omega.Experimental;
-using Omega.Tools.Experimental.UtilitiesAggregator;
+using Omega.Routines;
+using Omega.Package.Internal;
 using UnityEngine;
+using UnityEngine.TestTools;
 using Object = UnityEngine.Object;
 
 namespace Omega.Tools.Tests
@@ -18,7 +22,7 @@ namespace Omega.Tools.Tests
             const int countChildsWithTransform = 10;
 
             var gameObjectInstance = GameObjectFactory.New().AddComponent<RectTransform>().Build();
-            
+
             foreach (var num in Enumerable.Range(0, countChildsWithRectTransform))
                 gameObjectInstance.Attach(new GameObject("Test " + num)).AddComponent<RectTransform>();
 
@@ -60,7 +64,7 @@ namespace Omega.Tools.Tests
 
             Assert.Throws<MissingReferenceException>(() => Utilities.RectTransform.GetChilds(rectTransform));
         }
-        
+
         [Test]
         public void GetChildsShouldThrowArgumentNullExceptionWhenParameterIsNullTest()
         {

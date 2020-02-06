@@ -2,7 +2,7 @@
 using JetBrains.Annotations;
 using Omega.Package;
 using Omega.Tools;
-using Omega.Tools.Experimental.UtilitiesAggregator;
+using Omega.Package.Internal;
 using UnityEngine;
 
 /// <summary>

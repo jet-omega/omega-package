@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using Omega.Package;
 
-namespace Omega.Tools.Tests.Editor
+namespace Omega.Tools.Tests
 {
     public class InstanceFactoryTests
     {
