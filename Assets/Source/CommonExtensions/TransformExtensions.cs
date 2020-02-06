@@ -110,4 +110,10 @@ public static class TransformExtensions
 
         return transform;
     }
+
+    public static bool ToRectTransform(this Transform self, out RectTransform rectTransform)
+    {
+        rectTransform = self as RectTransform;
+        return rectTransform != null;
+    }
 }
