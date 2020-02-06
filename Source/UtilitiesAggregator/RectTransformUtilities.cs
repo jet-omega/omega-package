@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Omega.Package.Internal
 {
-    public sealed class RectTransformUtilities
+    public sealed class RectTransformUtilities : TransformUtilities
     {
         /// <summary>
         /// Возвращает всех потомков указанного трансформа, если потомок этого трансформа не кастится к RectTransfrom,
@@ -36,7 +36,29 @@ namespace Omega.Package.Internal
             return resultArray;
         }
 
-        internal void GetChildsWithoutChecks([NotNull] RectTransform rectTransform,
+        public void SetRect([NotNull] RectTransform rectTransform, Rect rect)
+        {
+            if (rectTransform is null)
+                throw new ArgumentNullException(nameof(rectTransform));
+            if (!rectTransform)
+                throw new MissingReferenceException(nameof(rectTransform));
+            
+            SetRectWithoutChecks(rectTransform, rect);
+        }
+
+        internal static void SetRectWithoutChecks([NotNull] RectTransform rectTransform, Rect rect)
+        {
+            var z = rectTransform.position.z;
+
+            var size = rect.size;
+            var offset = size * rectTransform.pivot;
+            var position = new Vector3(rect.x + offset.x, rect.y + offset.y, z);
+
+            rectTransform.position = position;
+            rectTransform.sizeDelta = size;
+        }
+
+        internal static void GetChildsWithoutChecks([NotNull] RectTransform rectTransform,
             [NotNull] List<RectTransform> result)
         {
             var childsCount = rectTransform.childCount;
