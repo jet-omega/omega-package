@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Omega.Experimental;
 using UnityEngine;
@@ -39,6 +41,41 @@ namespace Omega.Tools.Tests
 
             Assert.Throws<MissingReferenceException>(() =>
                 Utilities.Transfrom.GetChilds(gameObjectInstance.transform));
+        }
+        
+        [Test]
+        public void GetAllChildsShouldReturnAllChildsTest()
+        {
+            int goCount = 50; 
+            
+            var root = new GameObject("root").transform;
+            var circuitParent = root;
+            var complexHierarchyObjects = GameObjectFactory.New()
+                .Custom(go => go.transform.parent = circuitParent)
+                .Custom(go => circuitParent = go.transform)
+                .Build<Transform>(goCount);
+
+            var result = new List<Transform>(goCount);
+            Utilities.Transfrom.GetAllChilds(root, result);
+            
+            Assert.Zero(complexHierarchyObjects.Except(result).Count());
+        }
+        
+        [Test]
+        public void GetAllChildsCountShouldReturnCountAllChildsTest()
+        {
+            int goCount = 50; 
+            
+            var root = new GameObject("root").transform;
+            var circuitParent = root;
+            GameObjectFactory.New()
+                .Custom(go => go.transform.parent = circuitParent)
+                .Custom(go => circuitParent = go.transform)
+                .Build<Transform>(goCount);
+
+            var result = Utilities.Transfrom.GetAllChildsCount(root);
+            
+            Assert.AreEqual(goCount, result);
         }
     }
 }
