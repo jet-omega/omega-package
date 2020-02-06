@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Omega.Package.Internal
 {
-    public sealed class TransformUtilities
+    public class TransformUtilities
     {
         internal TransformUtilities()
         {
