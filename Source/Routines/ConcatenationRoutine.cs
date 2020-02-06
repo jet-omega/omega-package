@@ -45,7 +45,7 @@ namespace Omega.Routines
         
         protected override IEnumerator RoutineUpdate()
         {
-            yield return new GroupRoutine(_routines).GetRoutine(out _finalGroupRoutine);
+            yield return _finalGroupRoutine = new GroupRoutine(_routines);
         }
 
         public float GetProgress()

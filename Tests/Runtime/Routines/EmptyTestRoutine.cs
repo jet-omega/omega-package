@@ -27,12 +27,12 @@ namespace Omega.Routines.Tests
             }
         }
 
-        private IEnumerator Empty()
+        private new static IEnumerator Empty()
         {
             yield break;
         }
 
-        private IEnumerator Once()
+        private static IEnumerator Once()
         {
             yield return null;
         }

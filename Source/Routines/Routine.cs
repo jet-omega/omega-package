@@ -28,10 +28,12 @@ namespace Omega.Routines
         [CanBeNull] private string _creationStackTrace;
 
         public bool IsError => _status == RoutineStatus.Error;
-        public bool IsProcessing => _status == RoutineStatus.Processing;
+        public bool IsProcessing => _status == RoutineStatus.Processing || _status == RoutineStatus.ForcedProcessing;
         public bool IsComplete => _status == RoutineStatus.Completed;
         public bool IsNotStarted => _status == RoutineStatus.NotStarted;
 
+        protected bool IsForcedProcessing => _status == RoutineStatus.ForcedProcessing;
+        
         public Exception Exception => _exception;
 
         protected abstract IEnumerator RoutineUpdate();
@@ -58,7 +60,8 @@ namespace Omega.Routines
                     return false;
                 }
 
-                _status = RoutineStatus.Processing;
+                if (_status != RoutineStatus.ForcedProcessing)
+                    _status = RoutineStatus.Processing;
             }
 
             bool moveNextResult = false;
@@ -81,7 +84,7 @@ namespace Omega.Routines
             }
 
             _update?.Invoke();
-            
+
             // Если больше не можем двигаться дольше то помечаем рутину как завершенную  
             if (!moveNextResult)
                 SetupCompleted();
@@ -103,7 +106,13 @@ namespace Omega.Routines
             if (current is IEnumerator nestedEnumerator)
                 // То ожидаем эту вложенную рутину со всеми ее вложениями
                 // Если обновить состояние рутины не удалось то двигаем рутину которая содержала в себе вложенную рутину
+            {
+                if (current is Routine nestedRoutine && _status == RoutineStatus.ForcedProcessing &&
+                    nestedRoutine._status != RoutineStatus.ForcedProcessing)
+                    nestedRoutine.OnForcedCompleteInternal();
+
                 return DeepMoveNext(nestedEnumerator) || enumerator.MoveNext();
+            }
 
             // Если текущее состояние рутины ожидает завершения асинхронной операции, то просто ждем ее завершения
             if (current is AsyncOperation nestedAsyncOperation)
@@ -111,7 +120,25 @@ namespace Omega.Routines
 
             return enumerator.MoveNext();
         }
+        internal void OnForcedCompleteInternal()
+        {
+            if (_status == RoutineStatus.Completed || _status == RoutineStatus.ForcedProcessing)
+                return;
 
+            if (_status is RoutineStatus.Error)
+                throw new InvalidOperationException(
+                    "Impossible to force complete a routine in which there is an error");
+
+            _status = RoutineStatus.ForcedProcessing;
+
+            OnForcedComplete();
+        }
+
+        protected virtual void OnForcedComplete()
+        {
+        }
+
+        // TODO: mb throw not supported exception?
         void IEnumerator.Reset()
         {
             _exceptionHandler = DefaultExceptionHandler;
@@ -126,7 +153,7 @@ namespace Omega.Routines
         internal void AddCallbackInternal(Action callback)
             => _callback += callback;
 
-        internal void SetCreationStackTraceInternal(string stackTrace) 
+        internal void SetCreationStackTraceInternal(string stackTrace)
             => _creationStackTrace = stackTrace;
 
         internal void SetExceptionHandlerInternal(Action<Exception, Routine> exceptionHandler)
@@ -138,10 +165,12 @@ namespace Omega.Routines
         internal void AddUpdateActionInternal(Action action)
             => _update += action;
 
+
         private enum RoutineStatus
         {
             NotStarted = 0,
             Processing,
+            ForcedProcessing,
             Error,
             Completed
         }

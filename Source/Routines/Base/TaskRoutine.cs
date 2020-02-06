@@ -25,7 +25,7 @@ namespace Omega.Routines
                 yield return null;
 
             if (task.IsFaulted)
-                throw task.Exception.InnerException;
+                throw task.Exception?.InnerException ?? task.Exception;
         }
 
         public TaskRoutine StartTask()
