@@ -4,8 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.10.0] - 2020-02-06
+## [0.10.1] - 2020-02-07
+### Added
+- Add extension method overload `AsRoutine` for `AsyncOperation` without `out` arg
+- Add extension method  `CanBeForceComplete` for `AsyncOperation`. Lets you to determine whether the AsyncOperation can be completed synchronously
 
+### Fixes
+- Change assembly for `ObjectRoutine` class to Omega.Tools.Runtime
+- Remove internal usage `Omega.Experimental.Utilities` 
+
+## [0.10.0] - 2020-02-06
 ### Added
 - Add extension method `ToRectTransform` for Transform. Lets you easy cast Transform to RectTransform 
     ```csharp
