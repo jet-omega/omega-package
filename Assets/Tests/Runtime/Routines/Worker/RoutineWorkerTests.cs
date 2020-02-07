@@ -1,6 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using NUnit.Framework;
-using Omega.Experimental;
 using UnityEngine;
 using UnityEngine.TestTools;
 
@@ -11,12 +11,12 @@ namespace Omega.Routines.Tests
         [UnityTest]
         public IEnumerator DelayInBackgroundShouldCompleteTest()
         {
-            var interval = Utilities.Time.FromMilliseconds(100);
+            var interval = TimeSpan.FromMilliseconds(100);
             var delay = Routine.Delay(interval);
             delay.InBackground();
 
             var startTime = Time.time;
-            while (!delay.IsComplete && startTime + interval * 2 > Time.time)
+            while (!delay.IsComplete && startTime + interval.TotalSeconds * 2 > Time.time)
                 yield return null;
             
             Assert.True(delay.IsComplete);
