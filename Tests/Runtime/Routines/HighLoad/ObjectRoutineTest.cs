@@ -1,15 +1,11 @@
 using System;
 using System.Collections;
 using NUnit.Framework;
-using Omega.Experimental;
+using Omega.Package;
 using Omega.Routines.HighLoad;
 using Omega.Tools;
-using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
-using GameObjectUtility = UnityEditor.GameObjectUtility;
-using Object = UnityEngine.Object;
 
 namespace Omega.Routines.Tests.HighLoad
 {

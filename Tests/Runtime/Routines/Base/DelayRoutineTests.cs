@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using NUnit.Framework;
-using Omega.Experimental;
+using Omega.Package;
 using UnityEngine;
 using UnityEngine.TestTools;
 
@@ -12,10 +12,10 @@ namespace Omega.Routines.Tests
         [UnityTest]
         public IEnumerator DelayRoutineShouldFulfilledSetTimeTest()
         {
-            var targetTime = Utilities.Time.FromMilliseconds(50);
+            var targetTime = TimeSpan.FromMilliseconds(50);
 
             var startTime = DateTime.Now;
-            var scheduledReleaseTime = startTime + TimeSpan.FromSeconds(targetTime);
+            var scheduledReleaseTime = startTime + targetTime;
 
             yield return Routine.Delay(targetTime);
 
@@ -27,17 +27,17 @@ namespace Omega.Routines.Tests
         [Test]
         public void DelayRoutineShouldCompleteWhenUserUseForceCompleteTest()
         {
-            var targetTime = Utilities.Time.FromMilliseconds(50);
+            var targetTime = TimeSpan.FromMilliseconds(50);
             Routine.Delay(targetTime).Complete();
         }
-        
+
         [Test]
         public void DelayRoutineShouldFulfilledSetTimeWhenUserUseForceCompleteTest()
         {
-            var targetTime = Utilities.Time.FromMilliseconds(50);
+            var targetTime = TimeSpan.FromMilliseconds(50);
 
             var startTime = DateTime.Now;
-            var scheduledReleaseTime = startTime + TimeSpan.FromSeconds(targetTime);
+            var scheduledReleaseTime = startTime + targetTime;
 
             Routine.Delay(targetTime).Complete();
 

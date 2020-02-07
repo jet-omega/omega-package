@@ -1,8 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
-using Omega.Experimental;
+using Omega.Package;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Omega.Tools.Tests
 {

@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using Omega.Experimental;
+using Omega.Package;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Omega.Tools.Tests
 {
@@ -15,7 +14,7 @@ namespace Omega.Tools.Tests
         {
             var gameObjectInstance = new GameObject();
 
-            var childs = Utilities.Transfrom.GetChilds(gameObjectInstance.transform);
+            var childs = Utilities.Transform.GetChilds(gameObjectInstance.transform);
 
             Assert.NotNull(childs);
             Assert.Zero(childs.Length);
@@ -29,7 +28,7 @@ namespace Omega.Tools.Tests
         public void GetChildsShouldThrowArgumentNullExceptionWhenParameterIsNull()
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => Utilities.Transfrom.GetChilds(null));
+            Assert.Throws<ArgumentNullException>(() => Utilities.Transform.GetChilds(null));
         }
 
         [Test]
@@ -40,7 +39,7 @@ namespace Omega.Tools.Tests
             Utilities.Object.AutoDestroy(gameObjectInstance);
 
             Assert.Throws<MissingReferenceException>(() =>
-                Utilities.Transfrom.GetChilds(gameObjectInstance.transform));
+                Utilities.Transform.GetChilds(gameObjectInstance.transform));
         }
         
         [Test]
@@ -56,7 +55,7 @@ namespace Omega.Tools.Tests
                 .Build<Transform>(goCount);
 
             var result = new List<Transform>(goCount);
-            Utilities.Transfrom.GetAllChilds(root, result);
+            Utilities.Transform.GetAllChilds(root, result);
             
             Assert.Zero(complexHierarchyObjects.Except(result).Count());
         }
@@ -73,7 +72,7 @@ namespace Omega.Tools.Tests
                 .Custom(go => circuitParent = go.transform)
                 .Build<Transform>(goCount);
 
-            var result = Utilities.Transfrom.GetAllChildsCount(root);
+            var result = Utilities.Transform.GetAllChildsCount(root);
             
             Assert.AreEqual(goCount, result);
         }
