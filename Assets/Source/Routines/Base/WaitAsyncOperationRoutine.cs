@@ -32,7 +32,7 @@ namespace Omega.Routines
         protected override void OnForcedComplete()
         {
             if (!_canBeForcedCompletion.HasValue)
-                _canBeForcedCompletion = WaitAsyncOperationRoutine.CanBeForcedCompletion(_asyncOperation);
+                _canBeForcedCompletion = _asyncOperation.CanBeForceComplete();
             
             if(!_canBeForcedCompletion.Value)
                 throw new InvalidOperationException("AsyncOperation can not be forced complete");
@@ -69,21 +69,10 @@ namespace Omega.Routines
         protected override void OnForcedComplete()
         {
             if (!_canBeForcedCompletion.HasValue)
-                _canBeForcedCompletion = CanBeForcedCompletion(_asyncOperation);
+                _canBeForcedCompletion = _asyncOperation.CanBeForceComplete();
             
             if(!_canBeForcedCompletion.Value)
                 throw new InvalidOperationException("AsyncOperation can not be forced complete");
-        }
-
-        private static HashSet<Type> trueOperationTypes = new HashSet<Type>()
-        {
-            typeof(UnityWebRequestAsyncOperation)
-        };    
-        
-        public static bool CanBeForcedCompletion(AsyncOperation asyncOperation)
-        {
-            var asyncOperationType = asyncOperation.GetType();
-            return trueOperationTypes.Contains(asyncOperationType);
         }
     }
 }
