@@ -22,7 +22,7 @@ namespace Omega.Routines.Tests
 
             var startTime = DateTime.UtcNow;
             yield return delayRoutine;
-            var delta = (DateTime.UtcNow - startTime).TotalSeconds;
+            var delta = DateTime.UtcNow - startTime;
             
             Utilities.Object.AutoDestroy(gameObject);
             
@@ -43,7 +43,7 @@ namespace Omega.Routines.Tests
 
             var startTime = DateTime.UtcNow;
             yield return complexRoutine;
-            var delta = (DateTime.UtcNow - startTime).TotalSeconds;
+            var delta = DateTime.UtcNow - startTime;
             
             Utilities.Object.AutoDestroy(gameObject);
             
