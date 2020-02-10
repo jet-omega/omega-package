@@ -45,5 +45,17 @@ namespace Omega.Routines.Tests
             Assert.Positive(delta);
             Assert.GreaterOrEqual(Time.unscaledDeltaTime, delta);
         }
+
+        [UnityTest]
+        public IEnumerator CancelDelayRoutineShouldBeCancelTest()
+        {
+            var timeMeter = TimeMeter.New();
+            var routine = Routine.Delay(1);
+            routine.Cancel();
+            yield return routine;
+
+            var elapsed = timeMeter.ToSeconds();
+            Assert.Less(elapsed, 1f);
+        }
     }
 }

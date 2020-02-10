@@ -31,15 +31,19 @@ namespace Omega.Routines
         public bool IsProcessing => _status == RoutineStatus.Processing || _status == RoutineStatus.ForcedProcessing;
         public bool IsComplete => _status == RoutineStatus.Completed;
         public bool IsNotStarted => _status == RoutineStatus.NotStarted;
+        public bool IsCanceled => _status == RoutineStatus.Canceled;
 
         protected bool IsForcedProcessing => _status == RoutineStatus.ForcedProcessing;
-        
+
         public Exception Exception => _exception;
 
         protected abstract IEnumerator RoutineUpdate();
 
         private void SetupCompleted()
         {
+            if(_status == RoutineStatus.Canceled)
+                throw new InvalidOperationException("Routine was canceled");
+            
             _status = RoutineStatus.Completed;
             _update?.Invoke();
             _callback?.Invoke();
@@ -48,7 +52,7 @@ namespace Omega.Routines
         bool IEnumerator.MoveNext()
         {
             // Если рутина содержит ошибку, то последующие ее выполнение может быть не корректным.
-            if (IsError)
+            if (IsError || IsCanceled)
                 return false;
 
             // Если рутина еще не создана - создаем
@@ -125,6 +129,7 @@ namespace Omega.Routines
 
             return enumerator.MoveNext();
         }
+
         internal void OnForcedCompleteInternal()
         {
             if (_status == RoutineStatus.Completed || _status == RoutineStatus.ForcedProcessing)
@@ -137,11 +142,28 @@ namespace Omega.Routines
             _status = RoutineStatus.ForcedProcessing;
 
             OnForcedComplete();
+
+            _update?.Invoke();
+        }
+
+        public void Cancel()
+        {
+            if (_status == RoutineStatus.Canceled || _status == RoutineStatus.Completed ||
+                _status == RoutineStatus.Error)
+                return;
+
+            _status = RoutineStatus.Canceled;
+            
+            OnCancel();
             
             _update?.Invoke();
         }
 
         protected virtual void OnForcedComplete()
+        {
+        }
+
+        protected virtual void OnCancel()
         {
         }
 
@@ -179,7 +201,8 @@ namespace Omega.Routines
             Processing,
             ForcedProcessing,
             Error,
-            Completed
+            Completed,
+            Canceled
         }
 
         public static implicit operator bool([CanBeNull] Routine routine)

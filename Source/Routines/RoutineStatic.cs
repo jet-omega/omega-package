@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using JetBrains.Annotations;
 
 namespace Omega.Routines
@@ -34,7 +35,25 @@ namespace Omega.Routines
         }
 
         [NotNull]
+        public static TaskRoutine Task([NotNull] Action<CancellationToken> action)
+        {
+            if (action == null)
+                throw new ArgumentNullException(nameof(action));
+
+            return new TaskRoutine(action);
+        }
+
+        [NotNull]
         public static TaskRoutine<TResult> Task<TResult>([NotNull] Func<TResult> action)
+        {
+            if (action == null)
+                throw new ArgumentNullException(nameof(action));
+
+            return new TaskRoutine<TResult>(action);
+        }
+
+        [NotNull]
+        public static TaskRoutine<TResult> Task<TResult>([NotNull] Func<CancellationToken, TResult> action)
         {
             if (action == null)
                 throw new ArgumentNullException(nameof(action));
@@ -140,6 +159,5 @@ namespace Omega.Routines
         {
             return new WaitRoutine<TResult>(routine, resultProvider);
         }
-        
     }
 }

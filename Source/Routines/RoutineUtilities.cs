@@ -20,6 +20,12 @@ namespace Omega.Routines
             routine.OnForcedCompleteInternal();
             CompleteNow(routine, timeOut);
         }
+
+        internal static bool OneStep(IEnumerator routine)
+        {
+            return routine.MoveNext();
+        }
+        
         
         private static void CompleteNow([NotNull] IEnumerator routine)
         {
@@ -51,6 +57,5 @@ namespace Omega.Routines
                 ? progressRoutineProvider
                 : new ProgressProviderAdapter(routine);
         }
-        
     }
 }
