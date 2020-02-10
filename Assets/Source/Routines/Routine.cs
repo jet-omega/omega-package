@@ -116,9 +116,17 @@ namespace Omega.Routines
                 // То ожидаем эту вложенную рутину со всеми ее вложениями
                 // Если обновить состояние рутины не удалось то двигаем рутину которая содержала в себе вложенную рутину
             {
-                if (current is Routine nestedRoutine && _status == RoutineStatus.ForcedProcessing &&
-                    nestedRoutine._status != RoutineStatus.ForcedProcessing)
-                    nestedRoutine.OnForcedCompleteInternal();
+                if (current is Routine nestedRoutine)
+                {
+                    var nestedRoutineStatus = nestedRoutine._status;
+                    if(nestedRoutineStatus == RoutineStatus.Error)
+                        throw new Exception("Nested routine have error", nestedRoutine._exception);
+                    if(nestedRoutineStatus == RoutineStatus.Canceled)
+                        throw new Exception("Nested routine were canceled");
+                    
+                    if (_status == RoutineStatus.ForcedProcessing && nestedRoutineStatus != RoutineStatus.ForcedProcessing)
+                        nestedRoutine.OnForcedCompleteInternal();
+                }
 
                 return DeepMoveNext(nestedEnumerator) || enumerator.MoveNext();
             }
