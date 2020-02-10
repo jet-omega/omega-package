@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Threading;
 
 namespace Omega.Routines.Experimental
@@ -53,6 +54,16 @@ namespace Omega.Routines.Experimental
         public static IRoutineExpression<T> FromRoutine<T>(Func<Routine<T>> routine)
         {
             return new ExpressionFromRoutine<T>(routine);
+        }
+
+        internal static IRoutineExpression From(Func<RoutineControl, IEnumerator> enumeratorFactory)
+        {
+            return FromRoutine(() => Routine.ByEnumerator(enumeratorFactory));
+        }
+        
+        internal static IRoutineExpression<T> From<T>(Func<RoutineControl<T>, IEnumerator> enumeratorFactory)
+        {
+            return FromRoutine(() => Routine.ByEnumerator(enumeratorFactory));
         }
     }
 }

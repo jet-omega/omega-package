@@ -16,7 +16,7 @@ namespace Omega.Routines.Experimental
             IEnumerator Enumerator(RoutineControl @this)
             {
                 yield return self.ToRoutine().Result(out var result);
-                yield return Routine.ByAction(() => action(result));
+                action(result);
             }
 
             return RoutineExpression.FromRoutine(() => Routine.ByEnumerator(Enumerator));

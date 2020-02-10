@@ -11,7 +11,7 @@ namespace Omega.Routines.Experimental
                 yield return self.ToRoutine() + with.ToRoutine();
             }
 
-            return RoutineExpression.FromRoutine(() => Routine.ByEnumerator(Enumerator));
+            return RoutineExpression.From(Enumerator);
         }
 
         public static IRoutineExpression<T> With<T>(this IRoutineExpression<T> self, IRoutineExpression with)
@@ -22,7 +22,7 @@ namespace Omega.Routines.Experimental
                 @this.SetResult(result);
             }
 
-            return RoutineExpression.FromRoutine(() => Routine.ByEnumerator<T>(Enumerator));
+            return RoutineExpression.From<T>(Enumerator);
         }
     }
 }
