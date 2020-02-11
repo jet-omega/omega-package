@@ -10,6 +10,18 @@ namespace Omega.Routines.Experimental
             var actionExpression = RoutineExpression.Action(action);
             return self.Next(actionExpression);
         }
+        
+        public static IRoutineExpression<TIn> NextActionWrap<TIn>(this IRoutineExpression<TIn> self, Action action)
+        {
+            IEnumerator Enumerator(RoutineControl<TIn> @this)
+            {
+                yield return self.ToRoutine().Result(out var result);
+                action.Invoke();
+                @this.SetResult(result);
+            }
+
+            return RoutineExpression.From<TIn>(Enumerator);
+        }
 
         public static IRoutineExpression NextAction<TIn>(this IRoutineExpression<TIn> self, Action<TIn> action)
         {
@@ -19,7 +31,19 @@ namespace Omega.Routines.Experimental
                 action(result);
             }
 
-            return RoutineExpression.FromRoutine(() => Routine.ByEnumerator(Enumerator));
+            return RoutineExpression.From(Enumerator);
+        }
+        
+        public static IRoutineExpression<TIn> NextActionWrap<TIn>(this IRoutineExpression<TIn> self, Action<TIn> action)
+        {
+            IEnumerator Enumerator(RoutineControl<TIn> @this)
+            {
+                yield return self.ToRoutine().Result(out var result);
+                action.Invoke(result);
+                @this.SetResult(result);
+            }
+
+            return RoutineExpression.From<TIn>(Enumerator);
         }
 
         public static IRoutineExpression<TOut> NextAction<TOut>(this IRoutineExpression self, Func<TOut> action)
@@ -38,7 +62,7 @@ namespace Omega.Routines.Experimental
                 @this.SetResult(finalResult);
             }
 
-            return RoutineExpression.FromRoutine(() => Routine.ByEnumerator<TOut>(Enumerator));
+            return RoutineExpression.From<TOut>(Enumerator);
         }
     }
 }

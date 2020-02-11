@@ -15,6 +15,11 @@ namespace Omega.Routines.Experimental
         {
             return new OrderExpression(expressions);
         }
+        
+        public static IRoutineExpression Group(params IRoutineExpression[] expressions)
+        {
+            return new GroupExpression(expressions);
+        }
 
         public static IRoutineExpression<T> Task<T>(Func<T> task)
         {
