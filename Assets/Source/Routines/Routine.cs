@@ -52,7 +52,7 @@ namespace Omega.Routines
         bool IEnumerator.MoveNext()
         {
             // Если рутина содержит ошибку, то последующие ее выполнение может быть не корректным.
-            if (IsError || IsCanceled)
+            if (IsError || IsCanceled || IsComplete)
                 return false;
 
             // Если рутина еще не создана - создаем
