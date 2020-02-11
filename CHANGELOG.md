@@ -4,6 +4,68 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## [0.10.2] - 2020-02-11
+### Added
+- Add cancellation routines. Lets you cancel processing routines
+    ```csharp
+    //                         Examples                         //
+    // -------------------------------------------------------- //
+    
+    IEnumerator OperationWithTimeOut(Routine operation, TimeSpan timeout)
+    {
+        Routine.Delay(timeout)
+            .GetSelf(out var timeoutRoutine)
+            .Callback(() =>
+            {
+                operation.Cancel(); // cancel source operation
+                Debug.LogError("operation timeout!")
+            }).InBackground()
+        
+        yield return operation;
+        timeoutRoutine.Cancel(); // cancel timeout
+    }
+    
+    // -------------------------------------------------------- //
+    //  You can define behavior of the routine when canceling   //
+    
+    class MyRoutine : Routine
+    {
+        DatabaseAccess db;
+    
+        // invoked when routine canceling
+        protected override void OnCancel()
+        {
+            db.Dispose();
+        }
+    }
+    
+    // -------------------------------------------------------- //
+    ```
+    
+- You can define cancellation logic in `TaskRoutine`
+    ```csharp
+    //                         Example                          //
+    // -------------------------------------------------------- //
+    
+    Routine.Task(cancel => 
+    {
+        while(true)
+            if(cancel.IsCancellationRequested)
+                break;
+    }).GetSelf(out var routine).InBackground();
+              
+    routine.Cancel();
+        
+    // -------------------------------------------------------- //
+    ```
+    
+## Improved
+- If nested routine have error or canceled then upper routine will throw exception  
+
+## Fixed 
+- Fix multiple invocation callback when you try process completed routine
+
 ## [0.10.1] - 2020-02-07
 ### Added
 - Add extension method overload `AsRoutine` for `AsyncOperation` without `out` arg
