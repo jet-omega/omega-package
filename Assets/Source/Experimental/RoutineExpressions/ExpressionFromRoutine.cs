@@ -2,12 +2,12 @@ using System;
 
 namespace Omega.Routines.Experimental
 {
-    internal class ExpressionFromRoutine<T> : IRoutineExpression<T>
+    internal sealed class ExpressionFromRoutine<T> : IRoutineExpression<T>
     {
-        private Func<Routine<T>> _routineFactory;
+        private readonly Func<Routine<T>> _routineFactory;
 
-        public ExpressionFromRoutine(Func<Routine<T>> routine) =>
-            _routineFactory = routine;
+        public ExpressionFromRoutine(Func<Routine<T>> routineFactory) 
+            => _routineFactory = routineFactory;
 
         public Routine<T> ToRoutine()
             => _routineFactory.Invoke();
@@ -16,12 +16,14 @@ namespace Omega.Routines.Experimental
             => ToRoutine();
     }
 
-    internal class ExpressionFromRoutine : IRoutineExpression
+    internal sealed class ExpressionFromRoutine : IRoutineExpression
     {
-        private Func<Routine> _routineFactory;
+        private readonly Func<Routine> _routineFactory;
 
-        public ExpressionFromRoutine(Func<Routine> routine)
-            => _routineFactory = routine;
+        public ExpressionFromRoutine(Func<Routine> routineFactory)
+        {
+            _routineFactory = routineFactory;
+        }
 
         public Routine ToRoutine()
             => _routineFactory.Invoke();

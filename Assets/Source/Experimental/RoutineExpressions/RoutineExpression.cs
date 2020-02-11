@@ -15,7 +15,7 @@ namespace Omega.Routines.Experimental
         {
             return new OrderExpression(expressions);
         }
-        
+
         public static IRoutineExpression Group(params IRoutineExpression[] expressions)
         {
             return new GroupExpression(expressions);
@@ -65,10 +65,23 @@ namespace Omega.Routines.Experimental
         {
             return FromRoutine(() => Routine.ByEnumerator(enumeratorFactory));
         }
-        
+
+        internal static IRoutineExpression New()
+        {
+            return EmptyExpression.Instance.Value;
+        }
+
         internal static IRoutineExpression<T> From<T>(Func<RoutineControl<T>, IEnumerator> enumeratorFactory)
         {
             return FromRoutine(() => Routine.ByEnumerator(enumeratorFactory));
         }
+    }
+
+    internal sealed class EmptyExpression : IRoutineExpression
+    {
+        public readonly static Lazy<IRoutineExpression> Instance
+            = new Lazy<IRoutineExpression>(() => new EmptyExpression());
+
+        public Routine ToRoutine() => Routine.FromCompleted();
     }
 }

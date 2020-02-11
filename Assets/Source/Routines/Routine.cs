@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Omega.Package;
+using Omega.Routines.Experimental;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
@@ -134,6 +135,11 @@ namespace Omega.Routines
             // Если текущее состояние рутины ожидает завершения асинхронной операции, то просто ждем ее завершения
             if (current is AsyncOperation nestedAsyncOperation)
                 return !nestedAsyncOperation.isDone || enumerator.MoveNext();
+
+#if UNITY_EDITOR
+            if(current is IRoutineExpression)
+                Debug.LogError("Cannot process routine expression, you should invoke ToRoutine() into IRoutineExpression");
+#endif
 
             return enumerator.MoveNext();
         }

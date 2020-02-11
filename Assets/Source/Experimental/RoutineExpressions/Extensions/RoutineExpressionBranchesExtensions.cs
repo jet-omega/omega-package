@@ -12,7 +12,10 @@ namespace Omega.Routines.Experimental
             {
                 yield return self.ToRoutine();
                 yield return condition.ToRoutine().Result(out var conditionResult);
-                yield return (conditionResult ? trueBranch : falseBranch).ToRoutine();
+                var branch = conditionResult ? trueBranch : falseBranch;
+                
+                if (branch != null)
+                    yield return branch.ToRoutine();
             }
 
             return RoutineExpression.From(Enumerator);
@@ -25,7 +28,10 @@ namespace Omega.Routines.Experimental
             {
                 yield return self.ToRoutine();
                 var conditionResult = condition.Invoke();
-                yield return (conditionResult ? trueBranch : falseBranch).ToRoutine();
+                var branch = conditionResult ? trueBranch : falseBranch;
+                
+                if (branch != null)
+                    yield return branch.ToRoutine();
             }
 
             return RoutineExpression.From(Enumerator);
@@ -38,7 +44,10 @@ namespace Omega.Routines.Experimental
             {
                 yield return self.ToRoutine().Result(out var result);
                 yield return condition.Invoke(result).Result(out var conditionResult);
-                yield return (conditionResult ? trueBranch : falseBranch).ToRoutine();
+                var branch = conditionResult ? trueBranch : falseBranch;
+                
+                if (branch != null)
+                    yield return branch.ToRoutine();
             }
 
             return RoutineExpression.From(Enumerator);
@@ -51,12 +60,15 @@ namespace Omega.Routines.Experimental
             {
                 yield return self.ToRoutine().Result(out var result);
                 var conditionResult = condition.Invoke(result);
-                yield return (conditionResult ? trueBranch : falseBranch).ToRoutine();
+                var branch = conditionResult ? trueBranch : falseBranch;
+                
+                if (branch != null)
+                    yield return branch.ToRoutine();
             }
 
             return RoutineExpression.From(Enumerator);
         }
-        
+
         public static IRoutineExpression If<TIn>(this IRoutineExpression<TIn> self, Func<TIn, bool> condition,
             Action trueBranch, Action falseBranch)
         {
@@ -64,7 +76,20 @@ namespace Omega.Routines.Experimental
             {
                 yield return self.ToRoutine().Result(out var result);
                 var conditionResult = condition.Invoke(result);
-                (conditionResult ? trueBranch : falseBranch).Invoke();
+                (conditionResult ? trueBranch : falseBranch)?.Invoke();
+            }
+
+            return RoutineExpression.From(Enumerator);
+        }
+
+        public static IRoutineExpression If(this IRoutineExpression self, Func<bool> condition,
+            Action trueBranch, Action falseBranch)
+        {
+            IEnumerator Enumerator(RoutineControl @this)
+            {
+                yield return self.ToRoutine();
+                var conditionResult = condition.Invoke();
+                (conditionResult ? trueBranch : falseBranch)?.Invoke();
             }
 
             return RoutineExpression.From(Enumerator);
