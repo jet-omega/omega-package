@@ -46,10 +46,7 @@ namespace Omega.Routines
 
             _sceneRoutines = new RoutineWorkerContainer();
             _instance = this;
-        }
-
-        private void Start()
-        {
+            
             StartCoroutine(EndOfFrameCoroutine());
         }
 
