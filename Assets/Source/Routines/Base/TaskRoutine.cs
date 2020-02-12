@@ -37,7 +37,7 @@ namespace Omega.Routines
                 yield return null;
 
             if (task.IsFaulted)
-                throw task.Exception?.InnerException ?? task.Exception;
+                throw task.Exception;
         }
 
         protected override void OnCancel()
