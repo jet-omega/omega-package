@@ -38,6 +38,16 @@ public static class TransformExtensions
         TransformUtilities.GetChildsWithoutChecks(transform, result);
     }
 
+    public static bool IsChildOf(this Transform self, Transform parent)
+    {
+        if(self is null)
+            throw new NullReferenceException(nameof(self));
+        if (!self)
+            throw new MissingReferenceException(nameof(self));
+
+        return TransformUtilities.IsChildOfWithoutChecks(self, parent);
+    }
+    
     /// <summary>
     /// Устанавливает себя в качестве потомка для gameObject и возвращает его
     /// </summary>
