@@ -28,6 +28,16 @@ namespace Omega.Package.Internal
             ClearChildsWithoutChecks(root);
         }
 
+        public bool IsChildOf([NotNull] Transform transform, [CanBeNull] Transform parent)
+        {
+            if (transform is null)
+                throw new ArgumentNullException(nameof(transform));
+            if (!transform)
+                throw new MissingReferenceException(nameof(transform));
+
+            return IsChildOfWithoutChecks(transform, parent);
+        }
+
         /// <summary>
         /// Возвращает всех потомков переданного трансформа 
         /// </summary>
@@ -67,7 +77,7 @@ namespace Omega.Package.Internal
 
             GetAllChildsWithoutChecks(root, result);
         }
-        
+
         public int GetAllChildsCount(Transform root)
         {
             if (root is null)
@@ -90,6 +100,21 @@ namespace Omega.Package.Internal
                 childs[i] = root.GetChild(i);
 
             return childs;
+        }
+
+        internal static bool IsChildOfWithoutChecks([CanBeNull] Transform transform, [CanBeNull] Transform parent)
+        {
+            var temp = transform;
+            while (temp)
+            {
+                var tempParent = temp.parent;
+                if (tempParent == parent)
+                    return true;
+
+                temp = tempParent;
+            }
+
+            return false;
         }
 
         internal static void GetChildsWithoutChecks([NotNull] Transform root, [NotNull] List<Transform> result)

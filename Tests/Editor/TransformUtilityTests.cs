@@ -58,6 +58,8 @@ namespace Omega.Tools.Tests
             Utilities.Transform.GetAllChilds(root, result);
             
             Assert.Zero(complexHierarchyObjects.Except(result).Count());
+            
+            Utilities.Object.AutoDestroy(root.gameObject);
         }
         
         [Test]
@@ -75,6 +77,26 @@ namespace Omega.Tools.Tests
             var result = Utilities.Transform.GetAllChildsCount(root);
             
             Assert.AreEqual(goCount, result);
+            
+            Utilities.Object.AutoDestroy(root.gameObject);
+        }
+
+        [Test]
+        public void IsChildOfShouldReturnTrueWhenChildIsDeepTest()
+        {
+            int goCount = 50; 
+            
+            var root = new GameObject("root").transform;
+            var circuitParent = root;
+            GameObjectFactory.New()
+                .Custom(go => go.transform.parent = circuitParent)
+                .Custom(go => circuitParent = go.transform)
+                .Build<Transform>(goCount);
+
+            var result = Utilities.Transform.IsChildOf(circuitParent, root);
+            Assert.True(result);
+            
+            Utilities.Object.AutoDestroy(root.gameObject);
         }
     }
 }
