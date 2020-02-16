@@ -31,9 +31,10 @@ namespace Omega.Routines.Tests
                 return i;
             });
 
-            routine.InBackground(ExecutionOrder.EndOfFrame);
-            yield return null;
+            routine.InBackground();
             
+            yield return null;
+
             Assert.True(routine.IsComplete);
         }
      }

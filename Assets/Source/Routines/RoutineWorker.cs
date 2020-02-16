@@ -46,8 +46,6 @@ namespace Omega.Routines
 
             _sceneRoutines = new RoutineWorkerContainer();
             _instance = this;
-            
-            StartCoroutine(EndOfFrameCoroutine());
         }
 
         private void UpdateRoutines(List<Routine> routines)
@@ -86,18 +84,6 @@ namespace Omega.Routines
             UpdateRoutines(_sceneRoutines.LateUpdateRoutines);
             UpdateRoutines(_globalRoutines.LateUpdateRoutines);
         }
-
-        private IEnumerator EndOfFrameCoroutine()
-        {
-            var endOfFrame = new WaitForEndOfFrame();
-            while (gameObject)
-            {
-                yield return endOfFrame;
-                UpdateRoutines(_sceneRoutines.EndOfFrameRoutines);
-                UpdateRoutines(_globalRoutines.EndOfFrameRoutines);
-                yield return null;
-            }
-        }
     }
 
     internal class RoutineWorkerContainer
@@ -105,14 +91,12 @@ namespace Omega.Routines
         public readonly List<Routine> LateUpdateRoutines;
         public readonly List<Routine> UpdateRoutines;
         public readonly List<Routine> FixedUpdateRoutines;
-        public readonly List<Routine> EndOfFrameRoutines;
 
         public RoutineWorkerContainer()
         {
             LateUpdateRoutines = new List<Routine>();
             UpdateRoutines = new List<Routine>();
             FixedUpdateRoutines = new List<Routine>();
-            EndOfFrameRoutines = new List<Routine>();
         }
 
         public void Add(Routine routine, ExecutionOrder order)
@@ -128,9 +112,10 @@ namespace Omega.Routines
                 case ExecutionOrder.FixedUpdate:
                     FixedUpdateRoutines.Add(routine);
                     break;
+#pragma warning disable 612
                 case ExecutionOrder.EndOfFrame:
-                    EndOfFrameRoutines.Add(routine);
-                    break;
+#pragma warning restore 612
+                    throw new NotSupportedException();
             }
         }
     }
@@ -140,6 +125,7 @@ namespace Omega.Routines
         LateUpdate,
         Update,
         FixedUpdate,
+        [Obsolete]
         EndOfFrame,
     }
 
