@@ -19,7 +19,6 @@ namespace Omega.Routines.Tests
             LogAssert.ignoreFailingMessages = false;
 
             Assert.True(routine.IsError);
-            Assert.AreEqual(keyMassage, routine.Exception.Message);
         }
     }
 }
