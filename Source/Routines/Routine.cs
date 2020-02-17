@@ -41,9 +41,9 @@ namespace Omega.Routines
 
         private void SetupCompleted()
         {
-            if(_status == RoutineStatus.Canceled)
+            if (_status == RoutineStatus.Canceled)
                 throw new InvalidOperationException("Routine was canceled");
-            
+
             _status = RoutineStatus.Completed;
             _update?.Invoke();
             _callback?.Invoke();
@@ -124,8 +124,9 @@ namespace Omega.Routines
                     //     throw new Exception("Nested routine have error", nestedRoutine._exception);
                     // if(nestedRoutineStatus == RoutineStatus.Canceled)
                     //     throw new Exception("Nested routine were canceled");
-                    
-                    if (_status == RoutineStatus.ForcedProcessing && nestedRoutineStatus != RoutineStatus.ForcedProcessing)
+
+                    if (_status == RoutineStatus.ForcedProcessing &&
+                        nestedRoutineStatus != RoutineStatus.ForcedProcessing)
                         nestedRoutine.OnForcedCompleteInternal();
                 }
 
@@ -162,9 +163,9 @@ namespace Omega.Routines
                 return;
 
             _status = RoutineStatus.Canceled;
-            
+
             OnCancel();
-            
+
             _update?.Invoke();
         }
 
