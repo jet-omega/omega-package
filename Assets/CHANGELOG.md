@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.3] - 2020-02-17
+### Added
+- Add IsChildOf method extension for transform ([d667e91](https://github.com/ltd-profit/omega-package/commit/d667e91))
+- Now you can provide progress for `Routine By Enumerator` via RoutineControl ([7a816ee](https://github.com/ltd-profit/omega-package/commit/7a816ee))
+- Now you can handle force completion and cancellation for `Routine By Enumerator` via RoutineControl ([7a816ee](https://github.com/ltd-profit/omega-package/commit/7a816ee))
+
+### Improved
+- Improve stacktrace for TaskRoutines ([513c1cc](https://github.com/ltd-profit/omega-package/commit/513c1cc))
+- Prelude execution routine for background routines ([bf54510](https://github.com/ltd-profit/omega-package/commit/bf54510)) 
+
+### Changed
+- Now RoutineWorker not support EndOfFrame execution order ([c30aff8](https://github.com/ltd-profit/omega-package/commit/c30aff8)) 
+- Now nested routines may be canceled or contain an error ([8cdedcf](https://github.com/ltd-profit/omega-package/commit/8cdedcf))
 
 ## [0.10.2] - 2020-02-11
 ### Added
