@@ -31,7 +31,7 @@ namespace Omega.Routines
             routinesList.AddRange(_routines);
             routinesList.Add(routine);
             
-            return new ConcatenationRoutine(_routines);
+            return new ConcatenationRoutine(routinesList);
         }
 
         public ConcatenationRoutine Add(ConcatenationRoutine routine)
