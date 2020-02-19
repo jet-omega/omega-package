@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.4] - 2020-02-19
+### Fixed
+- Fix incorrect concatenation routines
+
 ## [0.10.3] - 2020-02-17
 ### Added
 - Add IsChildOf method extension for transform ([d667e91](https://github.com/ltd-profit/omega-package/commit/d667e91))
