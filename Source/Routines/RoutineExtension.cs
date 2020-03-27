@@ -1,13 +1,12 @@
 using System;
 using System.Diagnostics;
-using System.Threading;
-using Omega.Tools.Experimental.UtilitiesAggregator;
 using UnityEngine;
 
 namespace Omega.Routines
 {
     public static class RoutineExtension
     {
+        [Obsolete("Use OnProgress")]
         public static Routine OnChangeProgress(this Routine self, Action<float> handler)
         {
             if (self is null)
@@ -34,7 +33,7 @@ namespace Omega.Routines
                 if (p.TryUpdateProgress(out var progress))
                     handler.Invoke(progress);
             });
-            
+
             return self;
         }
 
@@ -162,6 +161,36 @@ namespace Omega.Routines
             original.SetCreationStackTraceInternal(stackTrace);
 
             return original;
+        }
+
+        /// <summary>
+        /// Запускает и обрабатывает рутину в фоне
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="executionOrder">Определяет в какой момент обрабатывается рутина</param>
+        /// <param name="scope">Определяет время жизни обработки рутины</param>
+        /// <param name="prelude">true - если перед помещением рутины в worker необходимо проиграть рутину до первого yield, иначе - false</param>
+        /// <typeparam name="TRoutine"></typeparam>
+        /// <returns></returns>
+        public static TRoutine InBackground<TRoutine>(this TRoutine self,
+            ExecutionOrder executionOrder = ExecutionOrder.Update,
+            RoutineExecutionScope scope = RoutineExecutionScope.Scene,
+            bool prelude = true)
+            where TRoutine : Routine
+        {
+            if (!prelude || RoutineUtilities.OneStep(self))
+            {
+                var worker = RoutineWorker.Instance;
+                worker.Add(self, scope, executionOrder);
+            }
+
+            return self;
+        }
+
+        public static TRoutine InBackground<TRoutine>(this TRoutine self, bool prelude)
+            where TRoutine : Routine
+        {
+            return InBackground(self, ExecutionOrder.Update, RoutineExecutionScope.Scene, prelude);
         }
     }
 }

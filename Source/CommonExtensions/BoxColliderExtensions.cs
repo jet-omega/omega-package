@@ -1,5 +1,7 @@
 ﻿using System;
+using Omega.Experimental;
 using Omega.Tools;
+using Omega.Package.Internal;
 using UnityEngine;
 
 public static class BoxColliderExtensions
@@ -18,6 +20,6 @@ public static class BoxColliderExtensions
         if (!boxCollider)
             throw new MissingReferenceException(nameof(boxCollider));
 
-        BoxColliderUtility.SetAsBoundsWithoutChecks(boxCollider, bounds);
+        BoxColliderUtilities.SetAsBoundsWithoutChecks(boxCollider, bounds);
     }
 }

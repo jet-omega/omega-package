@@ -9,12 +9,30 @@ namespace Omega.Routines
 {
     internal sealed class RoutineUtilities
     {
-        internal static void CompleteWithoutChecks([NotNull] IEnumerator routine)
+        internal static void CompleteWithoutChecks(Routine routine)
+        {
+            routine.OnForcedCompleteInternal();
+            CompleteNow(routine);
+        }
+        
+        internal static void CompleteWithoutChecks(Routine routine, TimeSpan timeOut)
+        {
+            routine.OnForcedCompleteInternal();
+            CompleteNow(routine, timeOut);
+        }
+
+        internal static bool OneStep(IEnumerator routine)
+        {
+            return routine.MoveNext();
+        }
+        
+        
+        private static void CompleteNow([NotNull] IEnumerator routine)
         {
             while (routine.MoveNext()) ;
         }
 
-        internal static void CompleteWithoutChecks([NotNull] IEnumerator routine, TimeSpan timeOut)
+        private static void CompleteNow([NotNull] IEnumerator routine, TimeSpan timeOut)
         {
             var startSynchronousWaitingTime = DateTime.UtcNow;
             while (routine.MoveNext())
@@ -26,12 +44,18 @@ namespace Omega.Routines
             }
         }
 
+        internal static float GetProgressFromRoutine(Routine routine)
+        {
+            return routine is IProgressRoutineProvider progressRoutineProvider
+                ? progressRoutineProvider.GetProgress()
+                : routine.IsComplete ? 1 : 0;
+        }
+        
         internal static IProgressRoutineProvider GetProgressRoutineProvider(Routine routine)
         {
             return routine is IProgressRoutineProvider progressRoutineProvider
                 ? progressRoutineProvider
                 : new ProgressProviderAdapter(routine);
         }
-        
     }
 }

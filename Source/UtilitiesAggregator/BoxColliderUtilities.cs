@@ -1,11 +1,15 @@
-﻿using System;
+using System;
 using JetBrains.Annotations;
 using UnityEngine;
 
-namespace Omega.Tools
+namespace Omega.Package.Internal
 {
-    public static class BoxColliderUtility
+    public sealed class BoxColliderUtilities
     {
+        internal BoxColliderUtilities()
+        {
+        }
+        
         /// <summary>
         /// Устанавливает центр и размер коллайдеру по указанным границам  
         /// </summary>
@@ -13,7 +17,7 @@ namespace Omega.Tools
         /// <param name="bounds">Границы для коллайдера</param>
         /// <exception cref="ArgumentNullException">Параметр <param name="boxCollider"/>>указывает на null</exception>
         /// <exception cref="MissingReferenceException">Параметр <param name="boxCollider"/>>указывает на уничтоженный объект</exception>
-        public static void SetAsBounds([NotNull] BoxCollider boxCollider, Bounds bounds)
+        public void SetAsBounds([NotNull] BoxCollider boxCollider, Bounds bounds)
         {
             if (boxCollider is null)
                 throw new ArgumentNullException(nameof(boxCollider));

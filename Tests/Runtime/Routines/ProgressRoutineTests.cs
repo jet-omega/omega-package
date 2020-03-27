@@ -10,7 +10,7 @@ namespace Omega.Routines.Tests
         {
             var progress = -1f;
             var routine = new EmptyTestRoutine(EmptyTestRoutine.SkipMode.OnceSkipEnumerator);
-            var e = routine.OnChangeProgress(p => progress = p);
+            var e = routine.OnProgress(p => progress = p);
             e.Complete();
             
             Assert.AreEqual(1, progress);
@@ -20,7 +20,7 @@ namespace Omega.Routines.Tests
         {
             var progress = -1f;
             var routine = new EmptyTestRoutine(EmptyTestRoutine.SkipMode.EmptyEnumerator);
-            var e = routine.OnChangeProgress(p => progress = p);
+            var e = routine.OnProgress(p => progress = p);
             e.Complete();
             
             Assert.AreEqual(1, progress);
@@ -30,7 +30,7 @@ namespace Omega.Routines.Tests
         {
             var progress = -1f;
             var routine = new EmptyTestRoutine(EmptyTestRoutine.SkipMode.NoEnumerator);
-            var e = routine.OnChangeProgress(p => progress = p);
+            var e = routine.OnProgress(p => progress = p);
             e.Complete();
             
             Assert.AreEqual(1, progress);

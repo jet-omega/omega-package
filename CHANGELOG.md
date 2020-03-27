@@ -4,6 +4,183 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.4] - 2020-02-19
+### Fixed
+- Fix incorrect concatenation routines
+
+## [0.10.3] - 2020-02-17
+### Added
+- Add IsChildOf method extension for transform ([d667e91](https://github.com/ltd-profit/omega-package/commit/d667e91))
+- Now you can provide progress for `Routine By Enumerator` via RoutineControl ([7a816ee](https://github.com/ltd-profit/omega-package/commit/7a816ee))
+- Now you can handle force completion and cancellation for `Routine By Enumerator` via RoutineControl ([7a816ee](https://github.com/ltd-profit/omega-package/commit/7a816ee))
+
+### Improved
+- Improve stacktrace for TaskRoutines ([513c1cc](https://github.com/ltd-profit/omega-package/commit/513c1cc))
+- Prelude execution routine for background routines ([bf54510](https://github.com/ltd-profit/omega-package/commit/bf54510)) 
+
+### Changed
+- Now RoutineWorker not support EndOfFrame execution order ([c30aff8](https://github.com/ltd-profit/omega-package/commit/c30aff8)) 
+- Now nested routines may be canceled or contain an error ([8cdedcf](https://github.com/ltd-profit/omega-package/commit/8cdedcf))
+
+## [0.10.2] - 2020-02-11
+### Added
+- Add cancellation routines. Lets you cancel processing routines
+    ```csharp
+    //                         Examples                         //
+    // -------------------------------------------------------- //
+    
+    IEnumerator OperationWithTimeOut(Routine operation, TimeSpan timeout)
+    {
+        Routine.Delay(timeout)
+            .GetSelf(out var timeoutRoutine)
+            .Callback(() =>
+            {
+                operation.Cancel(); // cancel source operation
+                Debug.LogError("operation timeout!")
+            }).InBackground()
+        
+        yield return operation;
+        timeoutRoutine.Cancel(); // cancel timeout
+    }
+    
+    // -------------------------------------------------------- //
+    //  You can define behavior of the routine when canceling   //
+    
+    class MyRoutine : Routine
+    {
+        DatabaseAccess db;
+    
+        // invoked when routine canceling
+        protected override void OnCancel()
+        {
+            db.Dispose();
+        }
+    }
+    
+    // -------------------------------------------------------- //
+    ```
+    
+- You can define cancellation logic in `TaskRoutine`
+    ```csharp
+    //                         Example                          //
+    // -------------------------------------------------------- //
+    
+    Routine.Task(cancel => 
+    {
+        while(true)
+            if(cancel.IsCancellationRequested)
+                break;
+    }).GetSelf(out var routine).InBackground();
+              
+    routine.Cancel();
+        
+    // -------------------------------------------------------- //
+    ```
+    
+## Improved
+- If nested routine have error or canceled then upper routine will throw exception  
+
+## Fixed 
+- Fix multiple invocation callback when you try process completed routine
+
+## [0.10.1] - 2020-02-07
+### Added
+- Add extension method overload `AsRoutine` for `AsyncOperation` without `out` arg
+- Add extension method  `CanBeForceComplete` for `AsyncOperation`. Lets you to determine whether the AsyncOperation can be completed synchronously
+
+### Fixes
+- Change assembly for `ObjectRoutine` class to Omega.Tools.Runtime
+- Remove internal usage `Omega.Experimental.Utilities` 
+
+## [0.10.0] - 2020-02-06
+### Added
+- Add extension method `ToRectTransform` for Transform. Lets you easy cast Transform to RectTransform 
+    ```csharp
+    //                        Examples                          //
+    // -------------------------------------------------------- //
+
+        transform.ToRectTransform(out var rectTransform);
+        rectTransform.sizeDelta = Vector2.zero;
+        
+    // -------------------------------------------------------- //
+        
+        if(transform.ToRectTransform(out var rectTransform));
+           rectTransform.SetRect(somethingRect);
+        else throw new InvalidOperationException(); 
+    
+    // -------------------------------------------------------- //
+    ```
+- Add `ApportionedRoutine`. Lets you to distribute the big task into frames
+- Add `ObjectRoutines`. Lets you create routines for async instantiation objects
+    ```csharp
+    //                        Example                          //
+    // -------------------------------------------------------- //
+    
+    var factory = GameObjectFactory.Prefab(prefabItem)
+        .SetParent(transform)
+        .Custom(go => go.GetComponent<Item>().Init()) 
+    
+    // instantiate 10 000 GameObject by factory spending no more than 0.01 seconds per frame
+    yield return ObjectRoutine.Instantiate(factory, 10_000, 0.01f);
+    
+    // -------------------------------------------------------- //
+    ```
+- Add `GetAllChilds` method in `TransformUtilities`. Lets you get all childs in hierarchy relative of the transform instance  
+- Add utilities for `UnityEngine.Rect`
+- Add extension method `SetRect` for `RectTransform`
+##### Routines
+- Add `WaitRoutine` (Routine.WaitOne). Lets wait the completion of the routine and provides the result 
+- Add unity background worker for routines and extension method `InBackground`. Lets you start routine in background. (You can use it instead `StartCoroutine`)
+    ```csharp
+    //                          Example                         //
+    // -------------------------------------------------------- //
+
+        var pathToImage = ...;
+        yield return Api.DownloadImage(pathToImage)
+            .Result(out var imageResult);
+            
+        Texture2D image = imageResult;
+        
+        // caching image in background
+        Routine.Task(()=>
+        {
+            var imageRaw = image.EncodeToJPG();
+            File.WriteAllBytes(pathToImage, imageRaw)
+        }).InBackground();
+        
+        itemInMenu.Image = image;
+    
+    // -------------------------------------------------------- //
+    ```
+
+### Improved
+##### Routines
+- Now all routines have virtual method `OnForcedComplete`. Lets to notify the routine of forced completion
+- When the `DelayRoutine` is forcibly completion, the flow may go to thread Sleep
+- When you try to forcefully complete an nested AsyncOperation in a routine that cannot be resolved synchronously, an exception will be thrown **(to avoid deadlock)**
+- Add implicit operator for `ResultContainer`
+    ```csharp
+    //                        Example                           //
+    // -------------------------------------------------------- //
+    
+        yield return Routine.FromResult(2020).Result(out var result);
+        int year = result; // implicit cast ResultContainer<int> to int
+        
+    // -------------------------------------------------------- //
+    ```  
+
+### Fixed
+- Fix exception throwing in `TaskRoutine` inside `Task`
+
+### Changed
+- `Omega.Experimental.Utilities` is obsolete. Now you should use `Omega.Package.Utilities`
+- Rename `RoutineProgress` to `RoutineProgressHandler`
+- `GetRoutine` extension method is obsolete. Now you should use `GetSelf`
+- `OnChangeProgress` extension method is obsolete. Now you should use `OnProgress`
+
+### Removed
+- Remove legacy static utility classes (Replaced by `Omega.Package.Utilities`)
+
 ## [0.9.4] - 2020-01-20
 ### Added
 - Add `GetChilds` method overload for `TransformUtilities` and transform extensions. Lets get childs without allocations

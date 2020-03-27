@@ -9,6 +9,7 @@ namespace Omega.Routines.Tests
     public class ByEnumeratorTests
     {
         private bool flagByEnumeratorShouldProcessCoroutineTest;
+
         private bool flagByEnumeratorWithControlShouldProvideRoutineTest;
 //        private bool flagByEnumeratorWithArgAndRoutineControlShouldProvideRoutine;
 
@@ -68,10 +69,56 @@ namespace Omega.Routines.Tests
         public IEnumerator ByEnumeratorWithArgAndRoutineControlResultShouldProvideRoutineTest()
         {
             yield return Routine.ByEnumerator<bool, bool>(
-                ByEnumeratorWithArgAndRoutineControlResultShouldProvideRoutine, true)
+                    ByEnumeratorWithArgAndRoutineControlResultShouldProvideRoutine, true)
                 .Result(out var result);
-            
+
             Assert.True(result.Result);
+        }
+
+        [Test]
+        public void RoutineControlShouldSetupProgressTest()
+        {
+            const int steps = 10;
+
+            IEnumerator Enumerator(RoutineControl @this)
+            {
+                int i = 0;
+                while (i < steps)
+                {
+                    @this.SetProgress(i++ / (float) steps);
+                    yield return null;
+                }
+            }
+
+            var routine = Routine.ByEnumerator(Enumerator);
+
+            for (int i = 0; i < steps / 2; i++)
+                RoutineUtilities.OneStep(routine);
+
+            const float expectedProgress = (steps / 2 - 1) / (float) steps;
+
+            Assert.AreEqual(expectedProgress, routine.GetProgress());
+        }
+        
+        [Test]
+        public void RoutineControlShouldProvideCancellationEventTest()
+        {
+            bool wasCanceled = false;
+            
+            IEnumerator Enumerator(RoutineControl @this)
+            {
+                @this.OnCancellationCallback(() => { wasCanceled = true; });
+                yield return null;
+                yield return null;
+            }
+
+            var routine = Routine.ByEnumerator(Enumerator);
+            RoutineUtilities.OneStep(routine);
+            
+            routine.Cancel();
+            
+            Assert.True(routine.IsCanceled);
+            Assert.True(wasCanceled);
         }
 
         private IEnumerator ByEnumeratorWithArgAndRoutineControlShouldProvideRoutine(bool arg,

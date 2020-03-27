@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using NUnit.Framework;
 using Omega.Experimental;
-using Omega.Tools.Experimental.UtilitiesAggregator;
+using Omega.Package.Internal;
 
 namespace Omega.Routines.Tests
 {
@@ -48,6 +48,26 @@ namespace Omega.Routines.Tests
             Assert.Throws<TimeoutException>(() => routine.Complete(timeOut));
         }
 
+        [Test]
+        public void CompleteShouldInvokeInternalCallbackTest()
+        {
+            var routine = new TestCallRoutine();
+            routine.Complete();
+            Assert.True(routine.WereForced);
+        }
+        
+        [Test]
+        public void CompleteShouldInvokeNestedInternalCallbackTest()
+        {
+            var nestedRoutine = new TestCallRoutine();
+            var rootRoutine = new TestRoutine(nestedRoutine);
+
+            rootRoutine.Complete();
+            
+            Assert.True(nestedRoutine.IsComplete);
+            Assert.True(nestedRoutine.WereForced);
+        }
+
         private sealed class TestRoutine : Routine
         {
             private Routine targetRoutine;
@@ -60,6 +80,21 @@ namespace Omega.Routines.Tests
             protected override IEnumerator RoutineUpdate()
             {
                 yield return targetRoutine;
+            }
+        }
+        
+        private sealed class TestCallRoutine : Routine
+        {
+            public bool WereForced { private set; get; }
+
+            protected override IEnumerator RoutineUpdate()
+            {
+                return null;
+            }
+
+            protected override void OnForcedComplete()
+            {
+                WereForced = true;
             }
         }
     }
