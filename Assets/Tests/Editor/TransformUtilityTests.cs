@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
-using Omega.Experimental;
+using Omega.Package;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Omega.Tools.Tests
 {
@@ -13,7 +14,7 @@ namespace Omega.Tools.Tests
         {
             var gameObjectInstance = new GameObject();
 
-            var childs = Utilities.Transfrom.GetChilds(gameObjectInstance.transform);
+            var childs = Utilities.Transform.GetChilds(gameObjectInstance.transform);
 
             Assert.NotNull(childs);
             Assert.Zero(childs.Length);
@@ -27,7 +28,7 @@ namespace Omega.Tools.Tests
         public void GetChildsShouldThrowArgumentNullExceptionWhenParameterIsNull()
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => Utilities.Transfrom.GetChilds(null));
+            Assert.Throws<ArgumentNullException>(() => Utilities.Transform.GetChilds(null));
         }
 
         [Test]
@@ -38,7 +39,64 @@ namespace Omega.Tools.Tests
             Utilities.Object.AutoDestroy(gameObjectInstance);
 
             Assert.Throws<MissingReferenceException>(() =>
-                Utilities.Transfrom.GetChilds(gameObjectInstance.transform));
+                Utilities.Transform.GetChilds(gameObjectInstance.transform));
+        }
+        
+        [Test]
+        public void GetAllChildsShouldReturnAllChildsTest()
+        {
+            int goCount = 50; 
+            
+            var root = new GameObject("root").transform;
+            var circuitParent = root;
+            var complexHierarchyObjects = GameObjectFactory.New()
+                .Custom(go => go.transform.parent = circuitParent)
+                .Custom(go => circuitParent = go.transform)
+                .Build<Transform>(goCount);
+
+            var result = new List<Transform>(goCount);
+            Utilities.Transform.GetAllChilds(root, result);
+            
+            Assert.Zero(complexHierarchyObjects.Except(result).Count());
+            
+            Utilities.Object.AutoDestroy(root.gameObject);
+        }
+        
+        [Test]
+        public void GetAllChildsCountShouldReturnCountAllChildsTest()
+        {
+            int goCount = 50; 
+            
+            var root = new GameObject("root").transform;
+            var circuitParent = root;
+            GameObjectFactory.New()
+                .Custom(go => go.transform.parent = circuitParent)
+                .Custom(go => circuitParent = go.transform)
+                .Build<Transform>(goCount);
+
+            var result = Utilities.Transform.GetAllChildsCount(root);
+            
+            Assert.AreEqual(goCount, result);
+            
+            Utilities.Object.AutoDestroy(root.gameObject);
+        }
+
+        [Test]
+        public void IsChildOfShouldReturnTrueWhenChildIsDeepTest()
+        {
+            int goCount = 50; 
+            
+            var root = new GameObject("root").transform;
+            var circuitParent = root;
+            GameObjectFactory.New()
+                .Custom(go => go.transform.parent = circuitParent)
+                .Custom(go => circuitParent = go.transform)
+                .Build<Transform>(goCount);
+
+            var result = Utilities.Transform.IsChildOf(circuitParent, root);
+            Assert.True(result);
+            
+            Utilities.Object.AutoDestroy(root.gameObject);
         }
     }
 }

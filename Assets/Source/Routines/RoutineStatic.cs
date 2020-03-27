@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using JetBrains.Annotations;
 
 namespace Omega.Routines
@@ -15,12 +16,12 @@ namespace Omega.Routines
 
             return new DelayRoutine(TimeSpan.FromSeconds(intervalSeconds));
         }
-        
+
         [NotNull]
         public static DelayRoutine Delay(TimeSpan interval)
         {
             var intervalDuration = interval.Duration();
-            
+
             return new DelayRoutine(intervalDuration);
         }
 
@@ -34,7 +35,25 @@ namespace Omega.Routines
         }
 
         [NotNull]
+        public static TaskRoutine Task([NotNull] Action<CancellationToken> action)
+        {
+            if (action == null)
+                throw new ArgumentNullException(nameof(action));
+
+            return new TaskRoutine(action);
+        }
+
+        [NotNull]
         public static TaskRoutine<TResult> Task<TResult>([NotNull] Func<TResult> action)
+        {
+            if (action == null)
+                throw new ArgumentNullException(nameof(action));
+
+            return new TaskRoutine<TResult>(action);
+        }
+
+        [NotNull]
+        public static TaskRoutine<TResult> Task<TResult>([NotNull] Func<CancellationToken, TResult> action)
         {
             if (action == null)
                 throw new ArgumentNullException(nameof(action));
@@ -65,6 +84,7 @@ namespace Omega.Routines
         {
             return new ActionRoutine(action);
         }
+
         public static Routine<T> ByAction<T>(Func<T> action)
         {
             return new ActionRoutine<T>(action);
@@ -132,7 +152,12 @@ namespace Omega.Routines
         public static Routine<TResult> Convert<TSource, TResult>(Routine<TSource> sourceRoutine,
             Func<TSource, TResult> converter)
         {
-            return new ConvertResultRoutine<TSource,TResult>(sourceRoutine, converter);
+            return new ConvertResultRoutine<TSource, TResult>(sourceRoutine, converter);
+        }
+
+        public static Routine<TResult> WaitOne<TResult>(Routine routine, Func<TResult> resultProvider)
+        {
+            return new WaitRoutine<TResult>(routine, resultProvider);
         }
     }
 }

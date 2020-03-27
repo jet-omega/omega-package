@@ -15,11 +15,10 @@ namespace Omega.Routines.Tests
 
             LogAssert.ignoreFailingMessages = true;
             yield return Routine.Task(() => throw new Exception(keyMassage))
-                .GetRoutine(out var routine);
+                .GetSelf(out var routine);
             LogAssert.ignoreFailingMessages = false;
 
             Assert.True(routine.IsError);
-            Assert.AreEqual(keyMassage, routine.Exception.Message);
         }
     }
 }

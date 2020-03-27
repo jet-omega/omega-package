@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 using Omega.Package;
 using UnityEngine;
 
-namespace Omega.Tools.Experimental.UtilitiesAggregator
+namespace Omega.Package.Internal
 {
     public sealed class GameObjectUtilities
     {

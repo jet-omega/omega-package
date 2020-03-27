@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Omega.Tools.Experimental.UtilitiesAggregator
+namespace Omega.Package.Internal
 {
     public sealed class ObjectUtilities
     {

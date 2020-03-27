@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using NUnit.Framework;
-using Omega.Experimental;
+using Omega.Package;
 using UnityEngine;
 using UnityEngine.TestTools;
 
@@ -15,14 +15,14 @@ namespace Omega.Routines.Tests
             var gameObject = new GameObject();
             var testMonoBehaviour = gameObject.AddComponent<TestMonoBehaviour>();
             
-            var delay = Utilities.Time.FromMilliseconds(75);
+            var delay = TimeSpan.FromMilliseconds(75);
             var delayRoutine = Routine.Delay(delay);
 
             testMonoBehaviour.StartCoroutine(delayRoutine);
 
             var startTime = DateTime.UtcNow;
             yield return delayRoutine;
-            var delta = (DateTime.UtcNow - startTime).TotalSeconds;
+            var delta = DateTime.UtcNow - startTime;
             
             Utilities.Object.AutoDestroy(gameObject);
             
@@ -35,7 +35,7 @@ namespace Omega.Routines.Tests
             var gameObject = new GameObject();
             var testMonoBehaviour = gameObject.AddComponent<TestMonoBehaviour>();
             
-            var delay = Utilities.Time.FromMilliseconds(75);
+            var delay = TimeSpan.FromMilliseconds(75);
             var delayRoutine = Routine.Delay(delay);
             var complexRoutine = TestRoutine.CreateComplex(5, delayRoutine);
 
@@ -43,7 +43,7 @@ namespace Omega.Routines.Tests
 
             var startTime = DateTime.UtcNow;
             yield return complexRoutine;
-            var delta = (DateTime.UtcNow - startTime).TotalSeconds;
+            var delta = DateTime.UtcNow - startTime;
             
             Utilities.Object.AutoDestroy(gameObject);
             

@@ -1,5 +1,8 @@
-namespace Omega.Tools.Experimental.UtilitiesAggregator
+using System;
+
+namespace Omega.Package.Internal
 {
+    [Obsolete]
     public sealed class TimeUtilities
     {
         internal TimeUtilities()

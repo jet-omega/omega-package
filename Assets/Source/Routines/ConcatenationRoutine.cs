@@ -31,7 +31,7 @@ namespace Omega.Routines
             routinesList.AddRange(_routines);
             routinesList.Add(routine);
             
-            return new ConcatenationRoutine(_routines);
+            return new ConcatenationRoutine(routinesList);
         }
 
         public ConcatenationRoutine Add(ConcatenationRoutine routine)
@@ -45,7 +45,7 @@ namespace Omega.Routines
         
         protected override IEnumerator RoutineUpdate()
         {
-            yield return new GroupRoutine(_routines).GetRoutine(out _finalGroupRoutine);
+            yield return _finalGroupRoutine = new GroupRoutine(_routines);
         }
 
         public float GetProgress()

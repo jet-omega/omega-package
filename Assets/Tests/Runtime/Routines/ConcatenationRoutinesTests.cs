@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using NUnit.Framework;
 using Omega.Routines.IO;
 using UnityEngine;
@@ -9,12 +10,13 @@ namespace Omega.Routines.Tests
     public class ConcatenationRoutinesTests
     {
         [UnityTest]
-        public IEnumerator OperatorPlusShouldCreateGroupWithTwoRoutines()
+        public IEnumerator OperatorPlusShouldCreateGroupWithThreeRoutines()
         {
-            var timeBeforeTest = Time.time;
-            yield return Routine.Delay(0.050f) + Routine.Delay(0.080f) + Routine.Delay(0.080f);
-            var deltaTime = Time.time - timeBeforeTest;
-            Assert.Greater(0.1f, deltaTime);
+            var flags = new bool[3];
+            yield return Routine.ByAction(() => flags[0] = true) + Routine.ByAction(() => flags[1] = true) +
+                         Routine.ByAction(() => flags[2] = true);
+
+            Assert.True(flags.All(e => e));
         }
     }
 }
