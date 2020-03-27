@@ -37,20 +37,18 @@ namespace Omega.Tools
         /// <returns>True если элемент был удален</returns>
         public bool Remove<T>(ref T[] array, T item)
         {
-            bool isRemoved = false;
-            for (var i = 0; i < array.Length - (isRemoved ? 1 : 0); ++i)
+            for (var i = 0; i < array.Length; ++i)
             {
                 if (array[i].Equals(item))
-                    isRemoved = true;
-
-                if (isRemoved && i < array.Length - 1)
-                    array[i] = array[i + 1];
+                {
+                    for (var j = i; j < array.Length - 1; j++)
+                        array[j] = array[j + 1];
+                    Array.Resize(ref array, array.Length - 1);
+                    return true;
+                }
             }
 
-            if (isRemoved)
-                Array.Resize(ref array, array.Length - 1);
-
-            return isRemoved;
+            return false;
         }
 
         /// <summary>
@@ -58,17 +56,8 @@ namespace Omega.Tools
         /// </summary>
         public void RemoveAt<T>(ref T[] array, int index)
         {
-            if (array.Length == 1 && index == 0)
-            {
-                Array.Resize(ref array, 0);
-                return;
-            }
-
-            if (index != array.Length - 1) // Если нужно удалить НЕ последний элемент, нужно сдвинуть все остальные
-            {
-                for (var i = index; i < array.Length - 1; i++)
-                    array[i] = array[i + 1];
-            }
+            for (var i = index; i < array.Length - 1; i++)
+                array[i] = array[i + 1];
 
             Array.Resize(ref array, array.Length - 1);
         }
@@ -101,10 +90,10 @@ namespace Omega.Tools
         public void Insert<T>(ref T[] array, int index, T item)
         {
             Array.Resize(ref array, array.Length + 1);
-
+            
             for (var i = array.Length - 1; i > index; i--) // array.Length здесь на 1 больше, чем исходный
                 array[i] = array[i - 1];
-
+            
             array[index] = item;
         }
 
@@ -134,6 +123,7 @@ namespace Omega.Tools
                 if (!ReferenceEquals(lhs[index], rhs[index]))
                     return false;
             }
+
             return true;
         }
 
