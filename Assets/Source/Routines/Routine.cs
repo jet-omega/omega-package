@@ -1,7 +1,5 @@
 using System;
 using System.Collections;
-using System.Diagnostics;
-using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Omega.Package;
 using UnityEngine;
@@ -51,6 +49,7 @@ namespace Omega.Routines
 
         bool IEnumerator.MoveNext()
         {
+            //todo: optimize condition. mb something typo `_status < 16` 
             // Если рутина содержит ошибку, то последующие ее выполнение может быть не корректным.
             if (IsError || IsCanceled || IsComplete)
                 return false;
@@ -187,7 +186,44 @@ namespace Omega.Routines
             _callback = null;
         }
 
-        object IEnumerator.Current => _routine?.Current;
+        // Routine отличается от корутины Unity тем что рутина выполняется самостоятельно, то есть, 
+        // всю рутину можно полностью выполнить вызовами MoveNext при этом все вложенные рутины также будут выполнены
+        // в случае с корутинами Unity все немного сложнее, у вас нет гарантий что ваши вызовы MoveNext не сломают
+        // вложенность корутины, так как все вложенные корутины, а так же вложенные асинхронные операции
+        // решает сама Unity (внутри StartCoroutine)
+        //
+        // Допустим у нас есть такой Enumerator:
+        //
+        // IEnumerator Enumerator()
+        // {
+        //     // Ждем когда пройдет 5 секунд 
+        //     yield return new WaitForSeconds(5);
+        //     Debug.Log("Complete!")
+        // }
+        //
+        // Если мы будем использовать этот Enumerator как корутину Unity 
+        // и сделаем вызов StartCoroutine(Enumerator()) то как и ожидается, через 5 секунд будет залоггировано "Complete!" 
+        // Однако если мы уберем знание о том что это корутина и сделаем что-то такое: 
+        // 
+        // var enumerator = Enumerator();
+        // while(enumerator.MoveNext())
+        // { }
+        //
+        // То тогда мы также увидим сообщение "Complete!", однако 5 секунд не пройдет, так как никто их не подождал.  
+        // то есть в цикле приведенном выше будет всего одна итерация (так как у нас один yield return внутри Enumerator) 
+        // 
+        // Попробуем сделать то же самое с помощью рутин (Omega.Routine) 
+        // 
+        // var routine = Routine.ByEnumerator(Enumerator());
+        // var enumerator = routine as IEnumerator;
+        // while(enumerator.MoveNext())
+        // { }
+        // 
+        // Теперь мы получим задержку в заветные 5 секунд и только после этого увидим сообщение
+        // 
+        // Unity внутри StartCoroutine сама обрабатывает все вложенные IEnumerator-ы и мы никак не можем на это повлиять   
+        // поэтому IEnumerator.Current должна всегда возвращать null, чтобы Unity всегда обрабатывала верхнюю рутину а не внутреннею  
+        object IEnumerator.Current => null;
 
         internal void AddCallbackInternal(Action callback)
             => _callback += callback;
@@ -215,6 +251,7 @@ namespace Omega.Routines
             Canceled
         }
 
+        [Obsolete]
         public static implicit operator bool([CanBeNull] Routine routine)
             => routine == null || !routine.IsProcessing && !routine.IsNotStarted;
 
