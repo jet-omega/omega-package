@@ -4,16 +4,19 @@ using JetBrains.Annotations;
 using Omega.Package;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
+using Logger = Omega.Package.Logger;
 
 namespace Omega.Routines
 {
     public abstract partial class Routine : IEnumerator
     {
+        internal static readonly Logger RoutineLogger = new Logger("ROUTINE▶", Color.red, FontStyle.Bold);
+        
         public static readonly Action<Exception, Routine> DefaultExceptionHandler
             = delegate(Exception exception, Routine routine)
             {
                 var message = ExceptionHelper.Messages.CreateExceptionMessageForRoutine(routine, exception);
-                Debug.LogError(message);
+                RoutineLogger.Log(message);
             };
 
         private RoutineStatus _status;
