@@ -49,7 +49,7 @@ namespace Omega.Package
                 $"Action was called in the destroyed object, according to the {nameof(InvocationPolicy)}, however, this behavior is not considered correct";
 
             #endregion
-            
+
             // Указанный обработчик не является объектом унаследованным от UnityEngine.Object 
             public static readonly string HandlerIsNotInstanceOfUnityObject =
                 $"The specified handler is not an object inherited from {nameof(UnityEngine.Object)}";
@@ -78,19 +78,21 @@ namespace Omega.Package
             // В одной из рутин было выброшено исключение
             public static readonly string ExceptionInRoutineMessageFormattable =
                 "An exception was thrown in one of the routines " +
-                "\nRoutine: {0}" +
-                "\n\tException: {1})";
+                "\nROUTINE : {0}" +
+                "\n\tEXCEPTION : {1})" +
+                "\n\tSTACKTRACE : {2}";
 
-            
-            
+
             public static string CreateExceptionMessageForRoutine(Routine routine, Exception exception)
             {
                 var creationStackTrace = routine.GetCreationStackTraceInternal();
-                var message = string.Format(ExceptionInRoutineMessageFormattable, routine, exception);
+                var message = string.Format(ExceptionInRoutineMessageFormattable, routine, exception,
+                    exception.StackTrace);
 
                 if (string.IsNullOrEmpty(creationStackTrace))
                 {
-                    return message + "\n\nYou can define ROUTINE_CREATION_STACKTRACE word or call CreationStackTrace method at routine to show creation stack trace";
+                    return message +
+                           "\n\nYou can call CreationStackTrace method at routine to show creation stack trace";
                 }
 
                 return message + $"\n\nRoutine was creation here:\n{creationStackTrace}";
