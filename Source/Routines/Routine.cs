@@ -134,7 +134,12 @@ namespace Omega.Routines
 
             // Если текущее состояние рутины ожидает завершения асинхронной операции, то просто ждем ее завершения
             if (current is AsyncOperation nestedAsyncOperation)
+            {
+                if(_status == RoutineStatus.ForcedProcessing && !nestedAsyncOperation.CanBeForceComplete())
+                    throw new InvalidOperationException("You cant force complete that async-operation: " + nestedAsyncOperation.GetType());
+                
                 return !nestedAsyncOperation.isDone || enumerator.MoveNext();
+            }
 
             return enumerator.MoveNext();
         }
