@@ -86,7 +86,6 @@ namespace Omega.Routines.Tests
 
             IEnumerator RoutineSteps(RoutineControl @this)
             {
-                @this.GetRoutine().AddUpdateActionInternal(() => Debug.Log("UPDATE PARENT ROUTINE"));
                 yield return nestedRoutine.OnProgress(@this.SetProgress);
             }
 
