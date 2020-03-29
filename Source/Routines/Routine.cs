@@ -10,13 +10,13 @@ namespace Omega.Routines
 {
     public abstract partial class Routine : IEnumerator
     {
-        internal static readonly Logger RoutineLogger = new Logger("ROUTINE▶", Color.red, FontStyle.Bold);
+        internal static readonly Logger Logger = new Logger("ROUTINE▶", new Color32(0xFF,0xA5,0x00,0xFF), FontStyle.Bold);
         
         public static readonly Action<Exception, Routine> DefaultExceptionHandler
             = delegate(Exception exception, Routine routine)
             {
                 var message = ExceptionHelper.Messages.CreateExceptionMessageForRoutine(routine, exception);
-                RoutineLogger.Log(message);
+                Logger.Log(message, LogType.Error);
             };
 
         private RoutineStatus _status;

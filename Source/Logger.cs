@@ -19,15 +19,15 @@ namespace Omega.Package
             TitleStyle = titleStyle;
         }
 
-        public void Log(string message)
+        public void Log(string message, LogType logType = LogType.Log)
         {
             var fullMessage = _richTextFactory
                 .Style(TitleStyle).Color(TitleColor).Text(Title)
                 .UnstyledText(message).ToString();
             
-            Debug.Log(fullMessage);
+            _richTextFactory.Clear();
+
+            Debug.unityLogger.Log(logType, fullMessage);
         }
     }
-    
-    
 }

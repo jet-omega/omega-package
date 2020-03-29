@@ -78,38 +78,28 @@ namespace Omega.Package
                 $"If {nameof(RoutineControl)} is used as a bridge between {nameof(IEnumerator)} and {nameof(Routine)}, " +
                 $"Then you must use {nameof(Routine)}.{nameof(Routine.ByEnumerator)}";
 
-            // В одной из рутин было выброшено исключение
-            public static readonly string ExceptionInRoutineMessageFormattable =
-                "Exception thrown inside routine :  " +
-                "\nROUTINE : {0}" +
-                "\n\tEXCEPTION : {1})" +
-                "\n\tSTACKTRACE : {2}";
-
 
             public static string CreateExceptionMessageForRoutine(Routine routine, Exception exception)
             {
                 var creationStackTrace = routine.GetCreationStackTraceInternal();
-                var message = RichTextFactory.New()
+                var messageFactory = RichTextFactory.New(exception.Message.Length + 200)
                     .Text("Exception thrown inside routine ▸ ").Bold.Text(exception.GetType().ToString())
-                    .NewLine.Italic.Text("ROUTINE TYPE ▸ ").UnstyledText(routine.GetType().Namespace).UnstyledText(".").Bold.Text(routine.GetType().Name)
+                    .NewLine.Italic.Text("ROUTINE TYPE ▸ ").UnstyledText(routine.GetType().Namespace).UnstyledText(".")
+                    .Bold.Text(routine.GetType().Name)
                     .NewLine.UnstyledText("▾ ▾ ▾ ▾ ▾")
                     .NewLine.Bold.Text("▸ ▸ ▸ EXCEPTION ◂ ◂ ◂")
                     .NewLine.UnstyledText(exception.Message)
                     .NewLine
                     .NewLine.Bold.Text("▸ ▸ ▸ STACK TRACE ◂ ◂ ◂")
-                    .NewLine.UnstyledText(StackTraceUtility.ExtractStringFromException(exception))
-                    .ToString();
-                
-                // Application.dataPath.Replace('/', Path.DirectorySeparatorChar)
-                
-                return message;
-                // if (string.IsNullOrEmpty(creationStackTrace))
-                // {
-                //     return message +
-                //            "\n\nYou can call CreationStackTrace method at routine to show creation stack trace";
-                // }
-                //
-                // return message + $"\n\nRoutine was creation here:\n{creationStackTrace}";
+                    .NewLine.UnstyledText(StackTraceUtility.ExtractStringFromException(exception));
+
+                messageFactory.NewLine.Bold.Text("▸ ▸ ▸ CREATION STACK TRACE ◂ ◂ ◂");
+                messageFactory.NewLine.UnstyledText(
+                        string.IsNullOrEmpty(creationStackTrace)
+                            ? "You can call CreationStackTrace method at routine to show creation stack trace"
+                            : creationStackTrace);
+
+                return messageFactory.ToString();
             }
 
             public static string ObjectIsNotInstanceOfIEventHandler(Type eventType)

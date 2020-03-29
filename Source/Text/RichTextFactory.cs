@@ -10,6 +10,11 @@ namespace Omega.Text
         {
             return new RichTextFactory(capacity);
         }
+
+        public void Clear()
+        {
+            _builder.Clear();
+        }
         
         public RichTextFactory()
         {
