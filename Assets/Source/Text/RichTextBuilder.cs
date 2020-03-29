@@ -23,7 +23,7 @@ namespace Omega.Text
         private readonly StringBuilder _stringBuilder;
 
         private Color? _color;
-        private int _size;
+        private int _size = -1;
         private FontStyle _fontStyle;
 
         private string _colorHex;

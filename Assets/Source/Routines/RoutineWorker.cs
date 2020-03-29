@@ -39,7 +39,7 @@ namespace Omega.Routines
         {
             if (_instance && _instance != this)
             {
-                Debug.LogError("RoutineWorker already exist on scene");
+                Routine.Logger.Log("RoutineWorker already exist on scene", LogType.Error);
                 DestroyImmediate(this);
                 return;
             }
