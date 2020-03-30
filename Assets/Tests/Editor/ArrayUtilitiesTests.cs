@@ -7,7 +7,7 @@ using NUnit.Framework;
 using UnityEditor.VersionControl;
 using Omega.Experimental;
 
-namespace Omega.Tools.Tests
+namespace Omega.Package.Tests
 {
     public sealed class ArrayUtilitiesTests
     {
@@ -206,6 +206,27 @@ namespace Omega.Tools.Tests
             expected = false;
 
             actual = Utilities.Array.ArrayReferenceEquals(array, array2);
+            Assert.AreEqual(expected, actual);
+        }
+        
+        [Test]
+        public void ArrayEqualsTest()
+        {
+            var array = new[] { "abc", "def", "ghi" };
+            var array2 = new[] { "abc", "def", "ghi" };
+            var expected = true;
+
+            var actual = Utilities.Array.ArrayEquals(array, array2);
+            Assert.AreEqual(expected, actual);
+
+            array = new[] { "abc", "def", "ghi" };
+            var string1 = new string(new[] { 'a', 'b', 'c' });
+            var string2 = new string(new[] { 'd', 'e', 'f' });
+            var string3 = new string(new[] { 'g', 'h', 'i' });
+            array2 = new[] { string1, string2, string3 };
+            expected = true;
+
+            actual = Utilities.Array.ArrayEquals(array, array2);
             Assert.AreEqual(expected, actual);
         }
 
