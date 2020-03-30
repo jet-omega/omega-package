@@ -3,6 +3,9 @@ using System.Collections;
 using NUnit.Framework;
 using Omega.Experimental;
 using Omega.Package.Internal;
+using UnityEngine;
+using UnityEngine.Networking;
+using UnityEngine.TestTools;
 
 namespace Omega.Routines.Tests
 {
@@ -81,6 +84,24 @@ namespace Omega.Routines.Tests
             {
                 yield return targetRoutine;
             }
+        }
+
+        [Test]
+        public void ForceCompleteAsyncOperationShouldFailTest()
+        {
+            var asyncOperation = new AsyncOperation();
+
+            IEnumerator RoutineSteps()
+            {
+                yield return asyncOperation;
+            }
+
+            var routine = Routine.ByEnumerator(RoutineSteps());
+
+            LogAssert.ignoreFailingMessages = true;
+            routine.Complete(1);
+            Assert.True(routine.IsError);
+            LogAssert.ignoreFailingMessages = false;
         }
         
         private sealed class TestCallRoutine : Routine
