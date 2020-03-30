@@ -4,6 +4,46 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## [0.10.5] - 2020-03-29
+### Added
+- Add `RichTextBuilder` and `RichTextFactory`. Lets conveniently generate rich text 
+    ```csharp
+    //                         Example                          //
+    // -------------------------------------------------------- //
+    
+    RichTextFactory.New()
+        .Bold.Color(Color.red).Text("TITLE")
+        .NewLine.Default.Text("something text block")
+        .NewLine.Italic.Color(Color.gray).Text("(created by omega)")
+        .NewLine.DefaultStyle.Size(50).Text("lerge text")
+        .NewLine.UnstyledText("text without syle")
+        .ToString();
+    
+     ▾   ▾   ▾   ▾   ▾   ▾   ▾   ▾   ▾   ▾   ▾   ▾   ▾   ▾   ▾   ▾
+  
+    "<b><color=#ff0000ff>TITLE</color></b>" +
+    "\nsomething text block" +
+    "\n<i><color=#808080ff>(created by omega)</color></i>" +
+    "\n<color=#808080ff><size=50>lerge text</size></color>" +
+    "\ntext without syle"
+        
+    // -------------------------------------------------------- //
+    ```
+  
+- Add `Logger`. Lets create specific logs for system
+
+### Improved
+- Now, when you try to forcefully complete the asynchronous operation inside the routine, an exception will be thrown (except for `UnityWebRequestAsyncOperation`)
+- Improve stacktrace for exception inside routines 
+- Improve routine logs 
+
+### Changed
+- Now the implementation of `IEnumerator.Current` will always return null
+
+### Fixed
+- Fix incorrect work `OnProgress` with nested routines
+
 ## [0.10.4] - 2020-02-19
 ### Fixed
 - Fix incorrect concatenation routines
