@@ -37,18 +37,13 @@ namespace Omega.Tools
         /// <returns>True если элемент был удален</returns>
         public bool Remove<T>(ref T[] array, T item)
         {
-            for (var i = 0; i < array.Length; ++i)
-            {
-                if (array[i].Equals(item))
-                {
-                    for (var j = i; j < array.Length - 1; j++)
-                        array[j] = array[j + 1];
-                    Array.Resize(ref array, array.Length - 1);
-                    return true;
-                }
-            }
+            var index = Array.IndexOf(array, item);
+            if (index == -1) return false;
 
-            return false;
+            for (var j = index; j < array.Length - 1; j++)
+                array[j] = array[j + 1];
+            Array.Resize(ref array, array.Length - 1);
+            return true;
         }
 
         /// <summary>
@@ -68,12 +63,13 @@ namespace Omega.Tools
         ///<returns>Количество удаленных элементов</returns>
         public int RemoveAll<T>(ref T[] array, T item)
         {
+            var comparer = EqualityComparer<T>.Default;
             int j = 0;
             var startArrayLength = array.Length;
 
             for (var i = 0; i < startArrayLength; ++i)
             {
-                if (!array[i].Equals(item))
+                if (!comparer.Equals(array[i], item))
                 {
                     array[j] = array[i];
                     j++;
@@ -90,10 +86,10 @@ namespace Omega.Tools
         public void Insert<T>(ref T[] array, int index, T item)
         {
             Array.Resize(ref array, array.Length + 1);
-            
+
             for (var i = array.Length - 1; i > index; i--) // array.Length здесь на 1 больше, чем исходный
                 array[i] = array[i - 1];
-            
+
             array[index] = item;
         }
 
@@ -102,7 +98,18 @@ namespace Omega.Tools
         /// </summary>
         public bool ArrayEquals<T>(T[] lhs, T[] rhs)
         {
-            return lhs.SequenceEqual(rhs);
+            if (lhs == rhs)
+                return true;
+            if (lhs.Length != rhs.Length)
+                return false;
+            var comparer = EqualityComparer<T>.Default;
+            for (int i = 0; i < lhs.Length; i++)
+            {
+                if (!comparer.Equals(lhs[i], rhs[i]))
+                    return false;
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -154,11 +161,12 @@ namespace Omega.Tools
 
         public bool Contains<T>(T[] array, T item)
         {
+            var comparer = EqualityComparer<T>.Default;
             // ReSharper disable once ForCanBeConvertedToForeach
             // ReSharper disable once LoopCanBeConvertedToQuery
             for (var i = 0; i < array.Length; i++)
             {
-                if (array[i].Equals(item))
+                if (comparer.Equals(array[i], item))
                     return true;
             }
 
