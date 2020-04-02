@@ -1,5 +1,6 @@
 using System;
 using Omega.Package.Internal;
+using Omega.Tools;
 
 namespace Omega.Experimental
 {
@@ -12,6 +13,7 @@ namespace Omega.Experimental
         private static TimeUtilities _time = new TimeUtilities();
         private static ObjectUtilities _object = new ObjectUtilities();
         private static BoxColliderUtilities _boxCollider = new BoxColliderUtilities();
+        private static ArrayUtilities _arrayUtilities = new ArrayUtilities();
 
         public static TransformUtilities Transfrom => _transfrom;
         public static GameObjectUtilities GameObject => _gameObject;
@@ -19,5 +21,6 @@ namespace Omega.Experimental
         public static TimeUtilities Time => _time;
         public static ObjectUtilities Object => _object;
         public static BoxColliderUtilities BoxCollider => _boxCollider;
+        public static ArrayUtilities Array => _arrayUtilities;
     }
 }
