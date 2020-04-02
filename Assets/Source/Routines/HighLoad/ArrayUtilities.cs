@@ -2,9 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
-namespace Omega.Tools
+namespace Omega.Package.Internal
 {
     public class ArrayUtilities
     {
@@ -64,20 +65,21 @@ namespace Omega.Tools
         public int RemoveAll<T>(ref T[] array, T item)
         {
             var comparer = EqualityComparer<T>.Default;
-            int j = 0;
             var startArrayLength = array.Length;
 
+            int resultArrayIndex = 0;
             for (var i = 0; i < startArrayLength; ++i)
             {
                 if (!comparer.Equals(array[i], item))
                 {
-                    array[j] = array[i];
-                    j++;
+                    array[resultArrayIndex] = array[i];
+                    resultArrayIndex++;
                 }
             }
 
-            Array.Resize(ref array, j);
-            return startArrayLength - j;
+            Array.Resize(ref array, resultArrayIndex); // Из-за "лишнего" инкремента на последней итерации здесь индекс на 1 больше,
+                                                       //чем последний индекс. То есть выступает в качестве Length
+            return startArrayLength - resultArrayIndex;
         }
 
         /// <summary>
@@ -119,7 +121,7 @@ namespace Omega.Tools
         /// <param name="lhs"></param>
         /// <param name="rhs"></param>
         /// <returns></returns>
-        public bool ArrayReferenceEquals<T>(T[] lhs, T[] rhs)
+        public bool ArrayReferenceEquals<T>(T[] lhs, T[] rhs) where T : class 
         {
             if (lhs == null || rhs == null)
                 return lhs == rhs;
