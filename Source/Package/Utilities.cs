@@ -1,4 +1,5 @@
 using Omega.Package.Internal;
+using Omega.Tools;
 
 namespace Omega.Package
 {
@@ -10,5 +11,6 @@ namespace Omega.Package
         public static RectUtilities Rect { get; } = new RectUtilities();
         public static ObjectUtilities Object { get; } = new ObjectUtilities();
         public static BoxColliderUtilities BoxCollider { get; } = new BoxColliderUtilities();
+        public static ArrayUtilities Array { get; } = new ArrayUtilities();
     }
 }
