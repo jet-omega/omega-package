@@ -41,13 +41,11 @@ namespace Omega.Routines
         {
             if (!_routineSceneWorker || !_routineSceneWorker.gameObject)
             {
-                Debug.Log("imh");
                 _routineSceneWorker = GameObjectFactory.New()
                     .SetName("[ROUTINE] SCENE WORKER")
                     .AddComponent<RoutineWorker>()
                     .Build<RoutineWorker>();
 
-                Debug.Log("wtrff");
                 var message = RichTextFactory.UnstyledText("Scene worker was created on scene: ")
                     .Default.Bold.Text(SceneManager.GetActiveScene().name).ToString(true);
 
