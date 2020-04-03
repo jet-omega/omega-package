@@ -6,7 +6,7 @@ namespace Omega.Text
     {
         private RichTextBuilder _builder;
 
-        public static RichTextFactory New(int capacity = 20)
+        public static RichTextFactory New(int capacity = 30)
         {
             return new RichTextFactory(capacity);
         }
@@ -110,7 +110,7 @@ namespace Omega.Text
 
         public RichTextFactory Space(int spaceCount = 4)
         {
-            for (int i = 0; i < spaceCount; i++) 
+            for (int i = 0; i < spaceCount; i++)
                 _builder.AppendWithoutRich(" ");
 
             return this;
@@ -125,6 +125,14 @@ namespace Omega.Text
         public override string ToString()
         {
             return _builder.ToString();
+        }
+
+        public string ToString(bool clear)
+        {
+            var s = _builder.ToString();
+            if (clear)
+                Clear();
+            return s;
         }
     }
 }
