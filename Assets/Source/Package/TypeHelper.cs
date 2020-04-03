@@ -91,9 +91,6 @@ namespace Omega.Package
             }
         }
 
-        [Obsolete("Use InstanceFactory")]
-        public object CreateInstance() => InstanceFactory.Create(_type);
-
         public FieldInfo[] GetFields(BindingFlags bindingFlags)
         {
             var list = ListPool<FieldInfo>.Rent();
@@ -107,10 +104,6 @@ namespace Omega.Package
             if (type.IsGenericTypeDefinition)
                 _generics = new Dictionary<Type, TypeHelper>(3);
         }
-
-        [Obsolete("Use ForGenericType method")]
-        public TypeHelper GetGenericType(Type type)
-            => ForGenericType(type);
 
         public TypeHelper ForGenericType<T>()
             => ForGenericType(typeof(T));

@@ -38,12 +38,6 @@ namespace Omega.Package
             list = Rent();
             return new ListPoolHandler<T>(list);
         }
-        
-        [Obsolete("Use Return method")]
-        public static void Push([NotNull] List<T> list)
-        {
-            Return(list);
-        }
 
         public static void Flush()
         {
