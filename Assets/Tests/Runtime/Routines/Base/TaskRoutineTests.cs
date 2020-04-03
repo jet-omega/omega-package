@@ -21,7 +21,7 @@ namespace Omega.Routines.Tests
         {
             bool? cancellationExit = null;
 
-            var taskRoutine = Routine.Task(token =>
+            Routine.Task(token =>
             {
                 var timeMeter = TimeMeter.New();
                 while (timeMeter.ToSeconds() < 1)
@@ -35,7 +35,7 @@ namespace Omega.Routines.Tests
                 }
 
                 cancellationExit = false;
-            }).InBackground();
+            }).GetSelf(out var taskRoutine).InBackground();
 
             yield return Routine.Delay(0.1f);
 
@@ -43,7 +43,7 @@ namespace Omega.Routines.Tests
 
             // Отклик на отмену задачи ~15 мс ( Thread.Sleep(15) ), поэтому нужно немного подождать
             yield return Routine.Delay(0.03f);
-            
+
             Assert.NotNull(cancellationExit);
             Assert.True(cancellationExit);
         }

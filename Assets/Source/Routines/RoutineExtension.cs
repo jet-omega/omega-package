@@ -9,6 +9,8 @@ namespace Omega.Routines
         [Obsolete("Use OnProgress")]
         public static Routine OnChangeProgress(this Routine self, Action<float> handler)
         {
+            Routine.Logger.Log("OnChangeProgress is deprecated, use OnProgress", LogType.Error);
+            
             if (self is null)
                 throw new NullReferenceException(nameof(self));
             if (handler is null)
@@ -36,11 +38,6 @@ namespace Omega.Routines
 
             return self;
         }
-
-        [Obsolete("Use GetSelf")]
-        public static TRoutine GetRoutine<TRoutine>(this TRoutine self, out TRoutine routine)
-            where TRoutine : Routine
-            => GetSelf(self, out routine);
 
         public static TRoutine GetSelf<TRoutine>(this TRoutine self, out TRoutine routine)
             where TRoutine : Routine
@@ -95,18 +92,15 @@ namespace Omega.Routines
             return original;
         }
 
-        public static TRoutine Complete<TRoutine>(this TRoutine original)
-            where TRoutine : Routine
+        public static void Complete(this Routine original)
         {
             if (original == null)
                 throw new NullReferenceException(nameof(original));
 
             RoutineUtilities.CompleteWithoutChecks(original);
-            return original;
         }
 
-        public static TRoutine Complete<TRoutine>(this TRoutine original, TimeSpan timeout)
-            where TRoutine : Routine
+        public static void Complete(this Routine original, TimeSpan timeout)
         {
             if (original == null)
                 throw new NullReferenceException(nameof(original));
@@ -114,11 +108,9 @@ namespace Omega.Routines
             var timeoutDuration = timeout.Duration();
 
             RoutineUtilities.CompleteWithoutChecks(original, timeoutDuration);
-            return original;
         }
 
-        public static TRoutine Complete<TRoutine>(this TRoutine original, float timeoutSeconds)
-            where TRoutine : Routine
+        public static void Complete(this Routine original, float timeoutSeconds)
         {
             if (original == null)
                 throw new NullReferenceException(nameof(original));
@@ -127,7 +119,6 @@ namespace Omega.Routines
             var timeoutTimeSpan = TimeSpan.FromSeconds(timeoutAbs);
 
             RoutineUtilities.CompleteWithoutChecks(original, timeoutTimeSpan);
-            return original;
         }
 
         public static TRoutine ExceptionHandler<TRoutine>(this TRoutine original, Action<Exception> exceptionHandler)
@@ -170,27 +161,18 @@ namespace Omega.Routines
         /// <param name="executionOrder">Определяет в какой момент обрабатывается рутина</param>
         /// <param name="scope">Определяет время жизни обработки рутины</param>
         /// <param name="prelude">true - если перед помещением рутины в worker необходимо проиграть рутину до первого yield, иначе - false</param>
-        /// <typeparam name="TRoutine"></typeparam>
         /// <returns></returns>
-        public static TRoutine InBackground<TRoutine>(this TRoutine self,
+        public static RoutineExecutionHandler InBackground(this Routine self,
             ExecutionOrder executionOrder = ExecutionOrder.Update,
             RoutineExecutionScope scope = RoutineExecutionScope.Scene,
             bool prelude = true)
-            where TRoutine : Routine
-        {
-            if (!prelude || RoutineUtilities.OneStep(self))
-            {
-                var worker = RoutineWorker.Instance;
-                worker.Add(self, scope, executionOrder);
-            }
+            => RoutineWorkerHub.Add(self, scope, executionOrder, prelude);
 
-            return self;
-        }
+        public static RoutineExecutionHandler InBackground(this Routine self, bool prelude)
+            => InBackground(self, ExecutionOrder.Update, RoutineExecutionScope.Scene, prelude);
 
-        public static TRoutine InBackground<TRoutine>(this TRoutine self, bool prelude)
-            where TRoutine : Routine
-        {
-            return InBackground(self, ExecutionOrder.Update, RoutineExecutionScope.Scene, prelude);
-        }
+        public static RoutineExecutionHandler InBackground(this Routine self, RoutineExecutionScope scope,
+            bool prelude = true)
+            => InBackground(self, ExecutionOrder.Update, scope, prelude);
     }
 }
