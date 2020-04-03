@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.0] - 2020-04-03
+### Changed
+- Now extension-method `InBackground` for **Routine** return `RoutineExecutionHandler`
+- Removed deprecated **API** from `ListPool` and `TypeHelper`
+
+### Added
+- Utilities for Array
+
+### Fixes
+- Fix global scope routine execution 
+
+### Improved
+- New background worker's system for **Routine**
 
 ## [0.10.5] - 2020-03-29
 ### Added
