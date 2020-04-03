@@ -72,12 +72,14 @@ namespace Omega.Routines
 
         public static Routine FromCompleted()
         {
-            return new EmptyRoutine().Complete();
+            new EmptyRoutine().GetSelf(out var routine).Complete();
+            return routine;
         }
 
         public static Routine<T> FromCompleted<T>(T value)
         {
-            return new FromResultRoutine<T>(value).Complete();
+           new FromResultRoutine<T>(value).GetSelf(out var routine).Complete();
+           return routine;
         }
 
         public static Routine ByAction(Action action)
