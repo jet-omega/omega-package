@@ -43,10 +43,13 @@ namespace Omega.Routines
             return routine;
         }
 
+        [Obsolete("Use Self")]
         public static TAsyncOperation GetSelf<TAsyncOperation>(this TAsyncOperation self, out TAsyncOperation outSelf)
-            where TAsyncOperation : AsyncOperation
-        {
-            return outSelf = self;
-        }
+            where TAsyncOperation : AsyncOperation =>
+            outSelf = self;
+        
+        public static TAsyncOperation Self<TAsyncOperation>(this TAsyncOperation self, out TAsyncOperation outSelf)
+            where TAsyncOperation : AsyncOperation =>
+            outSelf = self;
     }
 }

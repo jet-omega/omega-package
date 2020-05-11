@@ -15,7 +15,7 @@ namespace Omega.Routines.Tests
 
             LogAssert.ignoreFailingMessages = true;
             yield return Routine.Task(() => throw new Exception(keyMassage))
-                .GetSelf(out var routine);
+                .Self(out var routine);
             LogAssert.ignoreFailingMessages = false;
 
             Assert.True(routine.IsError);

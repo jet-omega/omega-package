@@ -35,7 +35,7 @@ namespace Omega.Routines.Tests
                 }
 
                 cancellationExit = false;
-            }).GetSelf(out var taskRoutine).InBackground();
+            }).Self(out var taskRoutine).InBackground();
 
             yield return Routine.Delay(0.1f);
 
