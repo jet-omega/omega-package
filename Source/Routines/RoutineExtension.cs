@@ -39,7 +39,17 @@ namespace Omega.Routines
             return self;
         }
 
+        [Obsolete("Use Self")]
         public static TRoutine GetSelf<TRoutine>(this TRoutine self, out TRoutine routine)
+            where TRoutine : Routine
+        {
+            if (self == null)
+                throw new NullReferenceException(nameof(self));
+
+            return routine = self;
+        }
+        
+        public static TRoutine Self<TRoutine>(this TRoutine self, out TRoutine routine)
             where TRoutine : Routine
         {
             if (self == null)
