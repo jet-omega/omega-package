@@ -7,9 +7,6 @@ namespace Omega.Package.Internal
     {
         public void LayersInMask(LayerMask layerMask, List<int> layers)
         {
-            if (layers == null)
-                layers = new List<int>(16);
-            
             var mask = layerMask.value;
             for (int i = 0; i < 8 * sizeof(int); mask >>= 1, i++)
                 if ((mask & 1) == 1)
