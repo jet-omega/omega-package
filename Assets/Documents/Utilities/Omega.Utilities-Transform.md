@@ -1,12 +1,12 @@
 ﻿﻿# Инструменты для Transform
 
-`void ClearChilds([NotNull] Transform root)` - Уничтожает всех потомков переданного трансформа
+`void ClearChilds(Transform root)` - Уничтожает всех потомков переданного трансформа
 
-`bool IsChildOf([NotNull] Transform transform, [CanBeNull] Transform parent)` - Проверяет является ли `transform` потомком `parent`
+`bool IsChildOf(Transform transform, [CanBeNull] Transform parent)` - Проверяет является ли `transform` потомком `parent`
 
 `int GetAllChildsCount(Transform root)` - Возвращает количество детей переданного трансформа
 
-`Transform[] GetChilds([NotNull] Transform root)` - Возвращает всех потомков переданного трансформа
+`Transform[] GetChilds(Transform root)` - Возвращает всех потомков переданного трансформа
 
 Анологичные методы без аллокации памяти
 
