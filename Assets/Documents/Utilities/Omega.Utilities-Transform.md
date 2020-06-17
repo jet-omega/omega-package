@@ -8,7 +8,7 @@
 
 `Transform[] GetChilds(Transform root)` - Возвращает всех потомков переданного трансформа
 
-Анологичные методы без аллокации памяти
+Аналогичные методы без выделения памяти
 
 `void GetChilds(Transform root, List<Transform> result)`
 
