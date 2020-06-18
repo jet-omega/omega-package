@@ -10,40 +10,40 @@ namespace Omega.Tools.Tests
     public sealed class TransformUtilityTests
     {
         [Test]
-        public void GetChildsShouldReturnEmptyArrayFromSystemArrayEmpty()
+        public void GetChildrenShouldReturnEmptyArrayFromSystemArrayEmpty()
         {
             var gameObjectInstance = new GameObject();
 
-            var childs = Utilities.Transform.GetChilds(gameObjectInstance.transform);
+            var children = Utilities.Transform.GetChildren(gameObjectInstance.transform);
 
-            Assert.NotNull(childs);
-            Assert.Zero(childs.Length);
+            Assert.NotNull(children);
+            Assert.Zero(children.Length);
 
-            Assert.AreEqual(childs, Array.Empty<Transform>());
+            Assert.AreEqual(children, Array.Empty<Transform>());
             
             Utilities.Object.AutoDestroy(gameObjectInstance);
         }
 
         [Test]
-        public void GetChildsShouldThrowArgumentNullExceptionWhenParameterIsNull()
+        public void GetChildrenShouldThrowArgumentNullExceptionWhenParameterIsNull()
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => Utilities.Transform.GetChilds(null));
+            Assert.Throws<ArgumentNullException>(() => Utilities.Transform.GetChildren(null));
         }
 
         [Test]
-        public void GetChildsShouldThrowMissingReferenceExceptionWhenParameterWereDestroyed()
+        public void GetChildrenShouldThrowMissingReferenceExceptionWhenParameterWereDestroyed()
         {
             var gameObjectInstance = new GameObject();
 
             Utilities.Object.AutoDestroy(gameObjectInstance);
 
             Assert.Throws<MissingReferenceException>(() =>
-                Utilities.Transform.GetChilds(gameObjectInstance.transform));
+                Utilities.Transform.GetChildren(gameObjectInstance.transform));
         }
         
         [Test]
-        public void GetAllChildsShouldReturnAllChildsTest()
+        public void GetAllChildrenShouldReturnAllChildrenTest()
         {
             int goCount = 50; 
             
@@ -55,7 +55,7 @@ namespace Omega.Tools.Tests
                 .Build<Transform>(goCount);
 
             var result = new List<Transform>(goCount);
-            Utilities.Transform.GetAllChilds(root, result);
+            Utilities.Transform.GetAllChildren(root, result);
             
             Assert.Zero(complexHierarchyObjects.Except(result).Count());
             
@@ -63,7 +63,7 @@ namespace Omega.Tools.Tests
         }
         
         [Test]
-        public void GetAllChildsCountShouldReturnCountAllChildsTest()
+        public void GetAllChildrenCountShouldReturnCountAllChildrenTest()
         {
             int goCount = 50; 
             
@@ -74,7 +74,7 @@ namespace Omega.Tools.Tests
                 .Custom(go => circuitParent = go.transform)
                 .Build<Transform>(goCount);
 
-            var result = Utilities.Transform.GetAllChildsCount(root);
+            var result = Utilities.Transform.GetAllChildrenCount(root);
             
             Assert.AreEqual(goCount, result);
             

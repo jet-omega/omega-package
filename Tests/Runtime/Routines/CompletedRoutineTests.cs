@@ -5,9 +5,9 @@ namespace Omega.Routines.Tests
     public class CompletedRoutineTests
     {
         [Test]
-        public void FromCompletedShouldGetCompletedRoutine()
+        public void GetCompletedRoutineIsCompleteTest()
         {
-            var routine = Routine.FromCompleted();
+            var routine = Routine.GetCompleted();
             Assert.True(routine.IsComplete);
         }
     }

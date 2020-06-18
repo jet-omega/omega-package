@@ -20,7 +20,7 @@ namespace Omega.Routines.Web
 
         protected override IEnumerator RoutineUpdate()
         {
-            yield return WebRequest.SendWebRequest().GetSelf(out _webRequestAsyncOperation);
+            yield return WebRequest.SendWebRequest().Self(out _webRequestAsyncOperation);
             if (WebRequest.isNetworkError || WebRequest.isHttpError)
                 throw new HttpRequestException(WebRequestRoutine.GetErrorMessage(WebRequest));
 

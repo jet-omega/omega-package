@@ -3,13 +3,13 @@ using NUnit.Framework;
 
 namespace Omega.Routines.Tests
 {
-    public class FromResultTests
+    public class RoutineWithResultTests
     {
         [Test]
-        public void FromResultShouldProcessCallbackWhenRoutineMoveNext()
+        public void RoutineWithResultShouldProcessCallbackWhenRoutineMoveNext()
         {
             bool flag = false;
-            var routine = Routine.FromResult(new object())
+            var routine = Routine.GetWithResult(new object())
                 .Callback(e => flag = true);
 
             routine.Complete();
