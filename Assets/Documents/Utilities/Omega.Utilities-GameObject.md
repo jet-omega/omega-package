@@ -12,4 +12,4 @@
 
 `Component[] GetComponentsInDirectChildren(GameObject gameObject, Type componentType, bool searchInRoot = false)` - Возвращает компоненты всех потомков первого уровня `GameObject`.
 
-`T GetComponentInDirectChildren<T>(GameObject gameObject, bool searchInRoot = false)` - озвращает компоненты всех потомков, типа T, первого уровня `GameObject`.
+`T GetComponentInDirectChildren<T>(GameObject gameObject, bool searchInRoot = false)` - возвращает компоненты всех потомков первого уровня `GameObject` указанного типа.
