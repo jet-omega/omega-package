@@ -8,8 +8,8 @@
 
 `bool ContainsComponent<T>(GameObject gameObject)` - Проверяет содержит ли объект компонент заданного типа
 
-`Component GetComponentInDirectChildren(GameObject gameObject, Type componentType, bool searchInRoot = false)` - Возвращает компонент потомка первого уровня `GameObject`. В отличии от GetComponentInChildren, проверка идет только по прямым потомкам объекта, не выполняя поиск по всему дереву потомков
+`Component GetComponentInDirectChildren(GameObject gameObject, Type componentType, bool searchInRoot = false)` - Возвращает компонент потомка первого уровня `GameObject`.
 
-`Component[] GetComponentsInDirectChildren(GameObject gameObject, Type componentType, bool searchInRoot = false)` - Возвращает компоненты всех потомков первого уровня `GameObject`. В отличии от GetComponentsInChildren, проверка идет только по прямым потомкам объекта, не выполняя поиск по всему дереву потомков
+`Component[] GetComponentsInDirectChildren(GameObject gameObject, Type componentType, bool searchInRoot = false)` - Возвращает компоненты всех потомков первого уровня `GameObject`.
 
-`T GetComponentInDirectChildren<T>(GameObject gameObject, bool searchInRoot = false)` - озвращает компоненты всех потомков, типа T, первого уровня `GameObject`. В отличии от GetComponentsInChildren, проверка идет только по прямым потомкам объекта, не выполняя поиск по всему дереву потомков
+`T GetComponentInDirectChildren<T>(GameObject gameObject, bool searchInRoot = false)` - озвращает компоненты всех потомков, типа T, первого уровня `GameObject`.
