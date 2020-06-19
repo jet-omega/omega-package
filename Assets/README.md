@@ -3,34 +3,41 @@
 **omega-package** is a assembly of tools and systems for working with scripting in the Unity
 
 ## Contents
+
 - [Motivation](#Motivation)
 - [Examples](#Examples)
 - [Installation](#Installation)
 
 ## Motivation
+
 - Facilitate and speed up the development process
 - Improving Unity asynchronous programming capabilities
 - Creating a global event system
 - Create a single assembly for extensions
 
 ## Examples
+
 ### Extensions
- `MissingComponent` for GameObject
- ```csharp
- var gameObject = Instantiate(prefab);
+ 
+`MissingComponent` for `GameObject`
+ 
+```csharp
+var gameObject = Instantiate(prefab);
 
 var controller = gameObject.MissingComponent<ControlScript>();
  ```
  
- `TryGetComponent` for GameObject
- ```csharp
- var gameObject = Find("MyGameObject");
+`TryGetComponent` for `GameObject`
+
+```csharp
+var gameObject = Find("MyGameObject");
 
 if(gameObject.TryGetComponent<WeaponController>(out var weaponController))
     print($"Current weapon: {weaponController.weapon.name}")
 ```
 
-`GetChilds` for Transform and GameObject
+`GetChilds` for `Transform` and `GameObject`
+
 ```csharp
 var gameObject = Instantiate(prefab);
 
@@ -38,7 +45,8 @@ var childs = gameObject.GetChilds();
 print(childs.Length);
 ```
 
-`Attach` for Transform and GameObject 
+`Attach` for `Transform` and `GameObject` 
+
 ```csharp
 var gameObject1 = Instantiate(prefab1);
 var gameObject2 = Instantiate(prefab2);
@@ -48,7 +56,9 @@ gameObject1.Attach(gameObject2);
 ```
 
 ### GameObjectFactory
+
 A factory is needed to facilitate the creation of new GameObjects. See more [here](https://github.com/omega-vr-ar/unity-tools/wiki/GameObjectFactory)
+
 ```csharp
 // Factory creation
 var factory = GameObjectFactory.New().SetName("Created by Factory");
@@ -67,9 +77,11 @@ var tenInstanceToTransfrom = factory.Build<Transfron>(10);
 ```
 
 ### Routines
+
 Routines make it easy and efficient to organize asynchronous code in your Unity project
 
 ### Events
+
 Events allow you to organize communication between components / systems within the application
 
 ## Installation
