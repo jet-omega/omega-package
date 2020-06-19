@@ -64,7 +64,7 @@ namespace Omega.Routines
 
             RoutineUtilities.CompleteWithoutChecks(this, timeoutTimeSpan);
             
-            `if (IsError)
+            if (IsError)
                 throw new RoutineErrorException(
                     "It is impossible to get the result of the routine, because the routine contains an error");
 
