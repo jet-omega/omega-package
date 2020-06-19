@@ -13,5 +13,6 @@ namespace Omega.Package
         public static BoxColliderUtilities BoxCollider { get; } = new BoxColliderUtilities();
         public static ArrayUtilities Array { get; } = new ArrayUtilities();
         public static LayerUtilities Layer { get; } = new LayerUtilities();
+        public static BlockerUtilities Blocker { get; } = new BlockerUtilities();
     }
 }
