@@ -178,16 +178,6 @@ namespace Omega.Package.Internal
             Array.Resize(ref array, 0);
         }
 
-        private readonly struct SelectComparer<T, TComparision> : IComparer<T>
-            where TComparision : IComparable<TComparision>
-        {
-            private readonly Func<T, TComparision> _selector;
-
-            public SelectComparer(Func<T, TComparision> selector) => _selector = selector;
-
-            public int Compare(T x, T y) => _selector(x).CompareTo(_selector(y));
-        }
-
         public void Sort<T, TOut>(T[] array, Func<T, TOut> selector) where TOut : IComparable<TOut>
         {
             Array.Sort(array, new SelectComparer<T, TOut>(selector));
@@ -242,6 +232,17 @@ namespace Omega.Package.Internal
             }
 
             return ~low;
+        }
+        
+        
+        private readonly struct SelectComparer<T, TComparision> : IComparer<T>
+            where TComparision : IComparable<TComparision>
+        {
+            private readonly Func<T, TComparision> _selector;
+
+            public SelectComparer(Func<T, TComparision> selector) => _selector = selector;
+
+            public int Compare(T x, T y) => _selector(x).CompareTo(_selector(y));
         }
     }
 }
