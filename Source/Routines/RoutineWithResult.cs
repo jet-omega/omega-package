@@ -1,4 +1,6 @@
+using System;
 using Omega.Routines.Exceptions;
+using UnityEngine;
 
 namespace Omega.Routines
 {
@@ -35,6 +37,33 @@ namespace Omega.Routines
         {
             RoutineUtilities.CompleteWithoutChecks(this);
 
+            if (IsError)
+                throw new RoutineErrorException(
+                    "It is impossible to get the result of the routine, because the routine contains an error");
+
+            return _result;
+        }
+
+        public TResult WaitResult(TimeSpan timeout)
+        {
+            var timeoutDuration = timeout.Duration();
+
+            RoutineUtilities.CompleteWithoutChecks(this, timeoutDuration);
+            
+            if (IsError)
+                throw new RoutineErrorException(
+                    "It is impossible to get the result of the routine, because the routine contains an error");
+
+            return _result;
+        }
+        
+        public TResult WaitResult(float timeoutSeconds)
+        {
+            var timeoutAbs = Mathf.Abs(timeoutSeconds);
+            var timeoutTimeSpan = TimeSpan.FromSeconds(timeoutAbs);
+
+            RoutineUtilities.CompleteWithoutChecks(this, timeoutTimeSpan);
+            
             if (IsError)
                 throw new RoutineErrorException(
                     "It is impossible to get the result of the routine, because the routine contains an error");
