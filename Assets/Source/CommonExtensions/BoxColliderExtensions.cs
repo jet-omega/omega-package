@@ -1,5 +1,7 @@
 ﻿using System;
+using Omega.Experimental;
 using Omega.Tools;
+using Omega.Package.Internal;
 using UnityEngine;
 
 public static class BoxColliderExtensions
@@ -13,11 +15,11 @@ public static class BoxColliderExtensions
     /// <exception cref="MissingReferenceException">Параметр <param name="boxCollider"/>>указывает на уничтоженный объект</exception>
     public static void SetBounds(this BoxCollider boxCollider, Bounds bounds)
     {
-        if (ReferenceEquals(boxCollider, null))
+        if (boxCollider is null)
             throw new NullReferenceException(nameof(boxCollider));
         if (!boxCollider)
             throw new MissingReferenceException(nameof(boxCollider));
 
-        BoxColliderUtility.SetAsBoundsWithoutChecks(boxCollider, bounds);
+        BoxColliderUtilities.SetAsBoundsWithoutChecks(boxCollider, bounds);
     }
 }

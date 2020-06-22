@@ -27,7 +27,7 @@ namespace Omega.Experimental.Event
 
         public UnityHandlerAdapter(Object handler, InvocationPolicy invocationPolicy)
         {
-            if (ReferenceEquals(handler, null))
+            if (handler is null)
                 throw new ArgumentNullException(nameof(handler));
 
             _handler = handler as IEventHandler<TEvent> ??

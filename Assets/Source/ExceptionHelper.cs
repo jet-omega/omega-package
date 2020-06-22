@@ -1,8 +1,11 @@
 using System;
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Reflection;
 using Omega.Experimental.Event;
 using Omega.Routines;
+using Omega.Text;
 using UnityEngine;
 
 
@@ -49,7 +52,7 @@ namespace Omega.Package
                 $"Action was called in the destroyed object, according to the {nameof(InvocationPolicy)}, however, this behavior is not considered correct";
 
             #endregion
-            
+
             // Указанный обработчик не является объектом унаследованным от UnityEngine.Object 
             public static readonly string HandlerIsNotInstanceOfUnityObject =
                 $"The specified handler is not an object inherited from {nameof(UnityEngine.Object)}";
@@ -75,25 +78,28 @@ namespace Omega.Package
                 $"If {nameof(RoutineControl)} is used as a bridge between {nameof(IEnumerator)} and {nameof(Routine)}, " +
                 $"Then you must use {nameof(Routine)}.{nameof(Routine.ByEnumerator)}";
 
-            // В одной из рутин было выброшено исключение
-            public static readonly string ExceptionInRoutineMessageFormattable =
-                "An exception was thrown in one of the routines " +
-                "\nRoutine: {0}" +
-                "\n\tException: {1})";
 
-            
-            
             public static string CreateExceptionMessageForRoutine(Routine routine, Exception exception)
             {
                 var creationStackTrace = routine.GetCreationStackTraceInternal();
-                var message = string.Format(ExceptionInRoutineMessageFormattable, routine, exception);
+                var messageFactory = RichTextFactory.New(exception.Message.Length + 200)
+                    .Text("Exception thrown inside routine ▸ ").Bold.Text(exception.GetType().ToString())
+                    .NewLine.Italic.Text("ROUTINE TYPE ▸ ").UnstyledText(routine.GetType().Namespace).UnstyledText(".")
+                    .Bold.Text(routine.GetType().Name)
+                    .NewLine.UnstyledText("▾ ▾ ▾ ▾ ▾")
+                    .NewLine.Bold.Text("▸ ▸ ▸ EXCEPTION ◂ ◂ ◂")
+                    .NewLine.UnstyledText(exception.Message)
+                    .NewLine
+                    .NewLine.Bold.Text("▸ ▸ ▸ STACK TRACE ◂ ◂ ◂")
+                    .NewLine.UnstyledText(StackTraceUtility.ExtractStringFromException(exception));
 
-                if (string.IsNullOrEmpty(creationStackTrace))
-                {
-                    return message + "\n\nYou can define ROUTINE_CREATION_STACKTRACE word or call CreationStackTrace method at routine to show creation stack trace";
-                }
+                messageFactory.NewLine.Bold.Text("▸ ▸ ▸ CREATION STACK TRACE ◂ ◂ ◂");
+                messageFactory.NewLine.UnstyledText(
+                        string.IsNullOrEmpty(creationStackTrace)
+                            ? "You can call CreationStackTrace method at routine to show creation stack trace"
+                            : creationStackTrace);
 
-                return message + $"\n\nRoutine was creation here:\n{creationStackTrace}";
+                return messageFactory.ToString();
             }
 
             public static string ObjectIsNotInstanceOfIEventHandler(Type eventType)

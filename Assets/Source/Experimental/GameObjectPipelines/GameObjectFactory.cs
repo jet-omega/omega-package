@@ -140,7 +140,7 @@ namespace Omega.Tools
 
         public void SetPrefab(GameObject prefab)
         {
-            if (ReferenceEquals(prefab, null))
+            if (prefab is null)
                 throw new ArgumentNullException(nameof(prefab));
             if (!prefab)
                 throw new MissingReferenceException(nameof(prefab));

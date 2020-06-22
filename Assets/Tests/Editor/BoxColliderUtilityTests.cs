@@ -1,8 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
-using Omega.Experimental;
+using Omega.Package;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Omega.Tools.Tests
 {
@@ -15,7 +14,7 @@ namespace Omega.Tools.Tests
 
             var gameObjectInstance = new GameObject(nameof(SetAsBoundsSetupCorrectBounds));
             var boxCollider = gameObjectInstance.AddComponent<BoxCollider>();
-            BoxColliderUtility.SetAsBounds(boxCollider, bounds);
+            Utilities.BoxCollider.SetAsBounds(boxCollider, bounds);
 
             Assert.AreEqual(bounds, boxCollider.bounds);
             
@@ -26,7 +25,7 @@ namespace Omega.Tools.Tests
         public void SetAsBoundsShouldThrowArgumentNullExceptionWhenParameterIsNull()
         {
             // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => BoxColliderUtility.SetAsBounds(null, default));
+            Assert.Throws<ArgumentNullException>(() => Utilities.BoxCollider.SetAsBounds(null, default));
         }
 
         [Test]
@@ -40,7 +39,7 @@ namespace Omega.Tools.Tests
             Utilities.Object.AutoDestroy(gameObjectInstance);
 
             Assert.Throws<MissingReferenceException>(() =>
-                BoxColliderUtility.SetAsBounds(collider, default));
+                Utilities.BoxCollider.SetAsBounds(collider, default));
         }
     }
 }

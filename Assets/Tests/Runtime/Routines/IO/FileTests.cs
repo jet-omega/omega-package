@@ -12,13 +12,13 @@ namespace Omega.Routines.IO.Tests
         public IEnumerator WriteAllBytesShouldCreateFileTest()
         {
             var testData = new byte[1024];
-            
+
             var pathToTestFile = $"~{nameof(WriteAllBytesShouldCreateFileTest)}";
             var random = new Random();
             random.NextBytes(testData);
 
             yield return FileRoutine.WriteAllBytesRoutine(pathToTestFile, testData)
-                .GetRoutine(out var writeAllBytesRoutine);
+                .Self(out var writeAllBytesRoutine);
 
             if (writeAllBytesRoutine.IsError)
             {
@@ -29,19 +29,20 @@ namespace Omega.Routines.IO.Tests
             var afterWriteData = File.ReadAllBytes(pathToTestFile);
 
             File.Delete(pathToTestFile);
-            
+
             Assert.AreEqual(afterWriteData.Length, testData.Length);
 
             for (int i = 0; i < afterWriteData.Length; i++)
                 if (afterWriteData[i] != testData[i])
-                    Assert.Fail($"Arrays {nameof(afterWriteData)} and {nameof(testData)} are not equals (element №{i})");
+                    Assert.Fail(
+                        $"Arrays {nameof(afterWriteData)} and {nameof(testData)} are not equals (element №{i})");
         }
-        
+
         [UnityTest]
         public IEnumerator ReadAllBytesShouldReadBytesInFileTest()
         {
             var testData = new byte[1024];
-            
+
             var pathToTestFile = $"~{nameof(ReadAllBytesShouldReadBytesInFileTest)}";
             var random = new Random();
             random.NextBytes(testData);
@@ -50,7 +51,7 @@ namespace Omega.Routines.IO.Tests
 
             yield return FileRoutine.ReadAllBytesRoutine(pathToTestFile)
                 .Result(out var readAllBytesResult);
-            
+
             File.Delete(pathToTestFile);
 
             if (readAllBytesResult.Routine.IsError)

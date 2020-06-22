@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using Omega.Tools;
-using Omega.Tools.Experimental.UtilitiesAggregator;
+using Omega.Package.Internal;
 using UnityEngine;
 
 public static class TransformExtensions
@@ -16,7 +17,7 @@ public static class TransformExtensions
     /// <exception cref="MissingReferenceException">Параметр <param name="root"/>>указывает на уничтоженный объект</exception>
     public static Transform[] GetChilds(this Transform transform)
     {
-        if (ReferenceEquals(transform, null))
+        if (transform is null)
             throw new NullReferenceException(nameof(transform));
         if (!transform)
             throw new MissingReferenceException(nameof(transform));
@@ -24,6 +25,29 @@ public static class TransformExtensions
         return TransformUtilities.GetChildsWithoutChecks(transform);
     }
 
+    public static void GetChilds(this Transform transform, List<Transform> result)
+    {
+        if (transform is null)
+            throw new NullReferenceException(nameof(transform));
+        if (!transform)
+            throw new MissingReferenceException(nameof(transform));
+
+        if (result is null)
+            throw new ArgumentNullException(nameof(result));
+
+        TransformUtilities.GetChildsWithoutChecks(transform, result);
+    }
+
+    public static bool IsChildOf(this Transform self, Transform parent)
+    {
+        if(self is null)
+            throw new NullReferenceException(nameof(self));
+        if (!self)
+            throw new MissingReferenceException(nameof(self));
+
+        return TransformUtilities.IsChildOfWithoutChecks(self, parent);
+    }
+    
     /// <summary>
     /// Устанавливает себя в качестве потомка для gameObject и возвращает его
     /// </summary>
@@ -39,12 +63,12 @@ public static class TransformExtensions
     [NotNull]
     public static GameObject Attach(this Transform attachTo, [NotNull] GameObject gameObject)
     {
-        if (ReferenceEquals(attachTo, null))
+        if (attachTo is null)
             throw new NullReferenceException(nameof(attachTo));
         if (!attachTo)
             throw new MissingReferenceException(nameof(attachTo));
 
-        if (ReferenceEquals(gameObject, null))
+        if (gameObject is null)
             throw new ArgumentNullException(nameof(gameObject));
         if (!gameObject)
             throw new MissingReferenceException(nameof(gameObject));
@@ -77,12 +101,12 @@ public static class TransformExtensions
     [NotNull]
     public static Transform Attach(this Transform attachTo, [NotNull] Transform transform)
     {
-        if (ReferenceEquals(attachTo, null))
+        if (attachTo is null)
             throw new NullReferenceException(nameof(attachTo));
         if (!attachTo)
             throw new MissingReferenceException(nameof(attachTo));
 
-        if (ReferenceEquals(transform, null))
+        if (transform is null)
             throw new ArgumentNullException(nameof(transform));
         if (!transform)
             throw new MissingReferenceException(nameof(transform));
@@ -95,5 +119,21 @@ public static class TransformExtensions
         transform.parent = attachTo;
 
         return transform;
+    }
+
+    public static void SetRect(this RectTransform rectTransform, Rect rect)
+    {
+        if (rectTransform is null)
+            throw new NullReferenceException(nameof(rectTransform));
+        if (!rectTransform)
+            throw new MissingReferenceException(nameof(rectTransform));
+
+        RectTransformUtilities.SetRectWithoutChecks(rectTransform, rect);
+    }
+
+    public static bool ToRectTransform(this Transform self, out RectTransform rectTransform)
+    {
+        rectTransform = self as RectTransform;
+        return rectTransform != null;
     }
 }

@@ -38,6 +38,18 @@ namespace Omega.Tools
 
             public override bool Equals(object obj)
                 => obj is AddComponent<T>;
+
+            public override int GetHashCode()
+            {
+                var type = typeof(T);
+                var typeHashCode = type.GetHashCode();
+                return typeHashCode << 16 | typeHashCode >> 16;
+            }
+
+            public override string ToString()
+            {
+                return base.ToString();
+            }
         }
 
         public class MissingComponent<T> : IPipelineElement where T : Component
@@ -47,6 +59,18 @@ namespace Omega.Tools
 
             public override bool Equals(object obj)
                 => obj is MissingComponent<T>;
+            
+            public override int GetHashCode()
+            {
+                var type = typeof(T);
+                var typeHashCode = type.GetHashCode();
+                return ~(typeHashCode << 16 | typeHashCode >> 16);
+            }
+
+            public override string ToString()
+            {
+                return base.ToString();
+            }
         }
 
         public class SetParent : IPipelineElement

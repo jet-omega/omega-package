@@ -2,10 +2,7 @@ using System;
 using System.Collections;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using NUnit.Framework;
-using Omega.Experimental;
-using UnityEngine;
 using UnityEngine.TestTools;
 
 namespace Omega.Routines.Tests
@@ -15,8 +12,8 @@ namespace Omega.Routines.Tests
         [UnityTest]
         public IEnumerator RoutineShouldCompleteWhenHisRoutinesIsCompletedTest()
         {
-            var routineWithDelay160Ms = Routine.Delay(Utilities.Time.FromMilliseconds(160));
-            var routineWithDelay150Ms = Routine.Delay(Utilities.Time.FromMilliseconds(150));
+            var routineWithDelay160Ms = Routine.Delay(TimeSpan.FromMilliseconds(160));
+            var routineWithDelay150Ms = Routine.Delay(TimeSpan.FromMilliseconds(150));
 
             var startTestTime = DateTime.Now;
 
@@ -24,7 +21,7 @@ namespace Omega.Routines.Tests
 
             var deltaTime = DateTime.Now - startTestTime;
 
-            Assert.Greater(Utilities.Time.FromMilliseconds(160 + 150), deltaTime.TotalSeconds);
+            Assert.Greater(TimeSpan.FromMilliseconds(160 + 150).TotalSeconds, deltaTime.TotalSeconds);
         }
 
         [UnityTest]

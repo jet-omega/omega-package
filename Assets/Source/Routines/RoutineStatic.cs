@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using JetBrains.Annotations;
 
 namespace Omega.Routines
@@ -8,16 +9,33 @@ namespace Omega.Routines
     public partial class Routine
     {
         [NotNull]
-        public static Routine Delay(float interval)
+        public static DelayRoutine Delay(float intervalSeconds)
         {
-            if (interval < 0 || float.IsNaN(interval))
-                throw new ArgumentOutOfRangeException(nameof(interval));
+            if (intervalSeconds < 0 || float.IsNaN(intervalSeconds))
+                throw new ArgumentOutOfRangeException(nameof(intervalSeconds));
 
-            return new DelayRoutine(interval);
+            return new DelayRoutine(TimeSpan.FromSeconds(intervalSeconds));
+        }
+
+        [NotNull]
+        public static DelayRoutine Delay(TimeSpan interval)
+        {
+            var intervalDuration = interval.Duration();
+
+            return new DelayRoutine(intervalDuration);
         }
 
         [NotNull]
         public static TaskRoutine Task([NotNull] Action action)
+        {
+            if (action == null)
+                throw new ArgumentNullException(nameof(action));
+
+            return new TaskRoutine(action);
+        }
+
+        [NotNull]
+        public static TaskRoutine Task([NotNull] Action<CancellationToken> action)
         {
             if (action == null)
                 throw new ArgumentNullException(nameof(action));
@@ -35,12 +53,48 @@ namespace Omega.Routines
         }
 
         [NotNull]
+        public static TaskRoutine<TResult> Task<TResult>([NotNull] Func<CancellationToken, TResult> action)
+        {
+            if (action == null)
+                throw new ArgumentNullException(nameof(action));
+
+            return new TaskRoutine<TResult>(action);
+        }
+
+        [NotNull]
         public static GroupRoutine WhenAll([NotNull] IEnumerable<Routine> routines)
         {
             if (routines == null)
                 throw new ArgumentNullException();
 
             return new GroupRoutine(routines);
+        }
+
+        public static Routine FromCompleted()
+        {
+            new EmptyRoutine().Self(out var routine).Complete();
+            return routine;
+        }
+
+        public static Routine<T> FromCompleted<T>(T value)
+        {
+           new FromResultRoutine<T>(value).Self(out var routine).Complete();
+           return routine;
+        }
+
+        public static Routine ByAction(Action action)
+        {
+            return new ActionRoutine(action);
+        }
+
+        public static Routine<T> ByAction<T>(Func<T> action)
+        {
+            return new ActionRoutine<T>(action);
+        }
+
+        public static Routine Empty()
+        {
+            return new EmptyRoutine();
         }
 
         [NotNull]
@@ -95,6 +149,17 @@ namespace Omega.Routines
                 throw new ArgumentNullException(nameof(enumeratorGetter));
 
             return new ByEnumeratorRoutine<TResult>(e => enumeratorGetter(arg, e));
+        }
+
+        public static Routine<TResult> Convert<TSource, TResult>(Routine<TSource> sourceRoutine,
+            Func<TSource, TResult> converter)
+        {
+            return new ConvertResultRoutine<TSource, TResult>(sourceRoutine, converter);
+        }
+
+        public static Routine<TResult> WaitOne<TResult>(Routine routine, Func<TResult> resultProvider)
+        {
+            return new WaitRoutine<TResult>(routine, resultProvider);
         }
     }
 }
