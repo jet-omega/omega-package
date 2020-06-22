@@ -173,23 +173,5 @@ namespace Omega.Package.Internal
 
         [Obsolete("Use GetAllChildrenCount")]
         public int GetAllChildsCount(Transform root) => GetAllChildrenCount(root);
-
-        [NotNull, Obsolete("Use GetChildrenWithoutChecks")]
-        internal static Transform[] GetChildsWithoutChecks([NotNull] Transform root) => GetChildrenWithoutChecks(root);
-
-        [Obsolete("Use GetChildrenWithoutChecks")]
-        internal static void GetChildsWithoutChecks([NotNull] Transform root, [NotNull] List<Transform> result) =>
-            GetChildrenWithoutChecks(root, result);
-
-        [Obsolete("Use ClearChildrenWithoutChecks")]
-        internal static void ClearChildsWithoutChecks([NotNull] Transform root) => ClearChildrenWithoutChecks(root);
-
-        [Obsolete("Use GetAllChildrenWithoutChecks")]
-        internal static void GetAllChildsWithoutChecks([NotNull] Transform root, [NotNull] List<Transform> childs) =>
-            GetAllChildrenWithoutChecks(root, childs);
-
-        [Obsolete("Use GetAllChildrenCountWithoutChecks")]
-        internal static int GetAllChildsCountWithoutChecks([NotNull] Transform root) =>
-            GetAllChildrenCountWithoutChecks(root);
     }
 }
