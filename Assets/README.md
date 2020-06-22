@@ -88,10 +88,10 @@ Events allow you to organize communication between components / systems within t
 
 1. You will need [UpmGitExtension](https://github.com/mob-sakai/UpmGitExtension) to work with OmegaTools as with UnityPackage.
 2. Open in Unity **Window>PackageManager** 
-![image](https://user-images.githubusercontent.com/10897900/65597589-28941480-dfa2-11e9-8d43-b2ae5f335e42.png)
+![package manager](https://user-images.githubusercontent.com/48410898/85272127-6e73ff80-b484-11ea-9c29-d5907be84034.png)
 3. In the window that opens, click on the button with the Git icon (it is located near the button with a plus sign)
-![image](https://user-images.githubusercontent.com/10897900/65597637-482b3d00-dfa2-11e9-908c-4a1426f91a5f.png)
-4. In the menu that opens, enter the address to the repository ( https://github.com/omega-vr-ar/unity-tools.git ), then click the "FindVersions" button, then select the latest version (or one of the branches with the suffix "upm")
-![image](https://user-images.githubusercontent.com/10897900/65597688-642ede80-dfa2-11e9-9af1-e49a5d12e270.png)
+![git icon](https://user-images.githubusercontent.com/48410898/85277808-a54e1380-b48c-11ea-95af-a6e0e0b9af01.png)
+4. In the menu that opens, enter the address to the repository ( https://github.com/ltd-profit/omega-package.git ), then click the "FindVersions" button, then select the latest version (or one of the branches with the suffix "upm")
+![find version button](https://user-images.githubusercontent.com/48410898/85278724-fad6f000-b48d-11ea-95cb-7d7524cdab2a.png)
 5. The last step is to click "Install Package"
-![image](https://user-images.githubusercontent.com/10897900/65597714-70b33700-dfa2-11e9-90ae-0b5977f6277b.png)
+![install package button](https://user-images.githubusercontent.com/48410898/85278965-5dc88700-b48e-11ea-8903-d81f2f10d4c9.png)
