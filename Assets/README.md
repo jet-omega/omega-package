@@ -36,23 +36,13 @@ if(gameObject.TryGetComponent<WeaponController>(out var weaponController))
     print($"Current weapon: {weaponController.weapon.name}")
 ```
 
-`GetChilds` for `Transform` and `GameObject`
+`GetChildren` for `Transform` and `GameObject`
 
 ```csharp
 var gameObject = Instantiate(prefab);
 
-var childs = gameObject.GetChilds();
-print(childs.Length);
-```
-
-`Attach` for `Transform` and `GameObject` 
-
-```csharp
-var gameObject1 = Instantiate(prefab1);
-var gameObject2 = Instantiate(prefab2);
-
-// gameObject2 will become a child for gameObject1
-gameObject1.Attach(gameObject2);
+var children = gameObject.GetChildren();
+print(children.Length);
 ```
 
 ### GameObjectFactory
@@ -79,6 +69,25 @@ var tenInstanceToTransfrom = factory.Build<Transfron>(10);
 ### Routines
 
 Routines make it easy and efficient to organize asynchronous code in your Unity project
+
+```csharp
+// Routine.Delay - runs with a delay of 5 seconds
+var delayRoutine = Routine.Delay(5f);
+
+// Routine.Task - performs an action according to TaskScheduler
+Routine WriteAllTextRoutine(string path, string text)
+        => Routine.Task(() => File.WriteAllText(path, text));
+
+Routine<string> ReadAllTextRoutine(string path)
+    => Routine.Task(() => File.ReadAllText(path));
+
+// Routine.WaitOne - waiting for completion of at least one action
+return Routine.WaitOne(routine,
+    () => new DownloadRawFileResponseParams {File = routine.GetResult()});
+
+// `Routine.ByEnumerator` - Routine of Enumerator
+return Routine.ByEnumerator<string>(Enumerator);
+```
 
 ### Events
 
