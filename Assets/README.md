@@ -94,4 +94,4 @@ Events allow you to organize communication between components / systems within t
 4. In the menu that opens, enter the address to the repository ( https://github.com/ltd-profit/omega-package.git ), then click the "FindVersions" button, then select the latest version (or one of the branches with the suffix "upm")
 ![find version button](https://user-images.githubusercontent.com/48410898/85278724-fad6f000-b48d-11ea-95cb-7d7524cdab2a.png)
 5. The last step is to click "Install Package"
-![install package button](https://user-images.githubusercontent.com/48410898/85278965-5dc88700-b48e-11ea-8903-d81f2f10d4c9.png)
+![install package button](https://user-images.githubusercontent.com/48410898/85279692-84d38880-b48f-11ea-973e-676b78cb0a62.png)
