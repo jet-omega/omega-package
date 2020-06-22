@@ -72,9 +72,5 @@ namespace Omega.Package.Internal
         
         [NotNull, Obsolete("Use GetChildren")]
         public RectTransform[] GetChilds([NotNull] RectTransform root) => GetChildren(root);
-        
-        [Obsolete("Use GetChildrenWithoutChecks")]
-        internal static void GetChildsWithoutChecks([NotNull] RectTransform rectTransform,
-            [NotNull] List<RectTransform> result) => GetChildrenWithoutChecks(rectTransform, result);
     }
 }
