@@ -12,4 +12,4 @@
 
 `void GetChildren(Transform root, List<Transform> result)`
 
-`void GetAllChilder(Transform root, List<Transform> result)`
+`void GetAllChildren(Transform root, List<Transform> result)`
