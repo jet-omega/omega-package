@@ -6,6 +6,4 @@
 
 `GameObject Attach(this Transform attachTo, GameObject gameObject)` - Устанавливает себя в качестве потомка `attachTo` и возвращает `gameObject`
 
-`Transform Attach(this Transform attachTo, Transform transform)` - Устанавливает себя в качестве потомка `attachTo` и возвращает `transform`
-
 `void SetRect(this RectTransform rectTransform, Rect rect)` -  Устанавливает позицию и размер по `Rect`

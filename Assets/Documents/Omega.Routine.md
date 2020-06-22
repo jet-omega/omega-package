@@ -72,7 +72,7 @@ IEnumerator Enumerator()
 
 `Routine.Delay` - возвращает рутину, которая выполняется с задержкой 
 
-`Routine.FromComplited` - возвращает завершённую рутину
+`Routine.GetCompleted` - возвращает завершённую рутину
 
 `Routine.FromResult` - возвращает рутину имеющую результат
 
