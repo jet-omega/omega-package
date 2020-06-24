@@ -127,7 +127,12 @@ namespace Omega.Routines
                     // if(nestedRoutineStatus == RoutineStatus.Canceled)
                     //     throw new Exception("Nested routine were canceled");
 
-                    if (_status == RoutineStatus.ForcedProcessing &&
+                    var isProcessingNestedRoutine = nestedRoutineStatus != RoutineStatus.Canceled
+                                                       && nestedRoutineStatus != RoutineStatus.Completed
+                                                       && nestedRoutineStatus != RoutineStatus.Error;
+
+                    if (isProcessingNestedRoutine &&
+                        _status == RoutineStatus.ForcedProcessing &&
                         nestedRoutineStatus != RoutineStatus.ForcedProcessing)
                         nestedRoutine.OnForcedCompleteInternal();
                 }
