@@ -22,7 +22,7 @@ namespace Omega.Routines
         private RoutineStatus _status;
         [CanBeNull] private Exception _exception;
         [CanBeNull] private IEnumerator _routine;
-        [CanBeNull] private Action _callback;
+        [CanBeNull] private Action _anyCaseCallback;
         [CanBeNull] private Action _update;
         [NotNull] private Action<Exception, Routine> _exceptionHandler = DefaultExceptionHandler;
 
@@ -47,7 +47,7 @@ namespace Omega.Routines
 
             _status = RoutineStatus.Completed;
             _update?.Invoke();
-            _callback?.Invoke();
+            _anyCaseCallback?.Invoke();
         }
 
         bool IEnumerator.MoveNext()
@@ -74,7 +74,7 @@ namespace Omega.Routines
                 }
             }
 
-            bool moveNextResult = false;
+            bool moveNextResult;
 
             // Для поддержки правильного состояния рутины изолируем исполнение пользовательского кода 
             try
@@ -90,6 +90,7 @@ namespace Omega.Routines
 
                 _exceptionHandler.Invoke(e, this);
                 _update?.Invoke();
+                _anyCaseCallback?.Invoke();
 
                 return false;
             }
@@ -179,6 +180,7 @@ namespace Omega.Routines
             OnCancel();
 
             _update?.Invoke();
+            _anyCaseCallback?.Invoke();
         }
 
         protected virtual void OnForcedComplete()
@@ -196,7 +198,7 @@ namespace Omega.Routines
             _status = RoutineStatus.NotStarted;
             _routine = null;
             _exception = null;
-            _callback = null;
+            _anyCaseCallback = null;
         }
 
         // Routine отличается от корутины Unity тем что рутина выполняется самостоятельно, то есть, 
@@ -239,7 +241,7 @@ namespace Omega.Routines
         object IEnumerator.Current => null;
 
         internal void AddCallbackInternal(Action callback)
-            => _callback += callback;
+            => _anyCaseCallback += callback;
 
         internal void SetCreationStackTraceInternal(string stackTrace)
             => _creationStackTrace = stackTrace;

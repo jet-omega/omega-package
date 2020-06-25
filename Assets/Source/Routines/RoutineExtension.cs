@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Omega.Routines
 {
@@ -10,7 +11,7 @@ namespace Omega.Routines
         public static Routine OnChangeProgress(this Routine self, Action<float> handler)
         {
             Routine.Logger.Log("OnChangeProgress is deprecated, use OnProgress", LogType.Error);
-            
+
             if (self is null)
                 throw new NullReferenceException(nameof(self));
             if (handler is null)
@@ -41,14 +42,8 @@ namespace Omega.Routines
 
         [Obsolete("Use Self")]
         public static TRoutine GetSelf<TRoutine>(this TRoutine self, out TRoutine routine)
-            where TRoutine : Routine
-        {
-            if (self == null)
-                throw new NullReferenceException(nameof(self));
+            where TRoutine : Routine => Self(self, out routine);
 
-            return routine = self;
-        }
-        
         public static TRoutine Self<TRoutine>(this TRoutine self, out TRoutine routine)
             where TRoutine : Routine
         {
@@ -58,7 +53,8 @@ namespace Omega.Routines
             return routine = self;
         }
 
-        public static TRoutine Callback<TRoutine>(this TRoutine original, Action callback)
+        public static TRoutine Callback<TRoutine>(this TRoutine original, Action callback,
+            CallbackCase callbackCase = CallbackCase.Complete)
             where TRoutine : Routine
         {
             if (original == null)
@@ -66,29 +62,31 @@ namespace Omega.Routines
             if (callback == null)
                 throw new ArgumentNullException(nameof(callback));
 
-            if (original.IsComplete)
-                throw new InvalidOperationException("callback will never call because routine is completed");
-            if (original.IsError)
-                throw new InvalidOperationException("callback will never call because routine have error");
-
-            original.AddCallbackInternal(callback);
+            original.AddCallbackInternal(() =>
+            {
+                if (original.IsComplete && (callbackCase & CallbackCase.Complete) != 0 ||
+                    original.IsCanceled && (callbackCase & CallbackCase.Cancel) != 0 ||
+                    original.IsError && (callbackCase & CallbackCase.Error) != 0)
+                    callback.Invoke();
+            });
             return original;
         }
 
         public static Routine<TResult> Callback<TResult>(this Routine<TResult> original,
-            Action<TResult> callback)
+            Action<TResult> callback, CallbackCase callbackCase = CallbackCase.Complete)
         {
             if (original == null)
                 throw new NullReferenceException(nameof(original));
             if (callback == null)
                 throw new ArgumentNullException(nameof(callback));
 
-            if (original.IsComplete)
-                throw new InvalidOperationException("callback will never call because routine is completed");
-            if (original.IsError)
-                throw new InvalidOperationException("callback will never call because routine have error");
-
-            original.AddCallbackInternal(() => callback.Invoke(original.GetResult()));
+            original.AddCallbackInternal(() =>
+            {
+                if (original.IsComplete && (callbackCase & CallbackCase.Complete) != 0 ||
+                    original.IsCanceled && (callbackCase & CallbackCase.Cancel) != 0 ||
+                    original.IsError && (callbackCase & CallbackCase.Error) != 0)
+                    callback.Invoke(original.GetResult());
+            });
             return original;
         }
 
