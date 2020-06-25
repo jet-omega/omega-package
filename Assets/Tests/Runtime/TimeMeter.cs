@@ -23,7 +23,7 @@ namespace Omega.Package
             if (_initial == default)
                 throw new InvalidOperationException("Firstly need call Start");
 
-            var delta = _initial - DateTime.UtcNow;
+            var delta = DateTime.UtcNow - _initial;
             return delta;
         }
 
