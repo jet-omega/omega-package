@@ -3,7 +3,10 @@ using System.Reflection;
 
 namespace Omega.Package
 {
-    public static class ReflexionExtensions
+    /// <summary>
+    /// Based on Sirenix.Utilities - https://odininspector.com/
+    /// </summary>
+    public static class ReflectionExtensions
     {
         public static Type GetReturnType(this MemberInfo memberInfo)
         {

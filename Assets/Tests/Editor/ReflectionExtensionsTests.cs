@@ -3,10 +3,11 @@ using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
 using Omega.Package;
+using UnityEngine;
 
 namespace Omega.Tools.Tests
 {
-    public class ReflexionExtensionsTests
+    public class ReflectionExtensionsTests
     {
         private const BindingFlags GetMemberFlags = BindingFlags.NonPublic | BindingFlags.Instance;
 
