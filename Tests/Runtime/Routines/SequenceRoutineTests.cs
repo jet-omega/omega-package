@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections;
-using System.Text;
-using System.Threading;
 using NUnit.Framework;
+using Omega.Package;
 using UnityEngine.TestTools;
 
 namespace Omega.Routines.Tests
@@ -12,29 +11,28 @@ namespace Omega.Routines.Tests
         [UnityTest]
         public IEnumerator SequenceCompleteAfterEveryRoutineTest()
         {
-            var routineWithDelay100Ms = Routine.Delay(TimeSpan.FromMilliseconds(100));
-            var routineWithDelay150Ms = Routine.Delay(TimeSpan.FromMilliseconds(150));
+            var routineWithDelay100Ms = Routine.Delay(0.1f);
+            var routineWithDelay150Ms = Routine.Delay(0.15f);
             
-            var startTestTime = DateTime.Now;
-
+            var timeMeter = TimeMeter.New();
+            timeMeter.Start();
             yield return Routine.Sequence(routineWithDelay100Ms, routineWithDelay150Ms);
-
-            var deltaTime = DateTime.Now - startTestTime;
+            var deltaTime = timeMeter.ToMilliseconds();
             
-            Assert.Greater(deltaTime, TimeSpan.FromMilliseconds(100 + 150));
+            Assert.Greater(deltaTime, 0.1f + 0.15f);
         }
 
         [UnityTest]
         public IEnumerator SequenceRunsInOrderTest()
         {
-            long firstRoutineEndedTicks = 0, secondRoutineEndedTicks = 0;
+            long firstRoutineEndedTicks = 0, secondRoutineStartedTicks = 0;
             
-            var firstRoutine = Routine.Delay(TimeSpan.FromMilliseconds(10)).Callback(() => firstRoutineEndedTicks = DateTime.Now.Ticks);
-            var secondRoutine = Routine.Delay(TimeSpan.FromMilliseconds(10)).Callback(() => secondRoutineEndedTicks = DateTime.Now.Ticks);
+            var firstRoutine = Routine.Delay(0.1f).Callback(() => firstRoutineEndedTicks = DateTime.Now.Ticks);
+            var secondRoutine = Routine.ByAction(() => secondRoutineStartedTicks = DateTime.Now.Ticks);
 
             yield return Routine.Sequence(firstRoutine, secondRoutine);
             
-            Assert.Greater(secondRoutineEndedTicks, firstRoutineEndedTicks);
+            Assert.GreaterOrEqual(secondRoutineStartedTicks, firstRoutineEndedTicks);
         }
 
         [UnityTest]
@@ -49,7 +47,7 @@ namespace Omega.Routines.Tests
         [UnityTest]
         public IEnumerator CompleteAndIncompleteRoutinesCompletes()
         {
-            var incompleteRoutine = Routine.Delay(TimeSpan.FromMilliseconds(10));
+            var incompleteRoutine = Routine.Delay(0.01f);
             var completeRoutine = Routine.FromCompleted();
 
             yield return Routine.Sequence(incompleteRoutine, completeRoutine).Self(out var sequenceRoutine);
