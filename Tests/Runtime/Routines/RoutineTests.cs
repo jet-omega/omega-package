@@ -71,5 +71,40 @@ namespace Omega.Routines.Tests
 
             Assert.AreEqual(1, i);
         }
+
+        [Test]
+        public void SelfCancellationWithForceCompletionTest()
+        {
+            var flag = false;
+
+            var routine = Routine.ByEnumerator(RoutineSteps);
+
+            IEnumerator RoutineSteps(RoutineControl @this)
+            {
+                @this.GetRoutine().Cancel();
+                yield return Routine.ByAction(() => flag = true);
+            }
+
+            Routine.WaitOne(routine, () => 1).Complete();
+            Assert.False(flag);
+        }
+
+        [UnityTest]
+        public IEnumerator SelfCancellationTest()
+        {
+            var flag = false;
+
+            var routine = Routine.ByEnumerator(RoutineSteps);
+
+            IEnumerator RoutineSteps(RoutineControl @this)
+            {
+                @this.GetRoutine().Cancel();
+                yield return Routine.ByAction(() => flag = true);
+            }
+
+            yield return Routine.WaitOne(routine, () => 1);
+
+            Assert.False(flag);
+        }
     }
 }
