@@ -20,7 +20,7 @@ namespace Omega.Routines.Web
 
         protected override IEnumerator RoutineUpdate()
         {
-            yield return WebRequest.SendWebRequest().GetSelf(out _webRequestAsyncOperation);
+            yield return WebRequest.SendWebRequest().Self(out _webRequestAsyncOperation);
             if (WebRequest.isNetworkError || WebRequest.isHttpError)
                 throw new HttpRequestException(WebRequestRoutine.GetErrorMessage(WebRequest));
 
@@ -32,7 +32,10 @@ namespace Omega.Routines.Web
 
         public float GetProgress()
         {
-            return _webRequestAsyncOperation?.progress ?? 0;
+            var rawProgress = _webRequestAsyncOperation?.progress ?? 0;
+            var normalized = (rawProgress - 0.5f) * 2;
+            var clamped = Mathf.Clamp(normalized, 0, 1);
+            return clamped;
         }
     }
 }
