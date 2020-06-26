@@ -78,7 +78,25 @@ namespace Omega.Routines
             
             return new SequenceRoutine(routines);
         }
+        
+        [NotNull]
+        public static AnyRoutine Any([NotNull] params Routine[] routines)
+        {
+            if (routines == null)
+                throw new ArgumentNullException();
 
+            return new AnyRoutine(routines);
+        }
+        
+        [NotNull]
+        public static GroupRoutine WhenAll([NotNull] params Routine[] routines)
+        {
+            if (routines == null)
+                throw new ArgumentNullException(nameof(routines));
+
+            return new GroupRoutine(routines);
+        }
+        
         public static Routine FromCompleted()
         {
             new EmptyRoutine().Self(out var routine).Complete();
@@ -104,15 +122,6 @@ namespace Omega.Routines
         public static Routine Empty()
         {
             return new EmptyRoutine();
-        }
-
-        [NotNull]
-        public static GroupRoutine WhenAll([NotNull] params Routine[] routines)
-        {
-            if (routines == null)
-                throw new ArgumentNullException(nameof(routines));
-
-            return new GroupRoutine(routines);
         }
 
         public static Routine<T> FromResult<T>(T result) => new FromResultRoutine<T>(result);
