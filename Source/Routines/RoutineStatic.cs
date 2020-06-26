@@ -70,6 +70,15 @@ namespace Omega.Routines
             return new GroupRoutine(routines);
         }
 
+        [NotNull]
+        public static SequenceRoutine Sequence([NotNull] params Routine[] routines)
+        {
+            if (routines == null)
+                throw new ArgumentNullException();
+            
+            return new SequenceRoutine(routines);
+        }
+        
         public static Routine GetCompleted()
         {
             new EmptyRoutine().Self(out var routine).Complete();

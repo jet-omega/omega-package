@@ -16,8 +16,7 @@ namespace Omega.Routines.Tests
             var routineWithError = Routine.ByAction(() => throw new Exception("Its test exception"));
             LogAssert.Expect(LogType.Error, new Regex("."));
             routineWithError.Complete();
-
-
+            
             IEnumerator TestRoutine(RoutineControl<int> control)
             {
                 yield return routineWithError;
@@ -70,6 +69,41 @@ namespace Omega.Routines.Tests
             yield return routine;
 
             Assert.AreEqual(1, i);
+        }
+
+        [Test]
+        public void SelfCancellationWithForceCompletionTest()
+        {
+            var flag = false;
+
+            var routine = Routine.ByEnumerator(RoutineSteps);
+
+            IEnumerator RoutineSteps(RoutineControl @this)
+            {
+                @this.GetRoutine().Cancel();
+                yield return Routine.ByAction(() => flag = true);
+            }
+
+            Routine.WaitOne(routine, () => 1).Complete();
+            Assert.False(flag);
+        }
+
+        [UnityTest]
+        public IEnumerator SelfCancellationTest()
+        {
+            var flag = false;
+
+            var routine = Routine.ByEnumerator(RoutineSteps);
+
+            IEnumerator RoutineSteps(RoutineControl @this)
+            {
+                @this.GetRoutine().Cancel();
+                yield return Routine.ByAction(() => flag = true);
+            }
+
+            yield return Routine.WaitOne(routine, () => 1);
+
+            Assert.False(flag);
         }
     }
 }
