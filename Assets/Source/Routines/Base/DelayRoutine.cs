@@ -8,7 +8,7 @@ namespace Omega.Routines
     public sealed class DelayRoutine : Routine, IProgressRoutineProvider
     {
         private const int ForceCompleteLatency = 20;
-        
+
         private readonly TimeSpan _delayInterval;
         private DateTime _releaseTimeSeconds;
 
@@ -30,10 +30,11 @@ namespace Omega.Routines
             {
                 // Спим частями по ForceCompleteLatency, чтобы дать возможность вызывающему коду прервать 
                 // операцию по тайм ауту
-                var preReleaseTimeSeconds = _releaseTimeSeconds.Subtract(TimeSpan.FromMilliseconds(ForceCompleteLatency));
+                var preReleaseTimeSeconds =
+                    _releaseTimeSeconds.Subtract(TimeSpan.FromMilliseconds(ForceCompleteLatency));
                 while (DateTime.UtcNow < preReleaseTimeSeconds)
                     Thread.Sleep(ForceCompleteLatency);
-                
+
                 // Однако Thread.Sleep может усыпить поток на чуть меньшее время чем было указано
                 // Поэтому после Thread.Sleep имеет смысл не долго подолбиться в while`е
             }
@@ -44,6 +45,8 @@ namespace Omega.Routines
 
         public float GetProgress()
         {
+            if (_releaseTimeSeconds == default) return 0f;
+
             var startedIn = _releaseTimeSeconds - _delayInterval;
             var delta = DateTime.UtcNow - startedIn;
 
