@@ -57,5 +57,29 @@ namespace Omega.Routines.Tests
             var elapsed = timeMeter.ToSeconds();
             Assert.Less(elapsed, 1f);
         }
+        
+        [Test]
+        public void ChildDelayRoutineHasProgressOnFirstParentGetProgress()
+        {
+            var routine = Routine.Delay(0.05f);
+            Routine.WaitOne(routine, () => true)
+                .OnProgress(p =>
+                {
+                    // ReSharper disable once CompareOfFloatsByEqualityOperator
+                    if (p == 0)
+                        Assert.Pass();
+                    else
+                        Assert.Fail();
+                });
+        }
+
+        [Test]
+        public void DelayRoutineHasProgressBeforeStart()
+        {
+            var routine = Routine.Delay(0.05f);
+            var p = routine.GetProgress();
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            Assert.IsTrue(p == 0);
+        }
     }
 }
