@@ -163,7 +163,7 @@ namespace Omega.Routines
         public static Routine<T> GetWithResult<T>(T result) => new RoutineWithResult<T>(result);
         
         [Obsolete("Use WithResult")]
-        public static Routine<T> FromResult<T>(T result) => new FromResultRoutine<T>(result);
+        public static Routine<T> FromResult<T>(T result) => new RoutineWithResult<T>(result);
         
         [Obsolete("Use GetCompleted")]
         public static Routine FromCompleted() => GetCompleted();
