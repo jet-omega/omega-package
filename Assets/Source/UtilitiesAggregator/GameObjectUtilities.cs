@@ -145,7 +145,7 @@ namespace Omega.Package.Internal
             var result = ListPool<Component>.Rent();
 
             GetComponentsDirectWithoutChecks(gameObject, componentType, result, searchInRoot);
-            
+
             var resultArray = result.Count == 0
                 ? Array.Empty<Component>()
                 : result.ToArray();
@@ -210,7 +210,10 @@ namespace Omega.Package.Internal
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static T MissingComponentWithoutChecks<T>(GameObject gameObject) where T : Component
-            => gameObject.GetComponent<T>() ?? gameObject.AddComponent<T>();
+        {
+            var component = gameObject.GetComponent<T>();
+            return component ? component : gameObject.AddComponent<T>();
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [NotNull]
@@ -283,7 +286,7 @@ namespace Omega.Package.Internal
                 childGameObject.GetComponents(componentType, tempList);
                 result.AddRange(tempList);
             }
-            
+
             ListPool<Component>.ReturnInternal(tempList);
         }
 
@@ -295,7 +298,7 @@ namespace Omega.Package.Internal
 
             var transform = gameObject.transform;
             var transformChildCount = transform.childCount;
-            
+
             for (int i = 0; i < transformChildCount; i++)
             {
                 var childGameObject = transform.GetChild(i).gameObject;
