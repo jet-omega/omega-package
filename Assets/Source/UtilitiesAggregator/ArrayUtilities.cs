@@ -218,7 +218,7 @@ namespace Omega.Package.Internal
                 {
                     num = selector(array[median]).CompareTo(value);
                 }
-                catch (Exception ex)
+                catch
                 {
                     throw new InvalidOperationException("IComparer failed");
                 }
