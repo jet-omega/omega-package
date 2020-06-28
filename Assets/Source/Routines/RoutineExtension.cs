@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
 
 namespace Omega.Routines
 {
@@ -53,14 +52,26 @@ namespace Omega.Routines
             return routine = self;
         }
 
+        public static TRoutine Callback<TRoutine>(this TRoutine original, Action callback)
+            where TRoutine : Routine => Callback(original, callback, CallbackCase.Complete);
+
+        public static Routine<TResult> Callback<TResult>(this Routine<TResult> original, Action<TResult> callback) 
+            => Callback(original, callback, CallbackCase.Complete);
+        
         public static TRoutine Callback<TRoutine>(this TRoutine original, Action callback,
-            CallbackCase callbackCase = CallbackCase.Complete)
+            CallbackCase callbackCase)
             where TRoutine : Routine
         {
             if (original == null)
                 throw new NullReferenceException(nameof(original));
             if (callback == null)
                 throw new ArgumentNullException(nameof(callback));
+            if (original.IsComplete)
+                throw new InvalidOperationException("Сallback will never call because routine is completed");
+            if (original.IsError)
+                throw new InvalidOperationException("Callback will never call because routine has error");     
+            if (original.IsCanceled)
+                throw new InvalidOperationException("Callback will never call because routine is cancelled");
 
             original.AddCallbackInternal(() =>
             {
@@ -73,12 +84,18 @@ namespace Omega.Routines
         }
 
         public static Routine<TResult> Callback<TResult>(this Routine<TResult> original,
-            Action<TResult> callback, CallbackCase callbackCase = CallbackCase.Complete)
+            Action<TResult> callback, CallbackCase callbackCase)
         {
             if (original == null)
                 throw new NullReferenceException(nameof(original));
             if (callback == null)
                 throw new ArgumentNullException(nameof(callback));
+            if (original.IsComplete)
+                throw new InvalidOperationException("Callback will never call because routine is completed");
+            if (original.IsError)
+                throw new InvalidOperationException("Callback will never call because routine has error");
+            if (original.IsCanceled)
+                throw new InvalidOperationException("Callback will never call because routine is cancelled");
 
             original.AddCallbackInternal(() =>
             {

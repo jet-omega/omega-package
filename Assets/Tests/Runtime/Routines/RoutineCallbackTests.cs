@@ -5,8 +5,6 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-// ReSharper disable RedundantArgumentDefaultValue
-
 namespace Omega.Routines.Tests
 {
     public class RoutineCallbackTests
