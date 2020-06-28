@@ -1,20 +1,44 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 namespace Omega.Routines
 {
+    [Obsolete("Use WhenAllRoutine")]
     public sealed class GroupRoutine : Routine, IProgressRoutineProvider
+    {
+        private readonly WhenAllRoutine _whenAllRoutine;
+        
+        internal GroupRoutine(IEnumerable<Routine> routines)
+        {
+            _whenAllRoutine = new WhenAllRoutine(routines);
+        }
+
+        internal GroupRoutine(params Routine[] routines)
+            : this((IEnumerable<Routine>) routines)
+        {
+        }
+            
+        protected override IEnumerator RoutineUpdate()
+        {
+            while (((IEnumerator) _whenAllRoutine).MoveNext())
+                yield return null;
+        }
+
+        public float GetProgress() => _whenAllRoutine.GetProgress();
+    }
+    
+    public sealed class WhenAllRoutine : Routine, IProgressRoutineProvider
     {
         private readonly Routine[] _routines;
 
-        internal GroupRoutine(IEnumerable<Routine> routines)
+        internal WhenAllRoutine(IEnumerable<Routine> routines)
         {
             _routines = routines.ToArray();
         }
 
-        internal GroupRoutine(params Routine[] routines)
+        internal WhenAllRoutine(params Routine[] routines)
             : this((IEnumerable<Routine>) routines)
         {
         }
@@ -37,7 +61,7 @@ namespace Omega.Routines
                 yield return null;
         }
 
-        public GroupRoutine Routines(out Routine[] routines)
+        public WhenAllRoutine Routines(out Routine[] routines)
         {
             routines = _routines.ToArray();
             return this;

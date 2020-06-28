@@ -13,7 +13,7 @@ namespace Omega.Routines.Tests
         [Test]
         public void RoutineShouldThrowExceptionIfNestedRoutineHaveErrorTest()
         {
-            var routineWithError = Routine.ByAction(() => throw new Exception("Its test exception"));
+            var routineWithError = Routine.Action(() => throw new Exception("Its test exception"));
             LogAssert.Expect(LogType.Error, new Regex("."));
             routineWithError.Complete();
 
@@ -82,10 +82,10 @@ namespace Omega.Routines.Tests
             IEnumerator RoutineSteps(RoutineControl @this)
             {
                 @this.GetRoutine().Cancel();
-                yield return Routine.ByAction(() => flag = true);
+                yield return Routine.Action(() => flag = true);
             }
 
-            Routine.WaitOne(routine, () => 1).Complete();
+            Routine.Wait(routine, () => 1).Complete();
             Assert.False(flag);
         }
 
@@ -99,10 +99,10 @@ namespace Omega.Routines.Tests
             IEnumerator RoutineSteps(RoutineControl @this)
             {
                 @this.GetRoutine().Cancel();
-                yield return Routine.ByAction(() => flag = true);
+                yield return Routine.Action(() => flag = true);
             }
 
-            yield return Routine.WaitOne(routine, () => 1);
+            yield return Routine.Wait(routine, () => 1);
 
             Assert.False(flag);
         }

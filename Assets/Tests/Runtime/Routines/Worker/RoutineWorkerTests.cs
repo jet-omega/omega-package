@@ -25,7 +25,7 @@ namespace Omega.Routines.Tests
         [UnityTest]
         public IEnumerator ActionInBackgroundShouldCompleteTest()
         {
-            var routine = Routine.ByAction(() =>
+            var routine = Routine.Action(() =>
             {
                 int i = 1 + 1;
                 return i;

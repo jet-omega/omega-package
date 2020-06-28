@@ -7,7 +7,7 @@ using UnityEngine.TestTools;
 
 namespace Omega.Routines.Tests
 {
-    public class GroupRoutineTests
+    public class WhenAllRoutineTests
     {
         [UnityTest]
         public IEnumerator RoutineShouldCompleteWhenHisRoutinesIsCompletedTest()
@@ -28,7 +28,8 @@ namespace Omega.Routines.Tests
         public IEnumerator RoutineShouldProcessNestedTest()
         {
             var routines = Enumerable.Range(0, 2).Select(e => new RoutineTest()).ToArray();
-            yield return new GroupRoutine(routines);
+            // ReSharper disable once CoVariantArrayConversion
+            yield return new WhenAllRoutine(routines);
             Assert.True(routines.All(e => e.Flag));
         }
 

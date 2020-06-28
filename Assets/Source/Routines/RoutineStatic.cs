@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using JetBrains.Annotations;
+using Omega.Routines.Exceptions;
 
 namespace Omega.Routines
 {
@@ -62,12 +63,12 @@ namespace Omega.Routines
         }
 
         [NotNull]
-        public static GroupRoutine WhenAll([NotNull] IEnumerable<Routine> routines)
+        public static WhenAllRoutine WhenAll([NotNull] IEnumerable<Routine> routines)
         {
             if (routines == null)
                 throw new ArgumentNullException();
 
-            return new GroupRoutine(routines);
+            return new WhenAllRoutine(routines);
         }
 
         [NotNull]
@@ -91,12 +92,18 @@ namespace Omega.Routines
            return routine;
         }
 
-        public static Routine ByAction(Action action)
+        [Obsolete("Use Action")]
+        public static Routine ByAction(Action action) => Action(action);
+        
+        public static Routine Action(Action action)
         {
             return new ActionRoutine(action);
         }
 
-        public static Routine<T> ByAction<T>(Func<T> action)
+        [Obsolete("Use Action")]
+        public static Routine<T> ByAction<T>(Func<T> action) => Action(action);
+        
+        public static Routine<T> Action<T>(Func<T> action)
         {
             return new ActionRoutine<T>(action);
         }
@@ -107,12 +114,12 @@ namespace Omega.Routines
         }
 
         [NotNull]
-        public static GroupRoutine WhenAll([NotNull] params Routine[] routines)
+        public static WhenAllRoutine WhenAll([NotNull] params Routine[] routines)
         {
             if (routines == null)
                 throw new ArgumentNullException(nameof(routines));
 
-            return new GroupRoutine(routines);
+            return new WhenAllRoutine(routines);
         }
 
         public static Routine<T> FromResult<T>(T result) => new FromResultRoutine<T>(result);
@@ -166,7 +173,11 @@ namespace Omega.Routines
             return new ConvertResultRoutine<TSource, TResult>(sourceRoutine, converter);
         }
 
-        public static Routine<TResult> WaitOne<TResult>(Routine routine, Func<TResult> resultProvider)
+        [Obsolete("Use Wait")]
+        public static Routine<TResult> WaitOne<TResult>(Routine routine, Func<TResult> resultProvider) =>
+            Wait(routine, resultProvider);
+        
+        public static Routine<TResult> Wait<TResult>(Routine routine, Func<TResult> resultProvider)
         {
             return new WaitRoutine<TResult>(routine, resultProvider);
         }

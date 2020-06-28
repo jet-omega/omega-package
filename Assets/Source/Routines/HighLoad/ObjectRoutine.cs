@@ -17,7 +17,7 @@ namespace Omega.Routines.HighLoad
                     result[i] = factory.Build();
                 }, count, timePerFrame, measureFrequency);
             
-            return Routine.WaitOne(routine, () => result);
+            return Routine.Wait(routine, () => result);
         }
         
         public static Routine<T[]> Instantiate<T>(T original, int count, float timePerFrame = 0.02f,
@@ -30,7 +30,7 @@ namespace Omega.Routines.HighLoad
                     result[i] = Object.Instantiate(original);
                 }, count, timePerFrame, measureFrequency);
 
-            return Routine.WaitOne(routine, () => result);
+            return Routine.Wait(routine, () => result);
         }
 
         public static Routine<T[]> Instantiate<T>(T original, Action<T, int> initialization, int count,
@@ -45,7 +45,7 @@ namespace Omega.Routines.HighLoad
                 result[i] = instance;
             }, count, timePerFrame, measureFrequency);
 
-            return Routine.WaitOne(routine, () => result);
+            return Routine.Wait(routine, () => result);
         }
     }
 }

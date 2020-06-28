@@ -6,7 +6,7 @@ namespace Omega.Routines
     internal sealed class ConcatenationRoutine : Routine, IProgressRoutineProvider
     {
         private List<Routine> _routines;
-        private GroupRoutine _finalGroupRoutine;
+        private WhenAllRoutine _finalWhenAllRoutine;
 
         public ConcatenationRoutine(IEnumerable<Routine> routines)
         {
@@ -45,12 +45,12 @@ namespace Omega.Routines
         
         protected override IEnumerator RoutineUpdate()
         {
-            yield return _finalGroupRoutine = new GroupRoutine(_routines);
+            yield return _finalWhenAllRoutine = new WhenAllRoutine(_routines);
         }
 
         public float GetProgress()
         {
-            return _finalGroupRoutine?.GetProgress() ?? 0;
+            return _finalWhenAllRoutine?.GetProgress() ?? 0;
         }
     }
 }

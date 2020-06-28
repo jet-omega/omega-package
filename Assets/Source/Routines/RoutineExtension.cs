@@ -17,7 +17,7 @@ namespace Omega.Routines
                 throw new ArgumentNullException(nameof(handler));
 
             var progressRoutine = new ProgressRoutine(self, handler);
-            var groupRoutine = new GroupRoutine(self, progressRoutine);
+            var groupRoutine = new WhenAllRoutine(self, progressRoutine);
             return groupRoutine;
         }
 

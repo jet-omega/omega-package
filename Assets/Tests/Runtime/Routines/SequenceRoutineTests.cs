@@ -28,7 +28,7 @@ namespace Omega.Routines.Tests
             long firstRoutineEndedTicks = 0, secondRoutineStartedTicks = 0;
             
             var firstRoutine = Routine.Delay(0.1f).Callback(() => firstRoutineEndedTicks = DateTime.Now.Ticks);
-            var secondRoutine = Routine.ByAction(() => secondRoutineStartedTicks = DateTime.Now.Ticks);
+            var secondRoutine = Routine.Action(() => secondRoutineStartedTicks = DateTime.Now.Ticks);
 
             yield return Routine.Sequence(firstRoutine, secondRoutine);
             
