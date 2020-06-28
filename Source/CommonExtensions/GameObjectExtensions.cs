@@ -33,6 +33,17 @@ public static class GameObjectExtensions
 
         return GameObjectUtilities.MissingComponentWithoutChecks<T>(gameObject);
     }
+    
+    [NotNull]
+    public static Component MissingComponent([NotNull] this GameObject gameObject, Type componentType)
+    {
+        if (gameObject is null)
+            throw new NullReferenceException(nameof(gameObject));
+        if (!gameObject)
+            throw new MissingReferenceException(nameof(gameObject));
+
+        return GameObjectUtilities.MissingComponentWithoutChecks(gameObject, componentType);
+    }
 
     /// <summary>
     /// Пытается найти объект на компоненте, если компонент найден вернет true а <param name="component"/>>будет указывать на найденный объект,
