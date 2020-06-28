@@ -137,7 +137,7 @@ namespace Omega.Routines
                         nestedRoutine.OnForcedCompleteInternal();
                 }
 
-                return DeepMoveNext(nestedEnumerator) || enumerator.MoveNext();
+                return nestedEnumerator.MoveNext() || enumerator.MoveNext();
             }
 
             // Если текущее состояние рутины ожидает завершения асинхронной операции, то просто ждем ее завершения
