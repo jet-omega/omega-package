@@ -30,6 +30,12 @@ namespace Omega.Routines.Web
             SetResult(result);
         }
 
+        protected override void OnCancel()
+        {
+            WebRequest?.Abort();
+            base.OnCancel();
+        }
+
         public float GetProgress()
         {
             var rawProgress = _webRequestAsyncOperation?.progress ?? 0;

@@ -62,11 +62,17 @@ namespace Omega.Routines.Web
                    $"Download: {GetDownloadStringPresent(webRequest.downloadHandler)}";
         }
 
+        protected override void OnCancel()
+        {
+            WebRequest?.Abort();
+            base.OnCancel();
+        }
+
         public float GetProgress()
         {
             var rawProgress = _asyncOperation?.progress ?? 0;
             var normalized = (rawProgress - 0.5f) * 2;
-            var clamped = Mathf.Clamp(normalized, 0, 1);
+            var clamped = Mathf.Clamp01(normalized);
             return clamped;
         }
     }
