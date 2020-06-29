@@ -92,6 +92,7 @@ namespace Omega.Package
                     .NewLine
                     .NewLine.Bold.Text("▸ ▸ ▸ STACK TRACE ◂ ◂ ◂")
                     .NewLine.UnstyledText(StackTraceUtility.ExtractStringFromException(exception));
+                
 
                 messageFactory.NewLine.Bold.Text("▸ ▸ ▸ CREATION STACK TRACE ◂ ◂ ◂");
                 messageFactory.NewLine.UnstyledText(
