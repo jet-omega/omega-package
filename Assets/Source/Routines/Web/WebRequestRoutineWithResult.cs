@@ -32,7 +32,7 @@ namespace Omega.Routines.Web
 
         protected override void OnCancel()
         {
-            WebRequest?.Abort();
+            WebRequest.Abort();
             base.OnCancel();
         }
 
