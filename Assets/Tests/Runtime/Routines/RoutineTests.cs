@@ -13,11 +13,11 @@ namespace Omega.Routines.Tests
         [Test]
         public void RoutineShouldThrowExceptionIfNestedRoutineHaveErrorTest()
         {
-            var routineWithError = Routine.ByAction(() => throw new Exception("Its test exception"));
+            var routineWithError = Routine.ByAction(() => throw new Exception("It's a test exception"));
             LogAssert.Expect(LogType.Error, new Regex("."));
             routineWithError.Complete();
-
-
+            Assert.True(routineWithError.IsError);
+            
             IEnumerator TestRoutine(RoutineControl<int> control)
             {
                 yield return routineWithError;
@@ -25,9 +25,8 @@ namespace Omega.Routines.Tests
             }
 
             var routine = Routine.ByEnumerator<int>(TestRoutine);
-            LogAssert.Expect(LogType.Error, new Regex("."));
             routine.Complete();
-            Assert.True(routine.IsError);
+            Assert.False(routine.IsError);
         }
 
         [UnityTest]
