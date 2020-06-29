@@ -105,5 +105,14 @@ namespace Omega.Routines.Tests
 
             Assert.False(flag);
         }
+
+        [Test]
+        public void SetNameTest()
+        {
+            var routine = Routine.Empty();
+            routine.Name = "test routine name";
+            var toString = routine.ToString();
+            Assert.IsTrue(toString.Contains("test routine name"));
+        }
     }
 }
