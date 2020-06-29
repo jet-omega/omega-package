@@ -45,7 +45,7 @@ namespace Omega.Routines
 
         public float GetProgress()
         {
-            if (_releaseTimeSeconds == default) return 0f;
+            if (IsNotStarted) return 0f;
 
             var startedIn = _releaseTimeSeconds - _delayInterval;
             var delta = DateTime.UtcNow - startedIn;
