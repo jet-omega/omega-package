@@ -22,8 +22,7 @@ namespace Omega.Routines
             
         protected override IEnumerator RoutineUpdate()
         {
-            while (((IEnumerator) _whenAllRoutine).MoveNext())
-                yield return null;
+            yield return _whenAllRoutine;
         }
 
         public float GetProgress() => _whenAllRoutine.GetProgress();
