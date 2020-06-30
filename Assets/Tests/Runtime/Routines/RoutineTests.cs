@@ -88,6 +88,22 @@ namespace Omega.Routines.Tests
             Assert.False(flag);
         }
 
+        [Test]
+        public void SelfCancellationWithForceCompletion2Test()
+        {
+            var flag = false;
+
+            var routine = Routine.ByEnumerator(RoutineSteps);
+
+            IEnumerator RoutineSteps(RoutineControl @this)
+            {
+                yield return Routine.ByAction(() => @this.GetRoutine().Cancel());
+                Assert.Fail();
+            }
+
+            routine.Complete();
+        }
+
         [UnityTest]
         public IEnumerator SelfCancellationTest()
         {
