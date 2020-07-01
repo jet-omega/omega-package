@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.TestTools;
 
 namespace Omega.Routines.Tests
@@ -112,6 +113,7 @@ namespace Omega.Routines.Tests
             var routine = Routine.Empty();
             routine.Name = "test routine name";
             var toString = routine.ToString();
+            Debug.Log(toString);
             Assert.IsTrue(toString.Contains("test routine name"));
         }
     }
