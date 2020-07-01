@@ -58,26 +58,6 @@ namespace Omega.Package.Internal
         }
 
         /// <summary>
-        /// Пытается найти объект на компоненте, если компонент найден вернет true а <param name="component"/>>будет указывать на найденный объект,
-        /// в противном случае, вернет false, а <param name="component"/>>будет указывать на null
-        /// </summary>
-        /// <param name="gameObject">Игровой объект</param>
-        /// <param name="component">Ссылка на найденный объект (null, если объект не найден)</param>
-        /// <typeparam name="T">Тип компонента</typeparam>
-        /// <returns>true - компонент найден, false - объект не найден</returns>
-        /// <exception cref="ArgumentNullException">Параметр <param name="gameObject"/>> указывает на null</exception>
-        /// <exception cref="MissingReferenceException">Параметр <param name="gameObject"/>> указывает на уничтоженный объект</exception>
-        public bool TryGetComponent<T>([NotNull] GameObject gameObject, [CanBeNull] out T component)
-        {
-            if (gameObject is null)
-                throw new ArgumentNullException(nameof(gameObject));
-            if (!gameObject)
-                throw new MissingReferenceException(nameof(gameObject));
-
-            return TryGetComponentWithoutChecks(gameObject, out component);
-        }
-
-        /// <summary>
         /// Проверяет содержит ли объект компонент заданного типа 
         /// </summary>
         /// <param name="gameObject">Игровой объект</param>
