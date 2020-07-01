@@ -6,6 +6,9 @@ using UnityEngine;
 
 namespace Omega.Package
 {
+    /// <summary>
+    /// Based on UnityEngine.StackTraceUtility
+    /// </summary>
     internal static class StackTraceUtility
     {
         private static string _projectFolder = "";
