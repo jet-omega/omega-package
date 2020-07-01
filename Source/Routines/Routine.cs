@@ -294,7 +294,7 @@ namespace Omega.Routines
 
         public override string ToString()
         {
-            return Name;
+            return $"{GetType()} {Name}, status: {_status.ToString()}";
         }
     }
 }
