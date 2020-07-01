@@ -10,7 +10,7 @@ namespace Omega.Routines
         public static Routine OnChangeProgress(this Routine self, Action<float> handler)
         {
             Routine.Logger.Log("OnChangeProgress is deprecated, use OnProgress", LogType.Error);
-            
+
             if (self is null)
                 throw new NullReferenceException(nameof(self));
             if (handler is null)
@@ -48,7 +48,7 @@ namespace Omega.Routines
 
             return routine = self;
         }
-        
+
         public static TRoutine Self<TRoutine>(this TRoutine self, out TRoutine routine)
             where TRoutine : Routine
         {
@@ -157,9 +157,9 @@ namespace Omega.Routines
             if (!original.IsNotStarted)
                 throw new AggregateException();
 
-            var stackTrace = new StackTrace(1, true).ToString();
+            var extracted = Package.StackTraceUtility.ExtractFormattedStackTrace(new StackTrace(1, true));
 
-            original.SetCreationStackTraceInternal(stackTrace);
+            original.SetCreationStackTraceInternal(extracted);
 
             return original;
         }
