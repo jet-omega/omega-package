@@ -33,6 +33,30 @@ public static class GameObjectExtensions
 
         return GameObjectUtilities.MissingComponentWithoutChecks<T>(gameObject);
     }
+    
+    /// <summary>
+    /// Возвращает компонент, прикрепленный к объекту. Если экземпляр компонента заданного типа отсутствует на объекте
+    /// то он будет добавлен к объекту. 
+    /// </summary>
+    /// 
+    /// <param name="gameObject">Игровой объект</param>
+    /// 
+    /// <param name="componentType">Объект-тип компонента</typeparam>
+    /// 
+    /// <returns>Экземпляр компонента</returns>
+    /// 
+    /// <exception cref="ArgumentNullException">Параметр <param name="gameObject"/>>указывает на null</exception>
+    /// <exception cref="MissingReferenceException">Параметр <param name="gameObject"/>>указывает на уничтоженный объект</exception>
+    [NotNull]
+    public static Component MissingComponent([NotNull] this GameObject gameObject, Type componentType)
+    {
+        if (gameObject is null)
+            throw new NullReferenceException(nameof(gameObject));
+        if (!gameObject)
+            throw new MissingReferenceException(nameof(gameObject));
+
+        return GameObjectUtilities.MissingComponentWithoutChecks(gameObject, componentType);
+    }
 
     /// <summary>
     /// Пытается найти объект на компоненте, если компонент найден вернет true а <param name="component"/>>будет указывать на найденный объект,
