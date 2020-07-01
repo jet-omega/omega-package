@@ -10,8 +10,9 @@ namespace Omega.Routines
 {
     public abstract partial class Routine : IEnumerator
     {
-        internal static readonly Logger Logger = new Logger("ROUTINE▶", new Color32(0xFF,0xA5,0x00,0xFF), FontStyle.Bold);
-        
+        internal static readonly Logger Logger = new Logger("ROUTINE▶", new Color32(0xFF, 0xA5, 0x00, 0xFF),
+            FontStyle.Bold);
+
         public static readonly Action<Exception, Routine> DefaultExceptionHandler
             = delegate(Exception exception, Routine routine)
             {
@@ -99,7 +100,7 @@ namespace Omega.Routines
             // Если больше не можем двигаться дольше то помечаем рутину как завершенную  
             if (moveNextResult)
                 _update?.Invoke();
-            else
+            else if (!IsCanceled)
                 SetupCompleted();
 
             return moveNextResult;
@@ -130,28 +131,31 @@ namespace Omega.Routines
                     //     throw new Exception("Nested routine were canceled");
 
                     var isProcessingNestedRoutine = nestedRoutineStatus != RoutineStatus.Canceled
-                                                       && nestedRoutineStatus != RoutineStatus.Completed
-                                                       && nestedRoutineStatus != RoutineStatus.Error;
+                                                    && nestedRoutineStatus != RoutineStatus.Completed
+                                                    && nestedRoutineStatus != RoutineStatus.Error;
 
                     if (isProcessingNestedRoutine &&
                         _status == RoutineStatus.ForcedProcessing &&
                         nestedRoutineStatus != RoutineStatus.ForcedProcessing)
                         nestedRoutine.OnForcedCompleteInternal();
-                }
 
-                return DeepMoveNext(nestedEnumerator) || enumerator.MoveNext();
+                    if (nestedRoutine.DeepMoveNext(nestedEnumerator))
+                        return true;
+                }
             }
 
             // Если текущее состояние рутины ожидает завершения асинхронной операции, то просто ждем ее завершения
-            if (current is AsyncOperation nestedAsyncOperation)
+            else if (current is AsyncOperation nestedAsyncOperation)
             {
-                if(_status == RoutineStatus.ForcedProcessing && !nestedAsyncOperation.CanBeForceComplete())
-                    throw new InvalidOperationException("You cant force complete that async-operation: " + nestedAsyncOperation.GetType());
-                
-                return !nestedAsyncOperation.isDone || enumerator.MoveNext();
+                if (_status == RoutineStatus.ForcedProcessing && !nestedAsyncOperation.CanBeForceComplete())
+                    throw new InvalidOperationException("You cant force complete that async-operation: " +
+                                                        nestedAsyncOperation.GetType());
+
+                if (!nestedAsyncOperation.isDone)
+                    return true;
             }
 
-            return enumerator.MoveNext();
+            return !IsError && !IsCanceled && !IsComplete && enumerator.MoveNext();
         }
 
         internal void OnForcedCompleteInternal()
