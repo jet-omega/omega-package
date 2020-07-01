@@ -1,11 +1,10 @@
 using System;
 using System.Collections;
-using System.Linq;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.TestTools;
+using Assert = NUnit.Framework.Assert;
 
 namespace Omega.Routines.Tests
 {
