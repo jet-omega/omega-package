@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Text;
 using JetBrains.Annotations;
 using Omega.Package;
 using UnityEngine;
@@ -28,7 +29,7 @@ namespace Omega.Routines
         [NotNull] private Action<Exception, Routine> _exceptionHandler = DefaultExceptionHandler;
 
         [CanBeNull] private string _creationStackTrace;
-        
+
         public string Name { get; set; }
 
         public bool IsError => _status == RoutineStatus.Error;
@@ -298,7 +299,20 @@ namespace Omega.Routines
 
         public override string ToString()
         {
-            return $"{GetType()}, Name: {Name}, Status: {_status.ToString()}";
+            var sb = new StringBuilder(Name?.Length ?? 0 + 50);
+
+            sb.Append($"{GetType().Name} {{");
+
+            if (!string.IsNullOrEmpty(Name))
+                sb.Append($"Name: {Name}, ");
+
+            sb.Append($"Status: {_status} ");
+            if (IsProcessing && this is IProgressRoutineProvider progressProvider)
+                sb.Append($"({progressProvider.GetProgress():P}) ");
+
+            sb.Append('}');
+
+            return sb.ToString();
         }
     }
 }
