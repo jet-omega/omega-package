@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
-using System.Linq;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using Assert = NUnit.Framework.Assert;
 
 namespace Omega.Routines.Tests
 {
@@ -17,7 +17,7 @@ namespace Omega.Routines.Tests
             LogAssert.Expect(LogType.Error, new Regex("."));
             routineWithError.Complete();
             Assert.True(routineWithError.IsError);
-            
+
             IEnumerator TestRoutine(RoutineControl<int> control)
             {
                 yield return routineWithError;
@@ -120,6 +120,49 @@ namespace Omega.Routines.Tests
             yield return Routine.WaitOne(routine, () => 1);
 
             Assert.False(flag);
+        }
+
+        [Test]
+        public void ToStringShouldPrintRoutineStatusTest()
+        {
+            var routine = Routine.Empty();
+            Assert.True(routine.IsNotStarted);
+            Assert.True(routine.ToString().Contains("NotStarted"));
+        }
+
+        [Test]
+        public void ToStringNotShouldPrintNameRoutineTest()
+        {
+            var routine = Routine.Empty();
+            Assert.True(routine.IsNotStarted);
+            Assert.False(routine.ToString().Contains("Name: "));
+        }
+
+        [Test]
+        public void ToStringShouldPrintNameRoutineTest()
+        {
+            var routine = Routine.Empty();
+            routine.SetName(nameof(ToStringShouldPrintNameRoutineTest));
+            Assert.True(routine.IsNotStarted);
+            Assert.True(routine.ToString().Contains("Name: " + nameof(ToStringShouldPrintNameRoutineTest)));
+        }
+        
+        [Test]
+        public void ToStringShouldPrintProgressTest()
+        {
+            IEnumerator Enumerator(RoutineControl @this)
+            {
+                @this.SetProgress(0.5f);
+                yield return null;
+            }
+
+            var routine = Routine.ByEnumerator(Enumerator);
+            RoutineUtilities.OneStep(routine);
+
+            var progress = RoutineUtilities.GetProgressFromRoutine(routine);
+            var progressString = progress.ToString("P");
+
+            Assert.True(routine.ToString().Contains(progressString));
         }
     }
 }
