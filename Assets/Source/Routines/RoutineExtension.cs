@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using JetBrains.Annotations;
 using UnityEngine;
 
 namespace Omega.Routines
@@ -56,6 +57,17 @@ namespace Omega.Routines
                 throw new NullReferenceException(nameof(self));
 
             return routine = self;
+        }
+
+        public static TRoutine SetName<TRoutine>(this TRoutine self, [NotNull] string name)
+            where TRoutine : Routine
+        {
+            if (self == null)
+                throw new NullReferenceException(nameof(self));
+
+            self.Name = name;
+
+            return self;
         }
 
         public static TRoutine Callback<TRoutine>(this TRoutine original, Action callback)
