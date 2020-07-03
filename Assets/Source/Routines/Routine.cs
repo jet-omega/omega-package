@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using JetBrains.Annotations;
 using Omega.Package;
@@ -49,15 +50,144 @@ namespace Omega.Routines
             if (_status == RoutineStatus.Canceled)
                 throw new InvalidOperationException("Routine was canceled");
 
+            if (_status == RoutineStatus.Error)
+                throw new InvalidOperationException("Routine have error");
+
             _status = RoutineStatus.Completed;
             _update?.Invoke();
             _callback?.Invoke();
         }
 
+        private IEnumerator GetStateMachine()
+        {
+            if (_routine == null)
+                _routine = RoutineUpdate();
+
+            return _routine;
+        }
+
+
+        internal static bool Execute2(Routine routine)
+        {
+            var stack = new Stack<Frame>();
+
+            void stack_backward()
+            {
+                while (stack.Count > 0) stack.Pop().Context._update?.Invoke();
+            }
+
+            {
+                var routineStateMachine = routine.GetStateMachine();
+                stack.Push(new Frame(routine, routineStateMachine));
+            }
+
+            while (stack.Count > 0)
+            {
+                var (context, stateMachine) = stack.Peek();
+
+                if (context.IsError || context.IsCanceled || context.IsComplete || stateMachine == null) // todo: mb remove? 
+                    stack.Pop();
+                // else if (stateMachine == null)
+                // {
+                //     context.SetupCompleted();
+                //     stack.Pop();
+                // }
+                else
+                {
+                    var current = stateMachine.Current;
+
+                    switch (current)
+                    {
+                        case Routine currentRoutine:
+                            if (currentRoutine.IsError || currentRoutine.IsCanceled || currentRoutine.IsComplete)
+                                break;
+                            else
+                            {
+                                if (context.IsForcedProcessing)
+                                {
+                                    currentRoutine.OnForcedCompleteInternal();
+                                }
+
+                                if (currentRoutine.GetStateMachine() is null)
+                                {
+                                    currentRoutine.SetupCompleted();
+                                    stack_backward();
+                                    return true;
+                                }
+
+                                stack.Push(new Frame(currentRoutine, currentRoutine.GetStateMachine()));
+                                continue;
+                            }
+
+
+                        case AsyncOperation currentAsyncOperation:
+                            if (!currentAsyncOperation.CanBeForceComplete())
+                            {
+                                context._exception = new Exception("async operation exception. todo this message");
+                                context._status = RoutineStatus.Error;
+                                context._exceptionHandler?.Invoke(context._exception, context);
+
+                                stack_backward();
+                                return true;
+                            }
+
+                            stack_backward();
+                            return !currentAsyncOperation.isDone;
+
+                        case IEnumerator nestedEnumerator:
+                            stack.Push(new Frame(context, nestedEnumerator));
+                            continue;
+                    }
+
+                    bool? isMoveNext = null;
+                    try
+                    {
+                        isMoveNext = stateMachine.MoveNext();
+                    }
+                    catch (Exception e)
+                    {
+                        context._exception = e;
+                        context._status = RoutineStatus.Error;
+                        context._exceptionHandler?.Invoke(context._exception, context);
+                    }
+
+                    if (isMoveNext.HasValue)
+                        if (!isMoveNext.Value)
+                            if (context.GetStateMachine() == stateMachine)
+                                context.SetupCompleted();
+
+                    stack_backward();
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private readonly struct Frame
+        {
+            public readonly Routine Context;
+            public readonly IEnumerator StateMachine;
+
+            public Frame(Routine context, IEnumerator stateMachine)
+            {
+                Context = context;
+                StateMachine = stateMachine;
+            }
+
+            public void Deconstruct(out Routine context, out IEnumerator stateMachine)
+            {
+                context = Context;
+                stateMachine = StateMachine;
+            }
+        }
+
+
         bool IEnumerator.MoveNext()
         {
             //todo: optimize condition. mb something typo `_status < 16` 
             // Если рутина содержит ошибку, то последующие ее выполнение может быть не корректным.
+            // todo: execution round rework
             if (IsError || IsCanceled || IsComplete)
                 return false;
 
@@ -78,33 +208,128 @@ namespace Omega.Routines
                 }
             }
 
-            bool moveNextResult = false;
+            var moveNextResult = Execute2(this);
 
             // Для поддержки правильного состояния рутины изолируем исполнение пользовательского кода 
-            try
-            {
-                moveNextResult = DeepMoveNext(_routine);
-            }
-            catch (Exception e)
-            {
-                // В случае если пользовательский код вызвал исключение, то обновляем состояние рутины
-                // и обрабатываем это исключение
-                _exception = e;
-                _status = RoutineStatus.Error;
-
-                _exceptionHandler.Invoke(e, this);
-                _update?.Invoke();
-
-                return false;
-            }
+            // try
+            // {
+            //     moveNextResult = DeepMoveNext(_routine);
+            // }
+            // catch (Exception e)
+            // {
+            //     // В случае если пользовательский код вызвал исключение, то обновляем состояние рутины
+            //     // и обрабатываем это исключение
+            //     _exception = e;
+            //     _status = RoutineStatus.Error;
+            //
+            //     _exceptionHandler.Invoke(e, this);
+            //     _update?.Invoke();
+            //
+            //     return false;
+            // }
 
             // Если больше не можем двигаться дольше то помечаем рутину как завершенную  
-            if (moveNextResult)
-                _update?.Invoke();
-            else if (!IsCanceled)
-                SetupCompleted();
+            // if (moveNextResult)
+            //     _update?.Invoke();
+            // else
+
+            // if (!moveNextResult && !IsCanceled)
+            //     SetupCompleted();
 
             return moveNextResult;
+        }
+
+        private static bool Execute(Routine routine)
+        {
+            var stack = new Stack<IEnumerator>(3);
+            stack.Push(routine);
+
+            void Backward()
+            {
+                while (stack.Count > 0)
+                {
+                    var current = stack.Pop();
+                    if (current is Routine currentRoutine)
+                        currentRoutine._update?.Invoke();
+                }
+            }
+
+            bool isForced = false;
+
+            while (stack.Count > 0)
+            {
+                var current = stack.Peek();
+
+                if (current is Routine currentRoutine)
+                {
+                    if (currentRoutine.IsError || currentRoutine.IsCanceled || currentRoutine.IsComplete)
+                    {
+                        isForced = false;
+                        stack.Pop();
+                        continue;
+                    }
+
+                    var routineStateMachine = currentRoutine.GetStateMachine();
+                    if (routineStateMachine != null)
+                        stack.Push(routineStateMachine);
+                    else
+                    {
+                        currentRoutine.SetupCompleted();
+                        Backward();
+                        return true;
+                    }
+
+                    if (currentRoutine.IsForcedProcessing)
+                        isForced = true;
+
+                    continue;
+                }
+
+                var nested = current.Current;
+
+                if (nested is IEnumerator nestedEnumerator)
+                {
+                    if (nested is Routine nestedRoutine)
+                    {
+                        if (!nestedRoutine.IsError && !nestedRoutine.IsCanceled && !nestedRoutine.IsComplete)
+                        {
+                            stack.Push(nestedEnumerator);
+                            if (isForced)
+                                nestedRoutine.OnForcedCompleteInternal();
+
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        stack.Push(nestedEnumerator);
+                        continue;
+                    }
+                }
+                else if (nested is AsyncOperation nestedAsyncOperation)
+                {
+                    if (isForced && !nestedAsyncOperation.CanBeForceComplete())
+                        throw new Exception("error");
+
+                    if (!nestedAsyncOperation.isDone)
+                    {
+                        Backward();
+                        return true;
+                    }
+                }
+
+                if (current.MoveNext()) // this move next may throw exception
+                {
+                    Backward();
+                    return true;
+                }
+
+                stack.Pop();
+                if (stack.Peek() is Routine completedRoutine)
+                    completedRoutine.SetupCompleted();
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -114,6 +339,11 @@ namespace Omega.Routines
         /// <returns></returns>
         private bool DeepMoveNext(IEnumerator enumerator)
         {
+            bool ContinuePath(IEnumerator c)
+            {
+                return true;
+            }
+
             // Пытаемся получить состояние рутины 
             var current = enumerator.Current;
 
@@ -126,10 +356,10 @@ namespace Omega.Routines
                 {
                     var nestedRoutineStatus = nestedRoutine._status;
 
-                    // if(nestedRoutineStatus == RoutineStatus.Error)
-                    //     throw new Exception("Nested routine have error", nestedRoutine._exception);
-                    // if(nestedRoutineStatus == RoutineStatus.Canceled)
-                    //     throw new Exception("Nested routine were canceled");
+                    if (nestedRoutineStatus == RoutineStatus.Error)
+                        throw new Exception("Nested routine have error", nestedRoutine._exception);
+                    if (nestedRoutineStatus == RoutineStatus.Canceled)
+                        throw new Exception("Nested routine were canceled");
 
                     var isProcessingNestedRoutine = nestedRoutineStatus != RoutineStatus.Canceled
                                                     && nestedRoutineStatus != RoutineStatus.Completed
