@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Text;
 using JetBrains.Annotations;
 using Omega.Package;
 using UnityEngine;
@@ -10,8 +11,9 @@ namespace Omega.Routines
 {
     public abstract partial class Routine : IEnumerator
     {
-        internal static readonly Logger Logger = new Logger("ROUTINE▶", new Color32(0xFF,0xA5,0x00,0xFF), FontStyle.Bold);
-        
+        internal static readonly Logger Logger = new Logger("ROUTINE▶", new Color32(0xFF, 0xA5, 0x00, 0xFF),
+            FontStyle.Bold);
+
         public static readonly Action<Exception, Routine> DefaultExceptionHandler
             = delegate(Exception exception, Routine routine)
             {
@@ -27,6 +29,8 @@ namespace Omega.Routines
         [NotNull] private Action<Exception, Routine> _exceptionHandler = DefaultExceptionHandler;
 
         [CanBeNull] private string _creationStackTrace;
+
+        public string Name { get; set; }
 
         public bool IsError => _status == RoutineStatus.Error;
         public bool IsProcessing => _status == RoutineStatus.Processing || _status == RoutineStatus.ForcedProcessing;
@@ -97,7 +101,7 @@ namespace Omega.Routines
             // Если больше не можем двигаться дольше то помечаем рутину как завершенную  
             if (moveNextResult)
                 _update?.Invoke();
-            else
+            else if (!IsCanceled)
                 SetupCompleted();
 
             return moveNextResult;
@@ -128,28 +132,31 @@ namespace Omega.Routines
                     //     throw new Exception("Nested routine were canceled");
 
                     var isProcessingNestedRoutine = nestedRoutineStatus != RoutineStatus.Canceled
-                                                       && nestedRoutineStatus != RoutineStatus.Completed
-                                                       && nestedRoutineStatus != RoutineStatus.Error;
+                                                    && nestedRoutineStatus != RoutineStatus.Completed
+                                                    && nestedRoutineStatus != RoutineStatus.Error;
 
                     if (isProcessingNestedRoutine &&
                         _status == RoutineStatus.ForcedProcessing &&
                         nestedRoutineStatus != RoutineStatus.ForcedProcessing)
                         nestedRoutine.OnForcedCompleteInternal();
-                }
 
-                return DeepMoveNext(nestedEnumerator) || enumerator.MoveNext();
+                    if (nestedRoutine.DeepMoveNext(nestedEnumerator))
+                        return true;
+                }
             }
 
             // Если текущее состояние рутины ожидает завершения асинхронной операции, то просто ждем ее завершения
-            if (current is AsyncOperation nestedAsyncOperation)
+            else if (current is AsyncOperation nestedAsyncOperation)
             {
-                if(_status == RoutineStatus.ForcedProcessing && !nestedAsyncOperation.CanBeForceComplete())
-                    throw new InvalidOperationException("You cant force complete that async-operation: " + nestedAsyncOperation.GetType());
-                
-                return !nestedAsyncOperation.isDone || enumerator.MoveNext();
+                if (_status == RoutineStatus.ForcedProcessing && !nestedAsyncOperation.CanBeForceComplete())
+                    throw new InvalidOperationException("You cant force complete that async-operation: " +
+                                                        nestedAsyncOperation.GetType());
+
+                if (!nestedAsyncOperation.isDone)
+                    return true;
             }
 
-            return enumerator.MoveNext();
+            return !IsError && !IsCanceled && !IsComplete && enumerator.MoveNext();
         }
 
         internal void OnForcedCompleteInternal()
@@ -253,7 +260,6 @@ namespace Omega.Routines
         internal void AddUpdateActionInternal(Action action)
             => _update += action;
 
-
         private enum RoutineStatus
         {
             NotStarted = 0,
@@ -289,6 +295,24 @@ namespace Omega.Routines
                 return lhsConcatenation.Add(rhs);
 
             return lhsConcatenation.Add(rhsConcatenation);
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder(Name?.Length ?? 0 + 50);
+
+            sb.Append($"{GetType().Name} {{");
+
+            if (!string.IsNullOrEmpty(Name))
+                sb.Append($"Name: {Name}, ");
+
+            sb.Append($"Status: {_status} ");
+            if (IsProcessing && this is IProgressRoutineProvider progressProvider)
+                sb.Append($"({progressProvider.GetProgress():P}) ");
+
+            sb.Append('}');
+
+            return sb.ToString();
         }
     }
 }
