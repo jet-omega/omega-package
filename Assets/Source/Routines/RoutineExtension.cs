@@ -143,24 +143,6 @@ namespace Omega.Routines
             RoutineUtilities.CompleteWithoutChecks(original, timeoutTimeSpan);
         }
 
-        public static TRoutine ExceptionHandler<TRoutine>(this TRoutine original, Action<Exception> exceptionHandler)
-            where TRoutine : Routine
-            => ExceptionHandler(original, (e, r) => exceptionHandler(e));
-
-        public static TRoutine ExceptionHandler<TRoutine>(this TRoutine original,
-            Action<Exception, Routine> exceptionHandler)
-            where TRoutine : Routine
-        {
-            if (original == null)
-                throw new NullReferenceException(nameof(original));
-            if (exceptionHandler == null)
-                throw new ArgumentNullException(nameof(exceptionHandler));
-
-            original.SetExceptionHandlerInternal(exceptionHandler);
-
-            return original;
-        }
-
         public static TRoutine CreationStackTrace<TRoutine>(this TRoutine original)
             where TRoutine : Routine
         {

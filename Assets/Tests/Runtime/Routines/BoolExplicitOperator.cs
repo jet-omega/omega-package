@@ -38,16 +38,5 @@ namespace Omega.Routines.Tests
             yield return routine;
             Assert.True(routine); // completed
         }
-
-        [UnityTest]
-        public IEnumerator RoutineShouldBeTrueWhenRoutineIsError()
-        {
-            bool flag = false;
-            var routine = Routine.Task(() => throw new Exception())
-                .ExceptionHandler(_ => flag = true);
-            yield return routine;
-            Assert.True(flag);// invoked from exception handler
-            Assert.True(routine); // error
-        }
     }
 }

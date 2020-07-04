@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Text;
 using JetBrains.Annotations;
-using Omega.Package;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Logger = Omega.Package.Logger;
@@ -14,19 +13,11 @@ namespace Omega.Routines
         internal static readonly Logger Logger = new Logger("ROUTINE▶", new Color32(0xFF, 0xA5, 0x00, 0xFF),
             FontStyle.Bold);
 
-        public static readonly Action<Exception, Routine> DefaultExceptionHandler
-            = delegate(Exception exception, Routine routine)
-            {
-                var message = ExceptionHelper.Messages.CreateExceptionMessageForRoutine(routine, exception);
-                Logger.Log(message, LogType.Error);
-            };
-
         private RoutineStatus _status;
         [CanBeNull] private Exception _exception;
         [CanBeNull] private IEnumerator _routine;
         [CanBeNull] private Action _callback;
         [CanBeNull] private Action _update;
-        [NotNull] private Action<Exception, Routine> _exceptionHandler = DefaultExceptionHandler;
 
         [CanBeNull] private string _creationStackTrace;
 
@@ -92,7 +83,6 @@ namespace Omega.Routines
                 _exception = e;
                 _status = RoutineStatus.Error;
 
-                _exceptionHandler.Invoke(e, this);
                 _update?.Invoke();
 
                 return false;
@@ -199,7 +189,6 @@ namespace Omega.Routines
         // TODO: mb throw not supported exception?
         void IEnumerator.Reset()
         {
-            _exceptionHandler = DefaultExceptionHandler;
             _status = RoutineStatus.NotStarted;
             _routine = null;
             _exception = null;
@@ -250,9 +239,6 @@ namespace Omega.Routines
 
         internal void SetCreationStackTraceInternal(string stackTrace)
             => _creationStackTrace = stackTrace;
-
-        internal void SetExceptionHandlerInternal(Action<Exception, Routine> exceptionHandler)
-            => _exceptionHandler = exceptionHandler;
 
         internal string GetCreationStackTraceInternal()
             => _creationStackTrace;

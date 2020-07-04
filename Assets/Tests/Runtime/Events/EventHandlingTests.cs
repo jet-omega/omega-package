@@ -28,48 +28,6 @@ namespace Omega.Experimental.Event.Tests
             EventManagerDispatcher<IsolateEvent>.RemoveEventManagerInternal();
         }
         
-        [Test]
-        public void ShouldLogExceptionAndShouldNotResetQueueEventsWhenHandlerThrowExceptionTest()
-        {
-            string keyMessage = nameof(keyMessage); 
-            bool flag = false;
-            
-            EventAggregator.AddHandler<NotIsolateEvent>(_ => flag = true);
-            
-            EventAggregator.AddHandler<IsolateEvent>(_ => EventAggregator.Event(new NotIsolateEvent()));
-            EventAggregator.AddHandler<IsolateEvent>(_ => throw new Exception(keyMessage));
-            EventAggregator.AddHandler<IsolateEvent>(_ => Assert.Fail());
-
-            LogAssert.Expect(LogType.Exception, new Regex(".keyMessage"));
-            EventAggregator.Event(new IsolateEvent());
-            Assert.True(flag);
-
-            EventManagerDispatcher<NotIsolateEvent>.RemoveEventManagerInternal();
-            EventManagerDispatcher<IsolateEvent>.RemoveEventManagerInternal();
-        }
-
-        [Test]
-        public void ShouldLogExceptionAndShouldNotResetQueueEventsAndNotStopCurrentEventWhenHandlerThrowExceptionTest()
-        {
-            string keyMessage = nameof(keyMessage); 
-            bool flagFromIsolateHandlers = false;
-            bool flagFromIsolateEvent = false;
-            
-            EventAggregator.AddHandler<IsolateHandlersEvent>(_ => throw new Exception(keyMessage));
-            EventAggregator.AddHandler<IsolateHandlersEvent>(_ => flagFromIsolateHandlers = true);
-            EventAggregator.AddHandler<IsolateHandlersEvent>(_ => EventAggregator.Event(new IsolateEvent()));
-            EventAggregator.AddHandler<IsolateEvent>(_ => flagFromIsolateEvent = true);
-
-            LogAssert.Expect(LogType.Exception, new Regex(".keyMessage"));
-            EventAggregator.Event(new IsolateHandlersEvent());
-            
-            Assert.True(flagFromIsolateHandlers);
-            Assert.True(flagFromIsolateEvent);
-
-            EventManagerDispatcher<IsolateHandlersEvent>.RemoveEventManagerInternal();
-            EventManagerDispatcher<IsolateEvent>.RemoveEventManagerInternal();
-        }
-
         [EventHandling(EventHandling.NotIsolate)]
         private struct NotIsolateEvent
         {

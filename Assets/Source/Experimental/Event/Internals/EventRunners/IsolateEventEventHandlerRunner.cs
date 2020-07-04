@@ -8,27 +8,17 @@ namespace Omega.Experimental.Event.Internals
     {
         private readonly IEnumerable<IEventHandler<TEvent>> _handlers;
         private readonly TEvent _eventArg;
-        private readonly Action<Exception> _exceptionHandler;
 
-        public IsolateEventEventHandlerRunner(IEnumerable<IEventHandler<TEvent>> handlers, TEvent arg,
-            Action<Exception> exceptionHandler)
+        public IsolateEventEventHandlerRunner(IEnumerable<IEventHandler<TEvent>> handlers, TEvent arg)
         {
             _handlers = handlers;
             _eventArg = arg;
-            _exceptionHandler = exceptionHandler ?? Debug.LogException;
         }
 
         public void Release()
         {
-            try
-            {
-                foreach (var handler in _handlers)
-                    handler.OnEvent(_eventArg);
-            }
-            catch (Exception e)
-            {
-                _exceptionHandler(e);
-            }
+            foreach (var handler in _handlers)
+                handler.OnEvent(_eventArg);
         }
     }
 }
