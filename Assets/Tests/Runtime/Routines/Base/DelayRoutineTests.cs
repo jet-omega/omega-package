@@ -51,7 +51,7 @@ namespace Omega.Routines.Tests
         {
             var timeMeter = TimeMeter.New();
             var routine = Routine.Delay(1);
-            routine.Cancel();
+            routine.SetName("delay").Cancel();
             yield return routine;
 
             var elapsed = timeMeter.ToSeconds();
