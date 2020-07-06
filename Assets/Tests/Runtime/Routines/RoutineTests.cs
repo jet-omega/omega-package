@@ -104,6 +104,37 @@ namespace Omega.Routines.Tests
             routine.Complete();
         }
 
+        [Test]
+        public void ExecuteCompletedRoutineNotShouldFailTest()
+        {
+            var completed = Routine.FromCompleted();
+            Assert.True(completed.IsComplete);
+
+            RoutineUtilities.OneStep(completed);
+        }
+
+        [UnityTest]
+        public IEnumerator NestedEnumeratorTest()
+        {
+            bool flag = false;
+            
+            IEnumerator RoutineSteps()
+            {
+                IEnumerator NestedRoutineSteps()
+                {
+                    yield return null;
+                    flag = true;
+                    yield return null;
+                }
+
+                yield return NestedRoutineSteps();
+            }
+
+            yield return Routine.ByEnumerator(RoutineSteps());
+            
+            Assert.True(flag);
+        }
+
         [UnityTest]
         public IEnumerator SelfCancellationTest()
         {
