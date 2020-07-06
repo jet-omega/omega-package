@@ -175,7 +175,7 @@ namespace Omega.Routines
 
             return original;
         }
-
+        
         /// <summary>
         /// Запускает и обрабатывает рутину в фоне
         /// </summary>
