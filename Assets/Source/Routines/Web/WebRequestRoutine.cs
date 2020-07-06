@@ -65,7 +65,7 @@ namespace Omega.Routines.Web
         public float GetProgress()
         {
             var rawProgress = _asyncOperation?.progress ?? 0;
-            if (!(WebRequest.downloadHandler is DownloadHandlerBuffer))
+            if (!(WebRequest.downloadHandler is DownloadHandlerBuffer)) // из-за проблем с аллоцированием памяти у buffer 
                 return rawProgress;
             
             var normalized = (rawProgress - 0.5f) * 2;
