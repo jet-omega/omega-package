@@ -65,6 +65,9 @@ namespace Omega.Routines.Web
         public float GetProgress()
         {
             var rawProgress = _asyncOperation?.progress ?? 0;
+            if (WebRequest.downloadHandler is DownloadHandlerFile)
+                return rawProgress;
+            
             var normalized = (rawProgress - 0.5f) * 2;
             var clamped = Mathf.Clamp(normalized, 0, 1);
             return clamped;
