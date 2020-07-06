@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
+using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.TestTools;
 using Assert = NUnit.Framework.Assert;
@@ -20,7 +21,7 @@ namespace Omega.Routines.Tests
 
             IEnumerator TestRoutine(RoutineControl<int> control)
             {
-                yield return routineWithError;
+                yield return routineWithError.Catch(CompletionCase.Error);
                 control.SetResult(50);
             }
 
@@ -84,7 +85,11 @@ namespace Omega.Routines.Tests
                 yield return Routine.ByAction(() => flag = true);
             }
 
+
+            LogAssert.ignoreFailingMessages = true;
             Routine.WaitOne(routine, () => 1).Complete();
+            LogAssert.ignoreFailingMessages = false;
+            
             Assert.False(flag);
         }
 
@@ -148,9 +153,41 @@ namespace Omega.Routines.Tests
                 yield return Routine.ByAction(() => flag = true);
             }
 
-            yield return Routine.WaitOne(routine, () => 1);
+            yield return Routine.WaitOne(routine.Catch(CompletionCase.Canceled), () => 1);
 
             Assert.False(flag);
+        }
+
+        [UnityTest]
+        public IEnumerator NestedRoutineShouldBeIsProcessingTest()
+        {
+            var nestedRoutine = Routine.Delay(0.1f);
+            
+            IEnumerator RoutineSteps()
+            {
+                yield return nestedRoutine;
+                yield return null;
+            }
+
+            Routine.ByEnumerator(RoutineSteps()).InBackground();
+            yield return null;
+            yield return null;
+            Assert.False(nestedRoutine.IsComplete);
+            Assert.True(nestedRoutine.IsProcessing);
+
+        }
+
+        [UnityTest]
+        public IEnumerator RoutineShouldBeIsProcessing()
+        {
+            var nestedRoutine = Routine.Delay(0.1f);
+            nestedRoutine.InBackground();
+            
+            yield return null;
+            yield return null;
+            
+            Assert.False(nestedRoutine.IsComplete);
+            Assert.True(nestedRoutine.IsProcessing);
         }
 
         [Test]

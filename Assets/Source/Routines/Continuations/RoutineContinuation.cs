@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 
 namespace Omega.Routines
 {
-    public sealed class RoutineContinuation : Routine, IRoutineContinuation
+    public sealed class RoutineContinuation : Routine, IRoutineContinuation, IProgressRoutineProvider
     {
         [NotNull] private readonly Routine _routine;
         private readonly CompletionCase _continuationCase;
@@ -36,6 +36,11 @@ namespace Omega.Routines
 
             continuationException = null;
             return true;
+        }
+
+        public float GetProgress()
+        {
+            return RoutineUtilities.GetProgressFromRoutine(_routine);
         }
     }
 

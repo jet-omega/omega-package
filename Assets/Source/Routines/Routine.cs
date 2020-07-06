@@ -67,7 +67,7 @@ namespace Omega.Routines
         }
 
 
-        internal static bool ExecuteRoutineRound([NotNull] Routine routine)
+        internal static bool ExecuteRound([NotNull] Routine routine)
         {
             //todo use stack on stack
             var stack = new Stack<Frame>();
@@ -106,12 +106,30 @@ namespace Omega.Routines
                 switch (current)
                 {
                     case Routine currentRoutine:
-                        if (currentRoutine.IsError || currentRoutine.IsCanceled || currentRoutine.IsComplete)
+                        if (currentRoutine.IsComplete)
                             break;
                         else
                         {
+                            if (currentRoutine.IsError || currentRoutine.IsCanceled)
+                            {
+                                if (context is IRoutineContinuation routineContinuation &&
+                                    routineContinuation.TryContinue(out _))
+                                {
+                                    break;
+                                }
+
+                                context._exception = new Exception("error: todo-message");
+                                context._status = RoutineStatus.Error;
+                                context._exceptionHandler?.Invoke(context._exception, context);
+
+                                StackBackward();
+                                return true;
+                            }
+
                             if (context.IsForcedProcessing)
                                 currentRoutine.OnForcedCompleteInternal();
+                            else
+                                currentRoutine._status = RoutineStatus.Processing;
 
                             if (currentRoutine.GetStateMachine() is null)
                             {
@@ -119,6 +137,7 @@ namespace Omega.Routines
                                 StackBackward();
                                 return true;
                             }
+
 
                             stack.Push(new Frame(currentRoutine, currentRoutine.GetStateMachine()));
                             continue;
@@ -149,14 +168,15 @@ namespace Omega.Routines
                     var isMoveNext = stateMachine.MoveNext();
 
                     if (!isMoveNext)
-                        if (context.GetStateMachine() == stateMachine)
+                        if (context.GetStateMachine() == stateMachine && context.IsProcessing)
                             context.SetupCompleted();
                         else
                         {
                             if (StackUnroll(stack.Peek()))
                                 return true;
 
-                            context.SetupCompleted();
+                            if (context.IsProcessing)
+                                context.SetupCompleted();
                         }
                 }
                 catch (Exception e)
@@ -211,7 +231,7 @@ namespace Omega.Routines
                 _updateRoutine?.Invoke();
             }
 
-            return ExecuteRoutineRound(this);
+            return ExecuteRound(this);
         }
 
         internal void OnForcedCompleteInternal()
