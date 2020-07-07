@@ -17,7 +17,7 @@ namespace Omega.Package.Internal
         /// <exception cref="ArgumentNullException">Параметр <param name="root"/>>указывает на null</exception>
         /// <exception cref="MissingReferenceException">Параметр <param name="root"/>>указывает на уничтоженный объект</exception>
         [NotNull]
-        public RectTransform[] GetChilds([NotNull] RectTransform root)
+        public RectTransform[] GetChildren([NotNull] RectTransform root)
         {
             if (root is null)
                 throw new ArgumentNullException(nameof(root));
@@ -29,7 +29,7 @@ namespace Omega.Package.Internal
 
             var result = ListPool<RectTransform>.Rent(root.childCount);
 
-            GetChildsWithoutChecks(root, result);
+            GetChildrenWithoutChecks(root, result);
 
             var resultArray = result.ToArray();
 
@@ -58,16 +58,19 @@ namespace Omega.Package.Internal
             rectTransform.sizeDelta = size;
         }
 
-        internal static void GetChildsWithoutChecks([NotNull] RectTransform rectTransform,
+        internal static void GetChildrenWithoutChecks([NotNull] RectTransform rectTransform,
             [NotNull] List<RectTransform> result)
         {
-            var childsCount = rectTransform.childCount;
-            for (var i = 0; i < childsCount; i++)
+            var childrenCount = rectTransform.childCount;
+            for (var i = 0; i < childrenCount; i++)
             {
                 var child = rectTransform.GetChild(i);
                 if (child is RectTransform rectTransformChild)
                     result.Add(rectTransformChild);
             }
         }
+        
+        [NotNull, Obsolete("Use GetChildren")]
+        public RectTransform[] GetChilds([NotNull] RectTransform root) => GetChildren(root);
     }
 }

@@ -17,6 +17,7 @@ namespace Omega.Routines.Tests
             var routineWithError = Routine.ByAction(() => throw new Exception("It's a test exception"));
             LogAssert.Expect(LogType.Error, new Regex("."));
             routineWithError.Complete();
+
             Assert.True(routineWithError.IsError);
 
             IEnumerator TestRoutine(RoutineControl<int> control)

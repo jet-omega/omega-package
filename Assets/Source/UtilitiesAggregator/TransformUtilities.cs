@@ -18,14 +18,14 @@ namespace Omega.Package.Internal
         /// <param name="root">Трансформ, потомки которого будут удалены</param>
         /// <exception cref="ArgumentNullException">Параметр <param name="root"/>>указывает на null</exception>
         /// <exception cref="MissingReferenceException">Параметр <param name="root"/>>указывает на уничтоженный объект</exception>
-        public void ClearChilds([NotNull] Transform root)
+        public void DestroyChildren([NotNull] Transform root)
         {
             if (root is null)
                 throw new ArgumentNullException(nameof(root));
             if (!root)
                 throw new MissingReferenceException(nameof(root));
 
-            ClearChildsWithoutChecks(root);
+            ClearChildrenWithoutChecks(root);
         }
 
         public bool IsChildOf([NotNull] Transform transform, [CanBeNull] Transform parent)
@@ -46,27 +46,27 @@ namespace Omega.Package.Internal
         /// <exception cref="ArgumentNullException">Параметр <param name="root"/>>указывает на null</exception>
         /// <exception cref="MissingReferenceException">Параметр <param name="root"/>>указывает на уничтоженный объект</exception>
         [NotNull]
-        public Transform[] GetChilds([NotNull] Transform root)
+        public Transform[] GetChildren([NotNull] Transform root)
         {
             if (root is null)
                 throw new ArgumentNullException(nameof(root));
             if (!root)
                 throw new MissingReferenceException(nameof(root));
 
-            return GetChildsWithoutChecks(root);
+            return GetChildrenWithoutChecks(root);
         }
 
-        public void GetChilds(Transform root, List<Transform> result)
+        public void GetChildren(Transform root, List<Transform> result)
         {
             if (root is null)
                 throw new ArgumentNullException(nameof(root));
             if (!root)
                 throw new MissingReferenceException(nameof(root));
 
-            GetChildsWithoutChecks(root, result);
+            GetChildrenWithoutChecks(root, result);
         }
 
-        public void GetAllChilds(Transform root, List<Transform> result)
+        public void GetAllChildren(Transform root, List<Transform> result)
         {
             if (root is null)
                 throw new ArgumentNullException(nameof(root));
@@ -75,31 +75,31 @@ namespace Omega.Package.Internal
             if (result is null)
                 throw new ArgumentNullException(nameof(result));
 
-            GetAllChildsWithoutChecks(root, result);
+            GetAllChildrenWithoutChecks(root, result);
         }
 
-        public int GetAllChildsCount(Transform root)
+        public int GetAllChildrenCount(Transform root)
         {
             if (root is null)
                 throw new ArgumentNullException(nameof(root));
             if (!root)
                 throw new MissingReferenceException(nameof(root));
 
-            return GetAllChildsCountWithoutChecks(root);
+            return GetAllChildrenCountWithoutChecks(root);
         }
 
         [NotNull]
-        internal static Transform[] GetChildsWithoutChecks([NotNull] Transform root)
+        internal static Transform[] GetChildrenWithoutChecks([NotNull] Transform root)
         {
-            var childsCount = root.childCount;
-            if (childsCount == 0)
+            var childrenCount = root.childCount;
+            if (childrenCount == 0)
                 return Array.Empty<Transform>();
 
-            var childs = new Transform[childsCount];
-            for (int i = 0; i < childs.Length; i++)
-                childs[i] = root.GetChild(i);
+            var children = new Transform[childrenCount];
+            for (int i = 0; i < children.Length; i++)
+                children[i] = root.GetChild(i);
 
-            return childs;
+            return children;
         }
 
         internal static bool IsChildOfWithoutChecks([CanBeNull] Transform transform, [CanBeNull] Transform parent)
@@ -107,6 +107,7 @@ namespace Omega.Package.Internal
             var temp = transform;
             while (temp)
             {
+                // ReSharper disable once PossibleNullReferenceException
                 var tempParent = temp.parent;
                 if (tempParent == parent)
                     return true;
@@ -117,46 +118,60 @@ namespace Omega.Package.Internal
             return false;
         }
 
-        internal static void GetChildsWithoutChecks([NotNull] Transform root, [NotNull] List<Transform> result)
+        internal static void GetChildrenWithoutChecks([NotNull] Transform root, [NotNull] List<Transform> result)
         {
-            var childsCount = root.childCount;
-            for (int i = 0; i < childsCount; i++)
+            var childrenCount = root.childCount;
+            for (int i = 0; i < childrenCount; i++)
                 result.Add(root.GetChild(i));
         }
 
-        internal static void ClearChildsWithoutChecks([NotNull] Transform root)
+        internal static void ClearChildrenWithoutChecks([NotNull] Transform root)
         {
             var childesCount = root.childCount;
             if (childesCount == 0)
                 return;
 
-            var childs = ListPool<Transform>.Rent(childesCount);
-            GetChildsWithoutChecks(root, childs);
+            var children = ListPool<Transform>.Rent(childesCount);
+            GetChildrenWithoutChecks(root, children);
 
-            foreach (var child in childs)
+            foreach (var child in children)
                 ObjectUtilities.AutoDestroyWithoutChecks(child.gameObject);
 
-            ListPool<Transform>.ReturnInternal(childs);
+            ListPool<Transform>.ReturnInternal(children);
         }
 
-        internal static void GetAllChildsWithoutChecks([NotNull] Transform root, [NotNull] List<Transform> childs)
+        internal static void GetAllChildrenWithoutChecks([NotNull] Transform root, [NotNull] List<Transform> children)
         {
-            var i = childs.Count;
-            GetChildsWithoutChecks(root, childs);
-            var count = childs.Count;
+            var i = children.Count;
+            GetChildrenWithoutChecks(root, children);
+            var count = children.Count;
             for (; i < count; i++)
-                GetAllChildsWithoutChecks(childs[i], childs);
+                GetAllChildrenWithoutChecks(children[i], children);
         }
 
-        internal static int GetAllChildsCountWithoutChecks([NotNull] Transform root)
+        internal static int GetAllChildrenCountWithoutChecks([NotNull] Transform root)
         {
-            int result = 0;
-            var childs = ListPool<Transform>.Rent();
-            GetAllChildsWithoutChecks(root, childs);
-            result = childs.Count;
-            ListPool<Transform>.Return(childs);
+            var children = ListPool<Transform>.Rent();
+            GetAllChildrenWithoutChecks(root, children);
+            var result = children.Count;
+            ListPool<Transform>.Return(children);
 
             return result;
         }
+
+        [Obsolete("Use DestroyChildren")]
+        public void ClearChilds([NotNull] Transform root) => DestroyChildren(root);
+
+        [NotNull, Obsolete("Use GetChildren")]
+        public Transform[] GetChilds([NotNull] Transform root) => GetChildren(root);
+
+        [Obsolete("User GetChildren")]
+        public void GetChilds(Transform root, List<Transform> result) => GetChildren(root, result);
+
+        [Obsolete("Use GetAllChildren")]
+        public void GetAllChilds(Transform root, List<Transform> result) => GetAllChildren(root, result);
+
+        [Obsolete("Use GetAllChildrenCount")]
+        public int GetAllChildsCount(Transform root) => GetAllChildrenCount(root);
     }
 }
