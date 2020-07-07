@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using JetBrains.Annotations;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Omega.Routines
 {
@@ -102,6 +103,15 @@ namespace Omega.Routines
 
             original.AddCallbackInternal(() => callback.Invoke(original.GetResult()));
             return original;
+        }
+
+        public static Routine Catch(this Routine routine, CompletionCase completionCase, bool withSuccess = true)
+        {
+            var finalCompletionCase = withSuccess
+                ? CompletionCase.Success | completionCase
+                : completionCase;
+
+            return new RoutineContinuation(routine, finalCompletionCase);
         }
 
         public static Routine<TResult> Result<TResult>(this Routine<TResult> original,
