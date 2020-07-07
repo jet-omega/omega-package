@@ -20,7 +20,6 @@ namespace Omega.Routines.Tests
 
             Assert.True(routineWithError.IsError);
 
-            
             IEnumerator TestRoutine(RoutineControl<int> control)
             {
                 yield return routineWithError.Catch(CompletionCase.Error);
