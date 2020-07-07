@@ -1,48 +1,20 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
 using JetBrains.Annotations;
-using Omega.Routines;
-using UnityEngine;
 
 namespace Omega.Routines
 {
     internal sealed class RoutineUtilities
     {
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
         internal static void CompleteWithoutChecks(Routine routine)
         {
-            routine.OnForcedCompleteInternal();
+            routine.SetupForcedProcessingInternal();
             CompleteNow(routine);
         }
         
         internal static void CompleteWithoutChecks(Routine routine, TimeSpan timeOut)
         {
-            routine.OnForcedCompleteInternal();
+            routine.SetupForcedProcessingInternal();
             CompleteNow(routine, timeOut);
         }
 

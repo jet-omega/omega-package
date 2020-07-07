@@ -4,6 +4,6 @@ namespace Omega.Routines
 {
     public interface IRoutineContinuation
     {
-        bool TryContinue(out Exception continuationException);
+        bool CanContinue();
     }
 }

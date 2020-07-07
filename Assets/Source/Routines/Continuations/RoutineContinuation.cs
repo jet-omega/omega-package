@@ -20,21 +20,14 @@ namespace Omega.Routines
             yield return _routine;
         }
 
-        bool IRoutineContinuation.TryContinue(out Exception continuationException)
+        bool IRoutineContinuation.CanContinue()
         {
             if (_routine.IsError && !_continuationCase.HasFlag(CompletionCase.Error))
-            {
-                continuationException = new Exception("cant continue because routine have error");
                 return false;
-            }
 
             if (_routine.IsCanceled && !_continuationCase.HasFlag(CompletionCase.Canceled))
-            {
-                continuationException = new Exception("cant continue because routine is cancelled");
                 return false;
-            }
 
-            continuationException = null;
             return true;
         }
 

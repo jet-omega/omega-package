@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using JetBrains.Annotations;
 using Omega.Package;
+using Omega.Routines.Exceptions;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Logger = Omega.Package.Logger;
@@ -39,26 +40,13 @@ namespace Omega.Routines
         public bool IsNotStarted => _status == RoutineStatus.NotStarted;
         public bool IsCanceled => _status == RoutineStatus.Canceled;
 
-        protected bool IsForcedProcessing => _status == RoutineStatus.ForcedProcessing;
+        protected internal bool IsForcedProcessing => _status == RoutineStatus.ForcedProcessing;
 
         [CanBeNull] public Exception Exception => _exception;
 
         protected abstract IEnumerator RoutineUpdate();
 
-        private void SetupCompleted()
-        {
-            if (_status == RoutineStatus.Canceled)
-                throw new InvalidOperationException("Routine was canceled");
-
-            if (_status == RoutineStatus.Error)
-                throw new InvalidOperationException("Routine have error");
-
-            _status = RoutineStatus.Completed;
-            _updateRoutine?.Invoke();
-            _callback?.Invoke();
-        }
-
-        private IEnumerator GetStateMachine()
+        internal IEnumerator GetStateMachine()
         {
             if (_routineStateMachine == null)
                 _routineStateMachine = RoutineUpdate();
@@ -66,150 +54,11 @@ namespace Omega.Routines
             return _routineStateMachine;
         }
 
-
-        internal static bool ExecuteRound([NotNull] Routine routine)
+        internal void UpdatePulse()
         {
-            //todo use stack on stack
-            var stack = new Stack<Frame>();
-
-            void StackBackward()
-            {
-                while (stack.Count > 0) stack.Pop().Context._updateRoutine?.Invoke();
-            }
-
-            bool StackUnroll(Frame f)
-            {
-                var e = f.StateMachine;
-                while (f.Context.GetStateMachine() != e)
-                {
-                    e = stack.Pop().StateMachine;
-                    if (e.MoveNext())
-                    {
-                        StackBackward();
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-            {
-                var routineStateMachine = routine.GetStateMachine();
-                stack.Push(new Frame(routine, routineStateMachine));
-            }
-
-            while (stack.Count > 0)
-            {
-                var (context, stateMachine) = stack.Peek();
-                var current = stateMachine.Current;
-
-                switch (current)
-                {
-                    case Routine currentRoutine:
-                        if (currentRoutine.IsComplete)
-                            break;
-                        else
-                        {
-                            if (currentRoutine.IsError || currentRoutine.IsCanceled)
-                            {
-                                if (context is IRoutineContinuation routineContinuation &&
-                                    routineContinuation.TryContinue(out _))
-                                {
-                                    break;
-                                }
-
-                                context._exception = new Exception("error: todo-message");
-                                context._status = RoutineStatus.Error;
-                                context._exceptionHandler?.Invoke(context._exception, context);
-
-                                StackBackward();
-                                return true;
-                            }
-
-                            if (context.IsForcedProcessing)
-                                currentRoutine.OnForcedCompleteInternal();
-                            else
-                                currentRoutine._status = RoutineStatus.Processing;
-
-                            if (currentRoutine.GetStateMachine() is null)
-                            {
-                                currentRoutine.SetupCompleted();
-                                StackBackward();
-                                return true;
-                            }
-
-
-                            stack.Push(new Frame(currentRoutine, currentRoutine.GetStateMachine()));
-                            continue;
-                        }
-
-
-                    case AsyncOperation currentAsyncOperation:
-                        if (!currentAsyncOperation.CanBeForceComplete())
-                        {
-                            context._exception = new Exception("async operation exception. todo this message");
-                            context._status = RoutineStatus.Error;
-                            context._exceptionHandler?.Invoke(context._exception, context);
-
-                            StackBackward();
-                            return true;
-                        }
-
-                        StackBackward();
-                        return !currentAsyncOperation.isDone;
-
-                    case IEnumerator nestedEnumerator:
-                        stack.Push(new Frame(context, nestedEnumerator));
-                        continue;
-                }
-
-                try
-                {
-                    var isMoveNext = stateMachine.MoveNext();
-
-                    if (!isMoveNext)
-                        if (context.GetStateMachine() == stateMachine && context.IsProcessing)
-                            context.SetupCompleted();
-                        else
-                        {
-                            if (StackUnroll(stack.Peek()))
-                                return true;
-
-                            if (context.IsProcessing)
-                                context.SetupCompleted();
-                        }
-                }
-                catch (Exception e)
-                {
-                    context._exception = e;
-                    context._status = RoutineStatus.Error;
-                    context._exceptionHandler?.Invoke(context._exception, context);
-                }
-
-                StackBackward();
-                return true;
-            }
-
-            return false;
+            _updateRoutine?.Invoke();
         }
 
-        private readonly struct Frame
-        {
-            public readonly Routine Context;
-            public readonly IEnumerator StateMachine;
-
-            public Frame(Routine context, IEnumerator stateMachine)
-            {
-                Context = context;
-                StateMachine = stateMachine;
-            }
-
-            public void Deconstruct(out Routine context, out IEnumerator stateMachine)
-            {
-                context = Context;
-                stateMachine = StateMachine;
-            }
-        }
 
         bool IEnumerator.MoveNext()
         {
@@ -221,7 +70,7 @@ namespace Omega.Routines
 
             if (GetStateMachine() is null)
             {
-                SetupCompleted();
+                SetupCompletedInternal();
                 return false;
             }
 
@@ -231,23 +80,7 @@ namespace Omega.Routines
                 _updateRoutine?.Invoke();
             }
 
-            return ExecuteRound(this);
-        }
-
-        internal void OnForcedCompleteInternal()
-        {
-            if (_status == RoutineStatus.Completed || _status == RoutineStatus.ForcedProcessing)
-                return;
-
-            if (_status is RoutineStatus.Error)
-                throw new InvalidOperationException(
-                    "Impossible to force complete a routine in which there is an error");
-
-            _status = RoutineStatus.ForcedProcessing;
-
-            OnForcedComplete();
-
-            _updateRoutine?.Invoke();
+            return RoutineExecution.ExecuteRound(this);
         }
 
         public void Cancel()
@@ -335,7 +168,53 @@ namespace Omega.Routines
         internal void AddUpdateActionInternal(Action action)
             => _updateRoutine += action;
 
-        private enum RoutineStatus
+        internal RoutineStatus GetStatus() => _status;
+
+        internal void SetupProgressingInternal()
+            => _status = RoutineStatus.Processing;
+
+        internal void SetupForcedProcessingInternal()
+        {
+            if (_status == RoutineStatus.Completed || _status == RoutineStatus.ForcedProcessing)
+                return;
+
+            if (_status is RoutineStatus.Error)
+                throw new RoutineErrorException("routine cant be (forced) processing because it have error");
+
+            _status = RoutineStatus.ForcedProcessing;
+
+            OnForcedComplete();
+
+            _updateRoutine?.Invoke();
+        }
+        
+        internal void SetupCompletedInternal()
+        {
+            if(_status == RoutineStatus.Completed)
+                return;
+            
+            if (_status == RoutineStatus.Canceled)
+                throw new InvalidOperationException("routine cant be completed because it was cancelled");
+
+            if (_status == RoutineStatus.Error)
+                throw new InvalidOperationException("routine cant be completed because it have error");
+
+            _status = RoutineStatus.Completed;
+            _updateRoutine?.Invoke();
+            _callback?.Invoke();
+        }
+        
+        internal void SetupErrorInternal(Exception exception)
+        {
+            if(_status == RoutineStatus.Error)
+                throw new RoutineErrorException("it is not possible to set an error to a routine because it already has an error");
+            
+            _exception = exception;
+            _status = RoutineStatus.Error;
+            _exceptionHandler.Invoke(exception, this);
+        }
+
+        internal enum RoutineStatus
         {
             NotStarted = 0,
             Processing,
