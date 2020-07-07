@@ -14,6 +14,25 @@ namespace Omega.Routines.Tests
 //        private bool flagByEnumeratorWithArgAndRoutineControlShouldProvideRoutine;
 
         [UnityTest]
+        public IEnumerator SimpleTest()
+        {
+            bool flag = false;
+            
+            IEnumerator Enumerator()
+            {
+                yield return null;
+                yield return null;
+                yield return null;
+
+                flag = true;
+            }
+
+            yield return Routine.ByEnumerator(Enumerator());
+            
+            Assert.True(flag);
+        }
+
+        [UnityTest]
         public IEnumerator ByEnumeratorShouldProcessCoroutineTest()
         {
             flagByEnumeratorShouldProcessCoroutineTest = false;

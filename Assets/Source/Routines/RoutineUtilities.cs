@@ -1,9 +1,6 @@
 using System;
 using System.Collections;
-using System.Threading;
 using JetBrains.Annotations;
-using Omega.Routines;
-using UnityEngine;
 
 namespace Omega.Routines
 {
@@ -11,13 +8,13 @@ namespace Omega.Routines
     {
         internal static void CompleteWithoutChecks(Routine routine)
         {
-            routine.OnForcedCompleteInternal();
+            routine.SetupForcedProcessingInternal();
             CompleteNow(routine);
         }
         
         internal static void CompleteWithoutChecks(Routine routine, TimeSpan timeOut)
         {
-            routine.OnForcedCompleteInternal();
+            routine.SetupForcedProcessingInternal();
             CompleteNow(routine, timeOut);
         }
 

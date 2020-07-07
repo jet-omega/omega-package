@@ -37,7 +37,7 @@ namespace Omega.Routines.Tests
             var e = routine.OnProgress(p => progress = p);
             e.Complete();
 
-            Assert.AreEqual(1, progress);
+            Assert.AreEqual(1f, progress);
         }
 
         [Test]
