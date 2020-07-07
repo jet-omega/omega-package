@@ -1,11 +1,13 @@
 using System;
 using System.Collections;
+using System.Diagnostics;
 using NUnit.Framework;
 using Omega.Package;
 using Omega.Routines.HighLoad;
 using Omega.Tools;
 using UnityEngine;
 using UnityEngine.TestTools;
+using Debug = UnityEngine.Debug;
 
 namespace Omega.Routines.Tests.HighLoad
 {
@@ -27,6 +29,15 @@ namespace Omega.Routines.Tests.HighLoad
             Assert.AreEqual(targetObjectCount, instance.transform.childCount);
             
             Utilities.Object.AutoDestroy(instance);
+        }
+
+        [Test]
+        public void FooTest()
+        {
+            var stackTrace = new StackTrace();
+            var s = stackTrace.ToString();
+            
+            Debug.Log(s);
         }
     }
 }
