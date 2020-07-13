@@ -127,6 +127,11 @@ namespace Omega.Text
             return _builder.ToString();
         }
 
+        public RichTextFactory Drop()
+        {
+            return this;
+        }
+
         public string ToString(bool clear)
         {
             var s = _builder.ToString();

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using JetBrains.Annotations;
 using Omega.Package;
@@ -19,7 +20,7 @@ namespace Omega.Routines
         public static readonly Action<Exception, Routine> DefaultExceptionHandler
             = delegate(Exception exception, Routine routine)
             {
-                var message = ExceptionHelper.Messages.CreateExceptionMessageForRoutine(routine, exception);
+                var message = ExceptionHelper.Messages.CreateExceptionMessageForRoutine(routine);
                 Logger.Log(message, LogType.Error);
             };
 
@@ -31,6 +32,7 @@ namespace Omega.Routines
         [NotNull] private Action<Exception, Routine> _exceptionHandler = DefaultExceptionHandler;
 
         [CanBeNull] private string _creationStackTrace;
+        [CanBeNull] private StackTrace _cancellationStackTrace;
 
         [CanBeNull] public string Name { get; set; }
 
@@ -88,6 +90,25 @@ namespace Omega.Routines
             if (_status == RoutineStatus.Canceled || _status == RoutineStatus.Completed ||
                 _status == RoutineStatus.Error)
                 return;
+
+
+            _cancellationStackTrace = new StackTrace(1, true);
+    
+            _status = RoutineStatus.Canceled;
+
+            OnCancel();
+
+            _updateRoutine?.Invoke();
+        }
+
+        public void Cancel(bool withoutStackTrace)
+        {
+            if (_status == RoutineStatus.Canceled || _status == RoutineStatus.Completed ||
+                _status == RoutineStatus.Error)
+                return;
+
+            if (!withoutStackTrace)
+                _cancellationStackTrace = new StackTrace(1, true);
 
             _status = RoutineStatus.Canceled;
 
@@ -165,6 +186,9 @@ namespace Omega.Routines
         internal string GetCreationStackTraceInternal()
             => _creationStackTrace;
 
+        internal StackTrace GetCancellationStackTraceInternal()
+            => _cancellationStackTrace;
+
         internal void AddUpdateActionInternal(Action action)
             => _updateRoutine += action;
 
@@ -187,12 +211,12 @@ namespace Omega.Routines
 
             _updateRoutine?.Invoke();
         }
-        
+
         internal void SetupCompletedInternal()
         {
-            if(_status == RoutineStatus.Completed)
+            if (_status == RoutineStatus.Completed)
                 return;
-            
+
             if (_status == RoutineStatus.Canceled)
                 throw new InvalidOperationException("routine cant be completed because it was cancelled");
 
@@ -203,12 +227,13 @@ namespace Omega.Routines
             _updateRoutine?.Invoke();
             _callback?.Invoke();
         }
-        
+
         internal void SetupErrorInternal(Exception exception)
         {
-            if(_status == RoutineStatus.Error)
-                throw new RoutineErrorException("it is not possible to set an error to a routine because it already has an error");
-            
+            if (_status == RoutineStatus.Error)
+                throw new RoutineErrorException(
+                    "it is not possible to set an error to a routine because it already has an error");
+
             _exception = exception;
             _status = RoutineStatus.Error;
             _exceptionHandler.Invoke(exception, this);

@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
 using Omega.Experimental.Event;
 using Omega.Routines;
+using Omega.Routines.Exceptions;
 using Omega.Text;
 using UnityEngine;
 
@@ -33,11 +35,15 @@ namespace Omega.Package
         public static Exception SetResultCannotCalledWhenRoutineIsNotDefined
             => new AggregateException(Messages.SetResultCannotCalledWhenRoutineIsNotDefined);
 
-        public static Exception CantContinueBecauseNestedRoutineHaveError
-            => new Exception(Messages.CantContinueBecauseNestedRoutineHaveError);
+        public static Exception GetCantContinueBecauseNestedRoutineHaveError(Routine nestedRoutine)
+        {
+            return new NestedRoutineException(Messages.CantContinueBecauseNestedRoutineHaveError, nestedRoutine);
+        }
 
-        public static Exception CantContinueBecauseNestedRoutineIsCancelled
-            => new Exception(Messages.CantContinueBecauseNestedRoutineIsCancelled);
+        public static Exception GetCantContinueBecauseNestedRoutineIsCancelled(Routine nestedRoutine)
+        {
+            return new NestedRoutineException(Messages.CantContinueBecauseNestedRoutineIsCancelled, nestedRoutine);
+        }
 
         public static class Messages
         {
@@ -90,30 +96,106 @@ namespace Omega.Package
 
             public static readonly string CantContinueBecauseNestedRoutineIsCancelled =
                 $"Unable continue execute routine because nested routine were cancelled. " +
-                $"You can use the {nameof(RoutineExtension.Catch)} extension-method for nested routine if this behavior is expected";
+                $"You can use the <i>{nameof(RoutineExtension.Catch)}</i> extension-method for nested routine if this behavior is expected";
 
-            public static string CreateExceptionMessageForRoutine(Routine routine, Exception exception)
+            public static string CreateExceptionMessageForRoutine(Routine routine)
             {
-                var creationStackTrace = routine.GetCreationStackTraceInternal();
-                var messageFactory = RichTextFactory.New(exception.Message.Length + 200)
-                    .Text("Exception thrown inside routine ▸ ").Bold.Text(exception.GetType().ToString())
-                    .NewLine.Italic.Text("ROUTINE TYPE ▸ ").UnstyledText(routine.GetType().Namespace).UnstyledText(".")
-                    .Bold.Text(routine.GetType().Name)
-                    .NewLine.UnstyledText("▾ ▾ ▾ ▾ ▾")
-                    .NewLine.Bold.Text("▸ ▸ ▸ EXCEPTION ◂ ◂ ◂")
-                    .NewLine.UnstyledText(exception.Message)
-                    .NewLine
-                    .NewLine.Bold.Text("▸ ▸ ▸ STACK TRACE ◂ ◂ ◂")
-                    .NewLine.UnstyledText(StackTraceUtility.ExtractStringFromException(exception));
-                
+                RichTextFactory AddExceptionInfo(RichTextFactory rtf)
+                {
+                    var exception = routine.Exception;
+                    if (exception != null)
+                    {
+                        rtf.NewLine.NewLine.Bold.Text(" ▸ EXCEPTION")
+                            .NewLine.UnstyledText(exception.Message);
 
-                messageFactory.NewLine.Bold.Text("▸ ▸ ▸ CREATION STACK TRACE ◂ ◂ ◂");
+                        var stacktrace = exception.StackTrace;
+                        if (exception is NestedRoutineException nestedRoutineException)
+                        {
+                            var nestedRoutine = nestedRoutineException.NestedRoutine;
+
+                            if (nestedRoutine.Exception != null &&
+                                nestedRoutine.Exception.StackTrace != null)
+                                rtf.NewLine.NewLine.Bold.Text(" ▸ NESTED STACK TRACE")
+                                    .NewLine.UnstyledText(
+                                        StackTraceUtility.ExtractStringFromException(nestedRoutineException
+                                            .NestedRoutine.Exception));
+
+                            var cancellationStackTrace = nestedRoutine.GetCancellationStackTraceInternal();
+                            if (nestedRoutine.IsCanceled)
+                                if (cancellationStackTrace == null)
+                                {
+                                    rtf.NewLine.NewLine.Bold.Text(" ▸ NO NESTED CANCELLATION STACK TRACE")
+                                        .NewLine.UnstyledText("You can call the Cancel method with the false parameter to add a stack trace");
+                                }
+                                else
+                                {
+                                    rtf.NewLine.NewLine.Bold.Text(" ▸ NESTED CANCELLATION STACK TRACE")
+                                        .NewLine.UnstyledText(
+                                            StackTraceUtility.ExtractFormattedStackTrace(cancellationStackTrace));
+                                }
+                        }
+
+
+                        if (stacktrace == null)
+                        {
+                            rtf.NewLine.NewLine.Bold
+                                .Text(" ▸ exception was created but was not thrown so no stacktrace").NewLine.Drop();
+                        }
+                        else
+                        {
+                            rtf.NewLine.NewLine.Bold.Text(" ▸ STACK TRACE")
+                                .NewLine.UnstyledText(StackTraceUtility.ExtractStringFromException(exception));
+                        }
+                    }
+                    else
+                    {
+                        rtf.NewLine.NewLine.Bold.Text(" ▸ ERROR WITHOUT EXCEPTION");
+                    }
+
+                    return rtf;
+                }
+
+                RichTextFactory AddLogHeader(RichTextFactory rtf)
+                {
+                    var exception = routine.Exception;
+                    if (exception != null)
+                    {
+                        rtf.Text("Exception inside routine ▸▸▸ ");
+                        AddTypeInfo(rtf, exception.GetType());
+                    }
+                    else
+                    {
+                        rtf.Text("Error inside routine without exception");
+                    }
+
+                    return rtf;
+                }
+
+                var creationStackTrace = routine.GetCreationStackTraceInternal();
+                var messageFactory = RichTextFactory.New(250);
+                AddLogHeader(messageFactory) // .Bold.Text(exception.GetType().ToString())
+                    .NewLine.Italic.Text("ROUTINE TYPE ▸ ");
+
+                AddTypeInfo(messageFactory, routine.GetType())
+                    .NewLine.UnstyledText("▾ ▾ ▾ ▾ ▾");
+
+                AddExceptionInfo(messageFactory);
+
+                messageFactory.NewLine.Bold.Text(" ▸ CREATION STACK TRACE");
                 messageFactory.NewLine.UnstyledText(
-                        string.IsNullOrEmpty(creationStackTrace)
-                            ? "You can call CreationStackTrace method at routine to show creation stack trace"
-                            : creationStackTrace);
+                    string.IsNullOrEmpty(creationStackTrace)
+                        ? "You can call CreationStackTrace method at routine to show creation stack trace"
+                        : creationStackTrace);
 
                 return messageFactory.ToString();
+            }
+
+            private static RichTextFactory AddTypeInfo(RichTextFactory richTextFactory, Type type)
+            {
+                var @namespace = type.Namespace;
+                var typeName = type.Name;
+
+                return richTextFactory.DefaultStyle.Text(@namespace).Text(".").Bold.Text(typeName);
             }
 
             public static string ObjectIsNotInstanceOfIEventHandler(Type eventType)

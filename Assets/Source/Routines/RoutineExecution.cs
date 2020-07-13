@@ -38,8 +38,9 @@ namespace Omega.Routines
                                     break;
                                 
                                 var exception = currentRoutine.IsError
-                                    ? ExceptionHelper.CantContinueBecauseNestedRoutineHaveError
-                                    : ExceptionHelper.CantContinueBecauseNestedRoutineIsCancelled;
+                                    ? ExceptionHelper.GetCantContinueBecauseNestedRoutineHaveError(currentRoutine)
+                                    : ExceptionHelper.GetCantContinueBecauseNestedRoutineIsCancelled(currentRoutine);
+                                
                                 context.SetupErrorInternal(exception);
 
                                 StackBackward(stack);

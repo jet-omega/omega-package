@@ -14,7 +14,7 @@ namespace Omega.Routines.Tests.HighLoad
     public class ObjectRoutineTest
     {
         [UnityTest]
-        [Timeout(300 * 1000)]
+        [Timeout(30 * 1000)]
         public IEnumerator SimpleTest()
         {
             var instance  = new GameObject("parent");
@@ -29,15 +29,6 @@ namespace Omega.Routines.Tests.HighLoad
             Assert.AreEqual(targetObjectCount, instance.transform.childCount);
             
             Utilities.Object.AutoDestroy(instance);
-        }
-
-        [Test]
-        public void FooTest()
-        {
-            var stackTrace = new StackTrace();
-            var s = stackTrace.ToString();
-            
-            Debug.Log(s);
         }
     }
 }
