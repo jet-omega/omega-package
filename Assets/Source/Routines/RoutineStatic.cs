@@ -75,10 +75,10 @@ namespace Omega.Routines
         {
             if (routines == null)
                 throw new ArgumentNullException();
-            
+
             return new SequenceRoutine(routines);
         }
-        
+
         public static Routine GetCompleted()
         {
             new EmptyRoutine().Self(out var routine).Complete();
@@ -87,8 +87,8 @@ namespace Omega.Routines
 
         public static Routine<T> GetCompleted<T>(T value)
         {
-           new RoutineWithResult<T>(value).Self(out var routine).Complete();
-           return routine;
+            new RoutineWithResult<T>(value).Self(out var routine).Complete();
+            return routine;
         }
 
         public static Routine ByAction(Action action)
@@ -169,14 +169,19 @@ namespace Omega.Routines
             return new WaitRoutine<TResult>(routine, resultProvider);
         }
 
+        public static Routine InvokeWhile(Routine targetRoutine, Action action)
+        {
+            return new InvokeWhileRoutine(targetRoutine, action);
+        }
+
         public static Routine<T> GetWithResult<T>(T result) => new RoutineWithResult<T>(result);
-        
+
         [Obsolete("Use WithResult")]
         public static Routine<T> FromResult<T>(T result) => new RoutineWithResult<T>(result);
-        
+
         [Obsolete("Use GetCompleted")]
         public static Routine FromCompleted() => GetCompleted();
-        
+
         [Obsolete("Use GetCompleted")]
         public static Routine<T> FromCompleted<T>(T value) => GetCompleted(value);
     }
