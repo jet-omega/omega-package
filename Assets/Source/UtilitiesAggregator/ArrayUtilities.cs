@@ -178,6 +178,28 @@ namespace Omega.Package.Internal
             Array.Resize(ref array, 0);
         }
 
+        public void Fill<T>(ref T[] array, T value)
+        {
+            for (int i = 0; i < array.Length; i++) array[i] = value;
+        }
+
+        public void Fill<T>(ref T[] array, Func<int, T> selector)
+        {
+            for (int i = 0; i < array.Length; i++) array[i] = selector.Invoke(i);
+        }
+        
+        public void Fill<T>(ref T[] array, int length, T value)
+        {
+            Array.Resize(ref array, length);
+            for (int i = 0; i < array.Length; i++) array[i] = value;
+        }
+
+        public void Fill<T>(ref T[] array, int length, Func<int, T> selector)
+        {
+            Array.Resize(ref array, length);
+            for (int i = 0; i < array.Length; i++) array[i] = selector.Invoke(i);
+        }
+
         public void Sort<T, TOut>(T[] array, Func<T, TOut> selector) where TOut : IComparable<TOut>
         {
             Array.Sort(array, new SelectComparer<T, TOut>(selector));
@@ -233,8 +255,8 @@ namespace Omega.Package.Internal
 
             return ~low;
         }
-        
-        
+
+
         private readonly struct SelectComparer<T, TComparision> : IComparer<T>
             where TComparision : IComparable<TComparision>
         {

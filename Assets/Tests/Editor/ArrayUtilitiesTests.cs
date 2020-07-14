@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using NUnit.Framework;
 
 namespace Omega.Package.Tests
@@ -272,20 +273,60 @@ namespace Omega.Package.Tests
             expected = new[] {"_a__", "_d__", "_b__", "_e__", "_f__", "_c__"};
             const int index = 2;
             const int length = 3;
-            
+
             Utilities.Array.Sort(array, index, length, s => s[1]);
             Assert.IsTrue(Utilities.Array.ArrayEquals(array, expected));
         }
-        
+
         [Test]
         public void BinarySearchTest()
         {
             string[] array = {"_a__", "_b__", "_c__", "_d__", "_e__", "_f__"};
             const char value = 'c';
-            const int expected = 2; 
-            
+            const int expected = 2;
+
             var result = Utilities.Array.BinarySearch(array, value, s => s[1]);
             Assert.AreEqual(result, expected);
+        }
+
+        [Test]
+        public void FillTest()
+        {
+            var array = new char[5];
+
+            Utilities.Array.Fill(ref array, 'a');
+
+            Assert.IsTrue(Utilities.Array.ArrayEquals(array, new[] {'a', 'a', 'a', 'a', 'a'}));
+        }
+
+        [Test]
+        public void FillResizeTest()
+        {
+            var array = Array.Empty<char>();
+
+            Utilities.Array.Fill(ref array, 5, 'a');
+
+            Assert.IsTrue(Utilities.Array.ArrayEquals(array, new[] {'a', 'a', 'a', 'a', 'a'}));
+        }
+
+        [Test]
+        public void FillSelectorTest()
+        {
+            var array = new char[5];
+
+            Utilities.Array.Fill(ref array, i => i % 2 == 0 ? 'a' : 'b');
+
+            Assert.IsTrue(Utilities.Array.ArrayEquals(array, new[] {'a', 'b', 'a', 'b', 'a'}));
+        }
+
+        [Test]
+        public void FillSelectorResizeTest()
+        {
+            var array = Array.Empty<char>();
+
+            Utilities.Array.Fill(ref array, 5, i => i % 2 == 0 ? 'a' : 'b');
+
+            Assert.IsTrue(Utilities.Array.ArrayEquals(array, new[] {'a', 'b', 'a', 'b', 'a'}));
         }
     }
 }
