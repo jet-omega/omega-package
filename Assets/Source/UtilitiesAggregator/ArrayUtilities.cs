@@ -188,16 +188,14 @@ namespace Omega.Package.Internal
             for (int i = 0; i < array.Length; i++) array[i] = selector.Invoke(i);
         }
         
-        public void Fill<T>(ref T[] array, int length, T value)
+        public void Fill<T>(ref T[] array, int index, int length, T value)
         {
-            Array.Resize(ref array, length);
-            for (int i = 0; i < array.Length; i++) array[i] = value;
+            for (int i = index; i < array.Length && i < index + length; i++) array[i] = value;
         }
 
-        public void Fill<T>(ref T[] array, int length, Func<int, T> selector)
+        public void Fill<T>(ref T[] array, int index, int length, Func<int, T> selector)
         {
-            Array.Resize(ref array, length);
-            for (int i = 0; i < array.Length; i++) array[i] = selector.Invoke(i);
+            for (int i = index; i < array.Length && i < index + length; i++) array[i] = selector.Invoke(i);
         }
 
         public void Sort<T, TOut>(T[] array, Func<T, TOut> selector) where TOut : IComparable<TOut>

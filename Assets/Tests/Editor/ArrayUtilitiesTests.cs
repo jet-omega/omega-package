@@ -300,15 +300,15 @@ namespace Omega.Package.Tests
         }
 
         [Test]
-        public void FillResizeTest()
+        public void FillIndexTest()
         {
-            var array = Array.Empty<char>();
+            var array = new char[5];
 
-            Utilities.Array.Fill(ref array, 5, 'a');
+            Utilities.Array.Fill(ref array, 1, 3, 'a');
 
-            Assert.IsTrue(Utilities.Array.ArrayEquals(array, new[] {'a', 'a', 'a', 'a', 'a'}));
+            Assert.IsTrue(Utilities.Array.ArrayEquals(array, new[] {'\0', 'a', 'a', 'a', '\0'}));
         }
-
+        
         [Test]
         public void FillSelectorTest()
         {
@@ -320,13 +320,13 @@ namespace Omega.Package.Tests
         }
 
         [Test]
-        public void FillSelectorResizeTest()
+        public void FillSelectorIndexTest()
         {
-            var array = Array.Empty<char>();
+            var array = new char[5];
 
-            Utilities.Array.Fill(ref array, 5, i => i % 2 == 0 ? 'a' : 'b');
+            Utilities.Array.Fill(ref array, 1, 3, i => i % 2 == 0 ? 'a' : 'b');
 
-            Assert.IsTrue(Utilities.Array.ArrayEquals(array, new[] {'a', 'b', 'a', 'b', 'a'}));
+            Assert.IsTrue(Utilities.Array.ArrayEquals(array, new[] {'\0', 'b', 'a', 'b', '\0'}));
         }
     }
 }
