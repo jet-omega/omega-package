@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 
 #pragma warning disable 649
 
@@ -16,32 +17,32 @@ namespace Omega.Package.Experimental
         private int _currentHeapSize;
         private bool _isHeapMode;
 
-        public void Append(string str)
+        public void Append(string value)
         {
-            var newCurrentIndex = _currentIndex + str.Length;
+            var newCurrentIndex = _currentIndex + value.Length;
 
             if (!_isHeapMode && newCurrentIndex >= StackDataSize)
                 MoveToHeap();
 
-            fixed (char* ptrSrc = str)
+            fixed (char* ptrStr = value)
             {
                 if (_isHeapMode)
                 {
                     if (newCurrentIndex >= _currentHeapSize)
                         ResizeHeap(newCurrentIndex);
 
-                    fixed (char* ptr = _heapData)
-                        CharArrayCopy(ptrSrc, ptr + _currentIndex, str.Length);
+                    fixed (char* ptrHeap = _heapData)
+                        CharArrayCopy(ptrStr, ptrHeap + _currentIndex, value.Length);
                 }
                 else
-                    fixed (char* ptr = _stackData)
-                        CharArrayCopy(ptrSrc, ptr + _currentIndex, str.Length);
+                    fixed (char* ptrStack = _stackData)
+                        CharArrayCopy(ptrStr, ptrStack + _currentIndex, value.Length);
             }
 
             _currentIndex = newCurrentIndex;
         }
 
-        public void Append(char t)
+        public void Append(char value)
         {
             if (!_isHeapMode && _currentIndex + 1 >= StackDataSize)
                 MoveToHeap();
@@ -51,34 +52,33 @@ namespace Omega.Package.Experimental
                 if (_currentIndex == _currentHeapSize)
                     ResizeHeap(_currentIndex + 1);
 
-                fixed (char* ptr = _heapData)
-                    *(ptr + _currentIndex++) = t;
+                fixed (char* ptrHeap = _heapData)
+                    *(ptrHeap + _currentIndex++) = value;
             }
             else
-                fixed (char* ptr = _stackData)
-                    *(ptr + _currentIndex++) = t;
+                fixed (char* ptrStack = _stackData)
+                    *(ptrStack + _currentIndex++) = value;
         }
 
         public void AppendLine() => Append('\n');
 
-        public void AppendLine(string text) => Append(text + '\n');
+        public void AppendLine(string value) => Append(value + '\n');
 
         public void Clear()
         {
-            if (_isHeapMode)
-                Array.Clear(_heapData, 0, _currentIndex + 1);
             _currentIndex = _currentHeapSize = 0;
             _isHeapMode = false;
+            _heapData = null;
         }
 
         public void Replace(char target, char value)
         {
             if (_isHeapMode)
-                fixed (char* ptr = _heapData)
-                    ReplaceChars(ptr, _currentIndex);
+                fixed (char* ptrHeap = _heapData)
+                    ReplaceChars(ptrHeap, _currentIndex);
             else
-                fixed (char* ptr = _stackData)
-                    ReplaceChars(ptr, _currentIndex);
+                fixed (char* ptrStack = _stackData)
+                    ReplaceChars(ptrStack, _currentIndex);
 
             void ReplaceChars(char* ptr, int length)
             {
@@ -93,8 +93,8 @@ namespace Omega.Package.Experimental
             if (_isHeapMode)
                 return new string(_heapData, 0, _currentIndex);
 
-            fixed (char* ptr = _stackData)
-                return new string(ptr, 0, _currentIndex);
+            fixed (char* ptrStack = _stackData)
+                return new string(ptrStack, 0, _currentIndex);
         }
 
         private void MoveToHeap()
@@ -102,10 +102,10 @@ namespace Omega.Package.Experimental
             _isHeapMode = true;
             _currentHeapSize = StackDataSize * 2;
             _heapData = new char[_currentHeapSize];
-            fixed (char* stackPtr = _stackData)
-            fixed (char* heapPtr = _heapData)
+            fixed (char* ptrStack = _stackData)
+            fixed (char* ptrHeap = _heapData)
                 for (int i = 0; i < _heapData.Length; i++)
-                    *(heapPtr + i) = *(stackPtr + i);
+                    *(ptrHeap + i) = *(ptrStack + i);
         }
 
         private void ResizeHeap(int targetSize)
@@ -116,10 +116,10 @@ namespace Omega.Package.Experimental
             Array.Resize(ref _heapData, _currentHeapSize);
         }
 
-        private static void CharArrayCopy(char* ptrSrc, char* destination, int length)
+        private static void CharArrayCopy(char* ptrSrc, char* ptrDst, int length)
         {
             for (int i = 0; i < length; i++)
-                *(destination + i) = *(ptrSrc + i);
+                *(ptrDst + i) = *(ptrSrc + i);
         }
     }
 }
