@@ -7,7 +7,7 @@ namespace Omega.Package.Experimental
 {
     public unsafe struct SlimStringBuilder
     {
-        private const int StackDataSize = 512;
+        private const int StackDataSize = 500;
 
         private fixed char _stackData[StackDataSize];
 
