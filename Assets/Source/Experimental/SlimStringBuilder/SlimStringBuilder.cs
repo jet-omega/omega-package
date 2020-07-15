@@ -60,9 +60,9 @@ namespace Omega.Package.Experimental
                     *(ptrStack + _currentIndex++) = value;
         }
 
-        public void AppendLine() => Append('\n');
+        public void AppendLine() => Append(Environment.NewLine);
 
-        public void AppendLine(string value) => Append(value + '\n');
+        public void AppendLine(string value) => Append(value + Environment.NewLine);
 
         public void Clear()
         {

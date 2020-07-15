@@ -414,62 +414,62 @@ namespace Omega.Package.Tests
         //         .Run();
         // }
         //
-        [Test]
-        [Performance]
-        public void SlimStringBuilderConcat4X32StringsPerformanceTest()
-        {
-            var random = new Random();
-            string string1 = string.Empty, string2 = string.Empty, string3 = string.Empty, string4 = string.Empty;
-            var lengthOfString = 32;
-            for (int i = 0; i < lengthOfString; i++) string1 += (char) (i % 26 + 65);
-            for (int i = 0; i < lengthOfString; i++) string2 += (char) (i % 26 + 65);
-            for (int i = 0; i < lengthOfString; i++) string3 += (char) (i % 26 + 65);
-            for (int i = 0; i < lengthOfString; i++) string4 += (char) (i % 26 + 65);
-        
-            void Test()
-            {
-                var slimStringBuilder = new SlimStringBuilder();
-                slimStringBuilder.Append(string1);
-                slimStringBuilder.Append(string2);
-                slimStringBuilder.Append(string3);
-                slimStringBuilder.Append(string4);
-                var result = slimStringBuilder.ToString();
-            }
-        
-            Measure.Method(Test)
-                .WarmupCount(100)
-                .IterationsPerMeasurement(20000)
-                .MeasurementCount(10)
-                .Run();
-        }
-        
-        [Test]
-        [Performance]
-        public void StringBuilderConcat4X32StringsPerformanceTest()
-        {
-            string string1 = string.Empty, string2 = string.Empty, string3 = string.Empty, string4 = string.Empty;
-            var lengthOfString = 32;
-            for (int i = 0; i < lengthOfString; i++) string1 += (char) (i % 26 + 65);
-            for (int i = 0; i < lengthOfString; i++) string2 += (char) (i % 26 + 65);
-            for (int i = 0; i < lengthOfString; i++) string3 += (char) (i % 26 + 65);
-            for (int i = 0; i < lengthOfString; i++) string4 += (char) (i % 26 + 65);
-        
-            void Test()
-            {
-                var stringBuilder = new StringBuilder();
-                stringBuilder.Append(string1);
-                stringBuilder.Append(string2);
-                stringBuilder.Append(string3);
-                stringBuilder.Append(string4);
-                var result = stringBuilder.ToString();
-            }
-        
-            Measure.Method(Test)
-                .WarmupCount(100)
-                .IterationsPerMeasurement(20000)
-                .MeasurementCount(10)
-                .Run();
-        }
+        // [Test]
+        // [Performance]
+        // public void SlimStringBuilderConcat4X32StringsPerformanceTest()
+        // {
+        //     var random = new Random();
+        //     string string1 = string.Empty, string2 = string.Empty, string3 = string.Empty, string4 = string.Empty;
+        //     var lengthOfString = 32;
+        //     for (int i = 0; i < lengthOfString; i++) string1 += (char) (i % 26 + 65);
+        //     for (int i = 0; i < lengthOfString; i++) string2 += (char) (i % 26 + 65);
+        //     for (int i = 0; i < lengthOfString; i++) string3 += (char) (i % 26 + 65);
+        //     for (int i = 0; i < lengthOfString; i++) string4 += (char) (i % 26 + 65);
+        //
+        //     void Test()
+        //     {
+        //         var slimStringBuilder = new SlimStringBuilder();
+        //         slimStringBuilder.Append(string1);
+        //         slimStringBuilder.Append(string2);
+        //         slimStringBuilder.Append(string3);
+        //         slimStringBuilder.Append(string4);
+        //         var result = slimStringBuilder.ToString();
+        //     }
+        //
+        //     Measure.Method(Test)
+        //         .WarmupCount(100)
+        //         .IterationsPerMeasurement(20000)
+        //         .MeasurementCount(10)
+        //         .Run();
+        // }
+        //
+        // [Test]
+        // [Performance]
+        // public void StringBuilderConcat4X32StringsPerformanceTest()
+        // {
+        //     string string1 = string.Empty, string2 = string.Empty, string3 = string.Empty, string4 = string.Empty;
+        //     var lengthOfString = 32;
+        //     for (int i = 0; i < lengthOfString; i++) string1 += (char) (i % 26 + 65);
+        //     for (int i = 0; i < lengthOfString; i++) string2 += (char) (i % 26 + 65);
+        //     for (int i = 0; i < lengthOfString; i++) string3 += (char) (i % 26 + 65);
+        //     for (int i = 0; i < lengthOfString; i++) string4 += (char) (i % 26 + 65);
+        //
+        //     void Test()
+        //     {
+        //         var stringBuilder = new StringBuilder();
+        //         stringBuilder.Append(string1);
+        //         stringBuilder.Append(string2);
+        //         stringBuilder.Append(string3);
+        //         stringBuilder.Append(string4);
+        //         var result = stringBuilder.ToString();
+        //     }
+        //
+        //     Measure.Method(Test)
+        //         .WarmupCount(100)
+        //         .IterationsPerMeasurement(20000)
+        //         .MeasurementCount(10)
+        //         .Run();
+        // }
         //
         // [Test]
         // [Performance]
