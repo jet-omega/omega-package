@@ -33,6 +33,12 @@ namespace Omega.Package
         public static Exception SetResultCannotCalledWhenRoutineIsNotDefined
             => new AggregateException(Messages.SetResultCannotCalledWhenRoutineIsNotDefined);
 
+        public static Exception CantContinueBecauseNestedRoutineHaveError
+            => new Exception(Messages.CantContinueBecauseNestedRoutineHaveError);
+
+        public static Exception CantContinueBecauseNestedRoutineIsCancelled
+            => new Exception(Messages.CantContinueBecauseNestedRoutineIsCancelled);
+
         public static class Messages
         {
             #region ActionHandlerUnityAdapter
@@ -78,6 +84,13 @@ namespace Omega.Package
                 $"If {nameof(RoutineControl)} is used as a bridge between {nameof(IEnumerator)} and {nameof(Routine)}, " +
                 $"Then you must use {nameof(Routine)}.{nameof(Routine.ByEnumerator)}";
 
+            public static readonly string CantContinueBecauseNestedRoutineHaveError =
+                $"Unable continue execute routine because nested routine have error. " +
+                $"You can use the {nameof(RoutineExtension.Catch)} extension-method for nested routine if this behavior is expected";
+
+            public static readonly string CantContinueBecauseNestedRoutineIsCancelled =
+                $"Unable continue execute routine because nested routine were cancelled. " +
+                $"You can use the {nameof(RoutineExtension.Catch)} extension-method for nested routine if this behavior is expected";
 
             public static string CreateExceptionMessageForRoutine(Routine routine, Exception exception)
             {
@@ -92,6 +105,7 @@ namespace Omega.Package
                     .NewLine
                     .NewLine.Bold.Text("▸ ▸ ▸ STACK TRACE ◂ ◂ ◂")
                     .NewLine.UnstyledText(StackTraceUtility.ExtractStringFromException(exception));
+                
 
                 messageFactory.NewLine.Bold.Text("▸ ▸ ▸ CREATION STACK TRACE ◂ ◂ ◂");
                 messageFactory.NewLine.UnstyledText(

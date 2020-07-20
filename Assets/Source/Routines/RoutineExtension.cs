@@ -1,6 +1,8 @@
 using System;
 using System.Diagnostics;
+using JetBrains.Annotations;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Omega.Routines
 {
@@ -10,7 +12,7 @@ namespace Omega.Routines
         public static Routine OnChangeProgress(this Routine self, Action<float> handler)
         {
             Routine.Logger.Log("OnChangeProgress is deprecated, use OnProgress", LogType.Error);
-            
+
             if (self is null)
                 throw new NullReferenceException(nameof(self));
             if (handler is null)
@@ -48,7 +50,7 @@ namespace Omega.Routines
 
             return routine = self;
         }
-        
+
         public static TRoutine Self<TRoutine>(this TRoutine self, out TRoutine routine)
             where TRoutine : Routine
         {
@@ -56,6 +58,17 @@ namespace Omega.Routines
                 throw new NullReferenceException(nameof(self));
 
             return routine = self;
+        }
+
+        public static TRoutine SetName<TRoutine>(this TRoutine self, [NotNull] string name)
+            where TRoutine : Routine
+        {
+            if (self == null)
+                throw new NullReferenceException(nameof(self));
+
+            self.Name = name;
+
+            return self;
         }
 
         public static TRoutine Callback<TRoutine>(this TRoutine original, Action callback)
@@ -90,6 +103,15 @@ namespace Omega.Routines
 
             original.AddCallbackInternal(() => callback.Invoke(original.GetResult()));
             return original;
+        }
+
+        public static Routine Catch(this Routine routine, CompletionCase completionCase, bool withSuccess = true)
+        {
+            var finalCompletionCase = withSuccess
+                ? CompletionCase.Success | completionCase
+                : completionCase;
+
+            return new RoutineContinuation(routine, finalCompletionCase);
         }
 
         public static Routine<TResult> Result<TResult>(this Routine<TResult> original,
@@ -157,9 +179,9 @@ namespace Omega.Routines
             if (!original.IsNotStarted)
                 throw new AggregateException();
 
-            var stackTrace = new StackTrace(1, true).ToString();
+            var extracted = Package.StackTraceUtility.ExtractFormattedStackTrace(new StackTrace(1, true));
 
-            original.SetCreationStackTraceInternal(stackTrace);
+            original.SetCreationStackTraceInternal(extracted);
 
             return original;
         }
