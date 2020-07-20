@@ -58,26 +58,6 @@ namespace Omega.Package.Internal
         }
 
         /// <summary>
-        /// Пытается найти объект на компоненте, если компонент найден вернет true а <param name="component"/>>будет указывать на найденный объект,
-        /// в противном случае, вернет false, а <param name="component"/>>будет указывать на null
-        /// </summary>
-        /// <param name="gameObject">Игровой объект</param>
-        /// <param name="component">Ссылка на найденный объект (null, если объект не найден)</param>
-        /// <typeparam name="T">Тип компонента</typeparam>
-        /// <returns>true - компонент найден, false - объект не найден</returns>
-        /// <exception cref="ArgumentNullException">Параметр <param name="gameObject"/>> указывает на null</exception>
-        /// <exception cref="MissingReferenceException">Параметр <param name="gameObject"/>> указывает на уничтоженный объект</exception>
-        public bool TryGetComponent<T>([NotNull] GameObject gameObject, [CanBeNull] out T component)
-        {
-            if (gameObject is null)
-                throw new ArgumentNullException(nameof(gameObject));
-            if (!gameObject)
-                throw new MissingReferenceException(nameof(gameObject));
-
-            return TryGetComponentWithoutChecks(gameObject, out component);
-        }
-
-        /// <summary>
         /// Проверяет содержит ли объект компонент заданного типа 
         /// </summary>
         /// <param name="gameObject">Игровой объект</param>
@@ -222,22 +202,6 @@ namespace Omega.Package.Internal
             => gameObject.GetComponent(componentType) ?? gameObject.AddComponent(componentType);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static bool TryGetComponentWithoutChecks<T>([NotNull] GameObject gameObject,
-                [CanBeNull] out T component)
-            // Проверка на null выбрана намеренно, так как GetComponent никогда не вернет уничтоженный объект
-            // https://docs.unity3d.com/ScriptReference/GameObject.GetComponent.html
-            // Здесь нельзя использовать "is null" так как GetComponent возвращает объект типа T, который, с точки зрения
-            // компилятора может быть как ссылочным типом так и значимым, поэтому левый операнд приводится к object
-            => !((object) (component = gameObject.GetComponent<T>()) is null);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static bool TryGetComponentWithoutChecks([NotNull] GameObject gameObject, [NotNull] Type componentType,
-                [CanBeNull] out Component component)
-            // Проверка на null выбрана намеренно, так как GetComponent никогда не вернет уничтоженный объект
-            // https://docs.unity3d.com/ScriptReference/GameObject.GetComponent.html
-            => !((component = gameObject.GetComponent(componentType)) is null);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static bool ContainsComponentWithoutChecks<T>([NotNull] GameObject gameObject)
             // Проверка на null выбрана намеренно, так как GetComponent никогда не вернет уничтоженный объект
             // https://docs.unity3d.com/ScriptReference/GameObject.GetComponent.html
@@ -257,14 +221,14 @@ namespace Omega.Package.Internal
             [NotNull] Type componentType, bool searchInRoot = false)
         {
             if (searchInRoot)
-                if (TryGetComponentWithoutChecks(gameObject, componentType, out var component))
+                if (gameObject.TryGetComponent(componentType, out var component))
                     return component;
 
             var transform = gameObject.transform;
             for (int i = 0; i < transform.childCount; i++)
             {
                 var childGameObject = transform.GetChild(i).gameObject;
-                if (TryGetComponentWithoutChecks(childGameObject, componentType, out var component))
+                if (childGameObject.TryGetComponent(componentType, out var component))
                     return component;
             }
 
@@ -275,7 +239,7 @@ namespace Omega.Package.Internal
             [NotNull] Type componentType, [NotNull] List<Component> result, bool searchInRoot = false)
         {
             if (searchInRoot)
-                if (TryGetComponentWithoutChecks(gameObject, componentType, out var component))
+                if (gameObject.TryGetComponent(componentType, out var component))
                     result.Add(component);
 
             var transform = gameObject.transform;
@@ -293,7 +257,7 @@ namespace Omega.Package.Internal
         [CanBeNull]
         internal static T GetComponentDirectWithoutChecks<T>([NotNull] GameObject gameObject, bool searchInRoot = false)
         {
-            if (searchInRoot && TryGetComponentWithoutChecks<T>(gameObject, out var selfComponent))
+            if (searchInRoot && gameObject.TryGetComponent<T>(out var selfComponent))
                 return selfComponent;
 
             var transform = gameObject.transform;
@@ -302,7 +266,7 @@ namespace Omega.Package.Internal
             for (int i = 0; i < transformChildCount; i++)
             {
                 var childGameObject = transform.GetChild(i).gameObject;
-                if (TryGetComponentWithoutChecks<T>(childGameObject, out var component))
+                if (childGameObject.TryGetComponent<T>(out var component))
                     return component;
             }
 

@@ -24,6 +24,12 @@ namespace Omega.Routines
             SetResult(targetResult);
         }
 
+        protected override void OnCancel()
+        {
+            _routine.Cancel();
+            base.OnCancel();
+        }
+
         public float GetProgress()
         {
             if (_routine is IProgressRoutineProvider progressProvider)

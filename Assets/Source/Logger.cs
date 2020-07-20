@@ -37,8 +37,10 @@ namespace Omega.Package
                 .ToString(true);
         }
 
-
-        public void Log(string message, LogType logType = LogType.Log)
+        public void Log(string message) => Log(message, LogType.Log, LogOption.NoStacktrace);
+        public void Log(string message, LogType logType) => Log(message, logType, LogOption.NoStacktrace);
+        public void Log(string message, LogOption logOption) => Log(message, LogType.Log, logOption);
+        public void Log(string message, LogType logType, LogOption logOption, Object context = null)
         {
             var fullMessage = _richTextFactory
                 .UnstyledText(TitleBacked)
@@ -46,7 +48,7 @@ namespace Omega.Package
 
             _richTextFactory.Clear();
 
-            Debug.unityLogger.Log(logType, fullMessage);
+            Debug.LogFormat(logType, logOption, context, fullMessage);
         }
 
         public Logger CreateSubLogger(string subtitle, Color subtitleColor, FontStyle subtitleStyle = FontStyle.Normal)
