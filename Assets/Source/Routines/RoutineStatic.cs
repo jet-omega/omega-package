@@ -124,16 +124,6 @@ namespace Omega.Routines
             return new EmptyRoutine();
         }
 
-      
-        [NotNull]
-        public static GroupRoutine WhenAll([NotNull] params Routine[] routines)
-        {
-            if (routines == null)
-                throw new ArgumentNullException(nameof(routines));
-
-            return new GroupRoutine(routines);
-        }
-
         public static ByEnumeratorRoutine ByEnumerator(IEnumerator enumerator)
         {
             if (enumerator == null)
