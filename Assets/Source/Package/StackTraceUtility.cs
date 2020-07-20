@@ -39,26 +39,29 @@ namespace Omega.Package
             var str1 = "";
             for (; exception != null; exception = exception.InnerException)
             {
-                str1 = str1.Length != 0 ? exception.StackTrace + "\n" + str1 : exception.StackTrace;
+                if(exception.StackTrace is null)
+                    break;
 
-                var regex = new Regex("at ");
+                str1 = str1.Length != 0 ? exception.StackTrace + "\n" + str1 : exception.StackTrace;
+                
+                var regex = new Regex(" at ");
                 // ReSharper disable once AssignNullToNotNullAttribute
                 foreach (Match match in regex.Matches(str1))
                     str1 = str1.Replace(match.Value, "");
-
+                
                 regex = new Regex("\\S:.*Assets");
                 foreach (Match match in regex.Matches(str1))
                     str1 = str1.Replace(match.Value, "(at Assets");
-
+                
                 regex = new Regex(" \\[0x\\S*\\] in ");
                 foreach (Match match in regex.Matches(str1))
                     str1 = str1.Replace(match.Value, " ");
-
-                regex = new Regex("cs:\\d*");
+                
+                regex = new Regex("cs:\\d* ");
                 var matches = regex.Matches(str1);
                 foreach (Match match in matches)
-                    str1 = str1.Replace(match.Value, match.Value + ")");
-
+                    str1 = str1.Replace(match.Value, match.Value.Replace(" ", ")"));
+                
                 str1 = str1.Replace("\\", "/");
 
 

@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using JetBrains.Annotations;
 using Omega.Package;
+using Omega.Routines.Exceptions;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Logger = Omega.Package.Logger;
@@ -23,14 +25,14 @@ namespace Omega.Routines
 
         private RoutineStatus _status;
         [CanBeNull] private Exception _exception;
-        [CanBeNull] private IEnumerator _routine;
+        [CanBeNull] private IEnumerator _routineStateMachine;
         [CanBeNull] private Action _callback;
-        [CanBeNull] private Action _update;
+        [CanBeNull] private Action _updateRoutine;
         [NotNull] private Action<Exception, Routine> _exceptionHandler = DefaultExceptionHandler;
 
         [CanBeNull] private string _creationStackTrace;
 
-        public string Name { get; set; }
+        [CanBeNull] public string Name { get; set; }
 
         public bool IsError => _status == RoutineStatus.Error;
         public bool IsProcessing => _status == RoutineStatus.Processing || _status == RoutineStatus.ForcedProcessing;
@@ -38,141 +40,47 @@ namespace Omega.Routines
         public bool IsNotStarted => _status == RoutineStatus.NotStarted;
         public bool IsCanceled => _status == RoutineStatus.Canceled;
 
-        protected bool IsForcedProcessing => _status == RoutineStatus.ForcedProcessing;
+        protected internal bool IsForcedProcessing => _status == RoutineStatus.ForcedProcessing;
 
-        public Exception Exception => _exception;
+        [CanBeNull] public Exception Exception => _exception;
 
         protected abstract IEnumerator RoutineUpdate();
 
-        private void SetupCompleted()
+        internal IEnumerator GetStateMachine()
         {
-            if (_status == RoutineStatus.Canceled)
-                throw new InvalidOperationException("Routine was canceled");
+            if (_routineStateMachine == null)
+                _routineStateMachine = RoutineUpdate();
 
-            _status = RoutineStatus.Completed;
-            _update?.Invoke();
-            _callback?.Invoke();
+            return _routineStateMachine;
         }
+
+        internal void UpdatePulse()
+        {
+            _updateRoutine?.Invoke();
+        }
+
 
         bool IEnumerator.MoveNext()
         {
-            //todo: optimize condition. mb something typo `_status < 16` 
+            // todo: optimize condition. mb something typo `_status < 16` 
             // Если рутина содержит ошибку, то последующие ее выполнение может быть не корректным.
+            // todo: execution round rework
             if (IsError || IsCanceled || IsComplete)
                 return false;
 
-            // Если рутина еще не создана - создаем
-            if (_routine == null)
+            if (GetStateMachine() is null)
             {
-                _routine = RoutineUpdate();
-                if (_routine == null)
-                {
-                    SetupCompleted();
-                    return false;
-                }
-
-                if (_status != RoutineStatus.ForcedProcessing)
-                {
-                    _status = RoutineStatus.Processing;
-                    _update?.Invoke();
-                }
-            }
-
-            bool moveNextResult = false;
-
-            // Для поддержки правильного состояния рутины изолируем исполнение пользовательского кода 
-            try
-            {
-                moveNextResult = DeepMoveNext(_routine);
-            }
-            catch (Exception e)
-            {
-                // В случае если пользовательский код вызвал исключение, то обновляем состояние рутины
-                // и обрабатываем это исключение
-                _exception = e;
-                _status = RoutineStatus.Error;
-
-                _exceptionHandler.Invoke(e, this);
-                _update?.Invoke();
-
+                SetupCompletedInternal();
                 return false;
             }
 
-            // Если больше не можем двигаться дольше то помечаем рутину как завершенную  
-            if (moveNextResult)
-                _update?.Invoke();
-            else if (!IsCanceled)
-                SetupCompleted();
-
-            return moveNextResult;
-        }
-
-        /// <summary>
-        /// Обновляет состояние рутины со всеми вложениями
-        /// </summary>
-        /// <param name="enumerator"></param>
-        /// <returns></returns>
-        private bool DeepMoveNext(IEnumerator enumerator)
-        {
-            // Пытаемся получить состояние рутины 
-            var current = enumerator.Current;
-
-            // Если текущее состояние рутины ожидает завершения другой рутины
-            if (current is IEnumerator nestedEnumerator)
-                // То ожидаем эту вложенную рутину со всеми ее вложениями
-                // Если обновить состояние рутины не удалось то двигаем рутину которая содержала в себе вложенную рутину
+            if (_status != RoutineStatus.ForcedProcessing)
             {
-                if (current is Routine nestedRoutine)
-                {
-                    var nestedRoutineStatus = nestedRoutine._status;
-
-                    // if(nestedRoutineStatus == RoutineStatus.Error)
-                    //     throw new Exception("Nested routine have error", nestedRoutine._exception);
-                    // if(nestedRoutineStatus == RoutineStatus.Canceled)
-                    //     throw new Exception("Nested routine were canceled");
-
-                    var isProcessingNestedRoutine = nestedRoutineStatus != RoutineStatus.Canceled
-                                                    && nestedRoutineStatus != RoutineStatus.Completed
-                                                    && nestedRoutineStatus != RoutineStatus.Error;
-
-                    if (isProcessingNestedRoutine &&
-                        _status == RoutineStatus.ForcedProcessing &&
-                        nestedRoutineStatus != RoutineStatus.ForcedProcessing)
-                        nestedRoutine.OnForcedCompleteInternal();
-
-                    if (nestedRoutine.DeepMoveNext(nestedEnumerator))
-                        return true;
-                }
+                _status = RoutineStatus.Processing;
+                _updateRoutine?.Invoke();
             }
 
-            // Если текущее состояние рутины ожидает завершения асинхронной операции, то просто ждем ее завершения
-            else if (current is AsyncOperation nestedAsyncOperation)
-            {
-                if (_status == RoutineStatus.ForcedProcessing && !nestedAsyncOperation.CanBeForceComplete())
-                    throw new InvalidOperationException("You cant force complete that async-operation: " +
-                                                        nestedAsyncOperation.GetType());
-
-                if (!nestedAsyncOperation.isDone)
-                    return true;
-            }
-
-            return !IsError && !IsCanceled && !IsComplete && enumerator.MoveNext();
-        }
-
-        internal void OnForcedCompleteInternal()
-        {
-            if (_status == RoutineStatus.Completed || _status == RoutineStatus.ForcedProcessing)
-                return;
-
-            if (_status is RoutineStatus.Error)
-                throw new InvalidOperationException(
-                    "Impossible to force complete a routine in which there is an error");
-
-            _status = RoutineStatus.ForcedProcessing;
-
-            OnForcedComplete();
-
-            _update?.Invoke();
+            return RoutineExecution.ExecuteRound(this);
         }
 
         public void Cancel()
@@ -185,7 +93,7 @@ namespace Omega.Routines
 
             OnCancel();
 
-            _update?.Invoke();
+            _updateRoutine?.Invoke();
         }
 
         protected virtual void OnForcedComplete()
@@ -201,7 +109,7 @@ namespace Omega.Routines
         {
             _exceptionHandler = DefaultExceptionHandler;
             _status = RoutineStatus.NotStarted;
-            _routine = null;
+            _routineStateMachine = null;
             _exception = null;
             _callback = null;
         }
@@ -258,9 +166,55 @@ namespace Omega.Routines
             => _creationStackTrace;
 
         internal void AddUpdateActionInternal(Action action)
-            => _update += action;
+            => _updateRoutine += action;
 
-        private enum RoutineStatus
+        internal RoutineStatus GetStatus() => _status;
+
+        internal void SetupProgressingInternal()
+            => _status = RoutineStatus.Processing;
+
+        internal void SetupForcedProcessingInternal()
+        {
+            if (_status == RoutineStatus.Completed || _status == RoutineStatus.ForcedProcessing)
+                return;
+
+            if (_status is RoutineStatus.Error)
+                throw new RoutineErrorException("routine cant be (forced) processing because it have error");
+
+            _status = RoutineStatus.ForcedProcessing;
+
+            OnForcedComplete();
+
+            _updateRoutine?.Invoke();
+        }
+        
+        internal void SetupCompletedInternal()
+        {
+            if(_status == RoutineStatus.Completed)
+                return;
+            
+            if (_status == RoutineStatus.Canceled)
+                throw new InvalidOperationException("routine cant be completed because it was cancelled");
+
+            if (_status == RoutineStatus.Error)
+                throw new InvalidOperationException("routine cant be completed because it have error");
+
+            _status = RoutineStatus.Completed;
+            _updateRoutine?.Invoke();
+            _callback?.Invoke();
+        }
+        
+        internal void SetupErrorInternal(Exception exception)
+        {
+            if(_status == RoutineStatus.Error)
+                throw new RoutineErrorException("it is not possible to set an error to a routine because it already has an error");
+            
+            _exception = exception;
+            _status = RoutineStatus.Error;
+            _exceptionHandler.Invoke(exception, this);
+        }
+
+        internal enum RoutineStatus
         {
             NotStarted = 0,
             Processing,
