@@ -190,12 +190,22 @@ namespace Omega.Package.Internal
         
         public void Fill<T>(ref T[] array, int index, int length, T value)
         {
-            for (int i = index; i < array.Length && i < index + length; i++) array[i] = value;
+            if (index < 0 || index >= array.Length)
+                throw new ArgumentException("Index was out of bounds", nameof(index));
+            var endIndex = index + length;
+            if (endIndex >= array.Length)
+                throw new ArgumentException("Length is too big", nameof(length));
+            for (int i = index; i < endIndex; i++) array[i] = value;
         }
 
         public void Fill<T>(ref T[] array, int index, int length, Func<int, T> selector)
         {
-            for (int i = index; i < array.Length && i < index + length; i++) array[i] = selector.Invoke(i);
+            if (index < 0 || index >= array.Length)
+                throw new ArgumentException("Index was out of bounds", nameof(index));
+            var endIndex = index + length;
+            if (endIndex >= array.Length)
+                throw new ArgumentException("Length is too big", nameof(length));
+            for (int i = index; i < endIndex; i++) array[i] = selector.Invoke(i);
         }
 
         public void Sort<T, TOut>(T[] array, Func<T, TOut> selector) where TOut : IComparable<TOut>
