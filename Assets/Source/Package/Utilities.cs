@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Omega.Package.Internal;
 using Omega.Tools;
 
