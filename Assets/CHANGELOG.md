@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.0] - 2020-07-01
+### Changed
+- changed target unity version from 2018.3 to 2019.4 (LTS) (#170)
+
+### Improved
+- improved stack-trace format for routines. Now when errors occur within routines, the stack of the trace is formatted so that it is highlighted and is clickable (#165)  
+- improved calculation of progress in the `WebRequestRoutine`. Now progress is growing more linearly and does not start at 50% (#153)
+
+### Added
+- added `MissingComponent` extension-method overload for `GameObject` with `Type` argument (#163)
+- added new utilities methods for Array. New methods allow sorting and binary search in arrays through selectors (#138)
+- added new extension-methods for reflection. Based on Sirenix.Utilities ([odin](https://odininspector.com/))
+### Fixed
+- fixed bug when the child routine canceled the parent and that continued to run another round (The bug was fixed when the child subroutine canceled the parent one and it continued to execute another round (it was completed only in the next round) (#171)
+- fixed getting progress from `DelayRoutine` to the first routine-update round (#157)
+
+### Removed
+- `TryGetComponent` extension-method for `GameObject` was deleted because it also appeared in Unity 2019 (#173)
+
+## [0.11.4] - 2020-06-25
+### Added
+- add `SequenceRoutine`. Lets create sequence from routines 
+
 ## [0.11.3] - 2020-06-25
 ### Added
 - add extension-methods for convert UnityWebRequest to Routine (#140)

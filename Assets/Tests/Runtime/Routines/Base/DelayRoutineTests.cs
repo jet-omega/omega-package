@@ -12,16 +12,15 @@ namespace Omega.Routines.Tests
         [UnityTest]
         public IEnumerator DelayRoutineShouldFulfilledSetTimeTest()
         {
-            var targetTime = TimeSpan.FromMilliseconds(50);
+            var delayTime = TimeSpan.FromMilliseconds(50);
 
-            var startTime = DateTime.Now;
-            var scheduledReleaseTime = startTime + targetTime;
+            var startTime = DateTime.UtcNow;
 
-            yield return Routine.Delay(targetTime);
+            yield return Routine.Delay(delayTime);
 
-            var delta = (DateTime.Now - scheduledReleaseTime).TotalSeconds;
-            Assert.Positive(delta);
-            Assert.GreaterOrEqual(Time.unscaledDeltaTime, delta);
+            var passedTime = (DateTime.UtcNow - startTime).TotalSeconds;
+
+            Assert.GreaterOrEqual(passedTime, delayTime.TotalSeconds);
         }
 
         [Test]
@@ -34,16 +33,15 @@ namespace Omega.Routines.Tests
         [Test]
         public void DelayRoutineShouldFulfilledSetTimeWhenUserUseForceCompleteTest()
         {
-            var targetTime = TimeSpan.FromMilliseconds(50);
+            var delayTime = TimeSpan.FromMilliseconds(50);
 
-            var startTime = DateTime.Now;
-            var scheduledReleaseTime = startTime + targetTime;
+            var startTime = DateTime.UtcNow;
 
-            Routine.Delay(targetTime).Complete();
+            Routine.Delay(delayTime).Complete(5);
 
-            var delta = (DateTime.Now - scheduledReleaseTime).TotalSeconds;
-            Assert.Positive(delta);
-            Assert.GreaterOrEqual(Time.unscaledDeltaTime, delta);
+            var passedTime = (DateTime.UtcNow - startTime).TotalSeconds;
+
+            Assert.GreaterOrEqual(passedTime, delayTime.TotalSeconds);
         }
 
         [UnityTest]
@@ -51,11 +49,35 @@ namespace Omega.Routines.Tests
         {
             var timeMeter = TimeMeter.New();
             var routine = Routine.Delay(1);
-            routine.Cancel();
+            routine.SetName("delay").Cancel();
             yield return routine;
 
             var elapsed = timeMeter.ToSeconds();
             Assert.Less(elapsed, 1f);
+        }
+        
+        [Test]
+        public void ChildDelayRoutineHasProgressOnFirstParentGetProgress()
+        {
+            var routine = Routine.Delay(0.05f);
+            Routine.WaitOne(routine, () => true)
+                .OnProgress(p =>
+                {
+                    // ReSharper disable once CompareOfFloatsByEqualityOperator
+                    if (p == 0)
+                        Assert.Pass();
+                    else
+                        Assert.Fail();
+                });
+        }
+
+        [Test]
+        public void DelayRoutineHasProgressBeforeStart()
+        {
+            var routine = Routine.Delay(0.05f);
+            var p = routine.GetProgress();
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
+            Assert.IsTrue(p == 0);
         }
     }
 }

@@ -70,15 +70,24 @@ namespace Omega.Routines
             return new GroupRoutine(routines);
         }
 
-        public static Routine FromCompleted()
+        [NotNull]
+        public static SequenceRoutine Sequence([NotNull] params Routine[] routines)
+        {
+            if (routines == null)
+                throw new ArgumentNullException();
+            
+            return new SequenceRoutine(routines);
+        }
+        
+        public static Routine GetCompleted()
         {
             new EmptyRoutine().Self(out var routine).Complete();
             return routine;
         }
 
-        public static Routine<T> FromCompleted<T>(T value)
+        public static Routine<T> GetCompleted<T>(T value)
         {
-           new FromResultRoutine<T>(value).Self(out var routine).Complete();
+           new RoutineWithResult<T>(value).Self(out var routine).Complete();
            return routine;
         }
 
@@ -105,8 +114,6 @@ namespace Omega.Routines
 
             return new GroupRoutine(routines);
         }
-
-        public static Routine<T> FromResult<T>(T result) => new FromResultRoutine<T>(result);
 
         public static ByEnumeratorRoutine ByEnumerator(IEnumerator enumerator)
         {
@@ -161,5 +168,16 @@ namespace Omega.Routines
         {
             return new WaitRoutine<TResult>(routine, resultProvider);
         }
+
+        public static Routine<T> GetWithResult<T>(T result) => new RoutineWithResult<T>(result);
+        
+        [Obsolete("Use WithResult")]
+        public static Routine<T> FromResult<T>(T result) => new RoutineWithResult<T>(result);
+        
+        [Obsolete("Use GetCompleted")]
+        public static Routine FromCompleted() => GetCompleted();
+        
+        [Obsolete("Use GetCompleted")]
+        public static Routine<T> FromCompleted<T>(T value) => GetCompleted(value);
     }
 }

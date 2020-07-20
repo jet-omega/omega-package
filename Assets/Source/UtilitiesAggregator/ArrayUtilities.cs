@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using UnityEngine;
 
 namespace Omega.Package.Internal
 {
@@ -77,8 +73,9 @@ namespace Omega.Package.Internal
                 }
             }
 
-            Array.Resize(ref array, resultArrayIndex); // Из-за "лишнего" инкремента на последней итерации здесь индекс на 1 больше,
-                                                       //чем последний индекс. То есть выступает в качестве Length
+            Array.Resize(ref array,
+                resultArrayIndex); // Из-за "лишнего" инкремента на последней итерации здесь индекс на 1 больше,
+            //чем последний индекс. То есть выступает в качестве Length
             return startArrayLength - resultArrayIndex;
         }
 
@@ -121,7 +118,7 @@ namespace Omega.Package.Internal
         /// <param name="lhs"></param>
         /// <param name="rhs"></param>
         /// <returns></returns>
-        public bool ArrayReferenceEquals<T>(T[] lhs, T[] rhs) where T : class 
+        public bool ArrayReferenceEquals<T>(T[] lhs, T[] rhs) where T : class
         {
             if (lhs == null || rhs == null)
                 return lhs == rhs;
@@ -179,6 +176,73 @@ namespace Omega.Package.Internal
         {
             Array.Clear(array, 0, array.Length);
             Array.Resize(ref array, 0);
+        }
+
+        public void Sort<T, TOut>(T[] array, Func<T, TOut> selector) where TOut : IComparable<TOut>
+        {
+            Array.Sort(array, new SelectComparer<T, TOut>(selector));
+        }
+
+        public void Sort<T, TOut>(T[] array, int index, int length, Func<T, TOut> selector)
+            where TOut : IComparable<TOut>
+        {
+            Array.Sort(array, index, length, new SelectComparer<T, TOut>(selector));
+        }
+
+        public int BinarySearch<T, TOut>(T[] array, TOut value, Func<T, TOut> selector) where TOut : IComparable<TOut>
+        {
+            return BinarySearch(array, 0, array.Length, value, selector);
+        }
+
+        public int BinarySearch<T, TOut>(T[] array, int index, int length, TOut value, Func<T, TOut> selector)
+            where TOut : IComparable<TOut>
+        {
+            if (array == null)
+                throw new ArgumentNullException(nameof(array));
+            var lowerBound = array.GetLowerBound(0);
+            if (index < lowerBound || length < 0)
+                throw new ArgumentOutOfRangeException(index < lowerBound ? nameof(index) : nameof(length));
+            if (array.Length - (index - lowerBound) < length)
+                throw new ArgumentException();
+            if (array.Rank != 1)
+                throw new RankException("Array rank 1 is only supported");
+
+            var low = index;
+            var hi = index + length - 1;
+
+            while (low <= hi)
+            {
+                var median = low + (hi - low >> 1);
+                int num;
+                try
+                {
+                    num = selector(array[median]).CompareTo(value);
+                }
+                catch
+                {
+                    throw new InvalidOperationException("IComparer failed");
+                }
+
+                if (num == 0)
+                    return median;
+                if (num < 0)
+                    low = median + 1;
+                else
+                    hi = median - 1;
+            }
+
+            return ~low;
+        }
+        
+        
+        private readonly struct SelectComparer<T, TComparision> : IComparer<T>
+            where TComparision : IComparable<TComparision>
+        {
+            private readonly Func<T, TComparision> _selector;
+
+            public SelectComparer(Func<T, TComparision> selector) => _selector = selector;
+
+            public int Compare(T x, T y) => _selector(x).CompareTo(_selector(y));
         }
     }
 }

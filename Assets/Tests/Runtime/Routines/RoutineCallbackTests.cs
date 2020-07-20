@@ -189,8 +189,7 @@ namespace Omega.Routines.Tests
                 routineControl.GetRoutine().Cancel();
             }
 
-            Assert.Throws<InvalidOperationException>(() =>
-                Routine.ByEnumerator(Enumerator).Callback(CallbackAction, CallbackCase.Complete).Complete());
+            Routine.ByEnumerator(Enumerator).Callback(CallbackAction, CallbackCase.Complete).Complete();
             Assert.IsFalse(result);
         }
 
@@ -207,8 +206,7 @@ namespace Omega.Routines.Tests
                 routineControl.GetRoutine().Cancel();
             }
 
-            Assert.Throws<InvalidOperationException>(() =>
-                Routine.ByEnumerator(Enumerator).Callback(CallbackAction, CallbackCase.Error).Complete());
+            Routine.ByEnumerator(Enumerator).Callback(CallbackAction, CallbackCase.Error).Complete();
             Assert.IsFalse(result);
         }
 
@@ -225,8 +223,7 @@ namespace Omega.Routines.Tests
                 routineControl.GetRoutine().Cancel();
             }
 
-            Assert.Throws<InvalidOperationException>(() =>
-                Routine.ByEnumerator(Enumerator).Callback(CallbackAction, CallbackCase.Cancel).Complete());
+            Routine.ByEnumerator(Enumerator).Callback(CallbackAction, CallbackCase.Cancel).Complete();
             Assert.IsTrue(result);
         }
 
@@ -243,8 +240,7 @@ namespace Omega.Routines.Tests
                 routineControl.GetRoutine().Cancel();
             }
 
-            Assert.Throws<InvalidOperationException>(() =>
-                Routine.ByEnumerator(Enumerator).Callback(CallbackAction, CallbackCase.NotComplete).Complete());
+            Routine.ByEnumerator(Enumerator).Callback(CallbackAction, CallbackCase.NotComplete).Complete();
             Assert.IsTrue(result);
         }
 
@@ -261,8 +257,7 @@ namespace Omega.Routines.Tests
                 routineControl.GetRoutine().Cancel();
             }
 
-            Assert.Throws<InvalidOperationException>(() =>
-                Routine.ByEnumerator(Enumerator).Callback(CallbackAction, CallbackCase.Any).Complete());
+            Routine.ByEnumerator(Enumerator).Callback(CallbackAction, CallbackCase.Any).Complete();
             Assert.IsTrue(result);
         }
 
