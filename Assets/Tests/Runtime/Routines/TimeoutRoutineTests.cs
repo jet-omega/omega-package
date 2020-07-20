@@ -51,30 +51,5 @@ namespace Omega.Routines.Tests
             yield return timeoutRoutine;
             Assert.True(timeoutRoutine.IsError);
         }
-
-        [UnityTest]
-        public IEnumerator TimeoutRoutineWithResultCompletesIfNoTimeout()
-        {
-            IEnumerator Enumerator(RoutineControl<int> @this)
-            {
-                yield return Routine.Delay(0.1f);
-                @this.SetResult(1);
-                yield return Routine.Delay(0.1f);
-                @this.SetResult(2);
-                yield return Routine.Delay(0.1f);
-                @this.SetResult(3);
-                yield return Routine.Delay(0.1f);
-                @this.SetResult(4);
-                yield return Routine.Delay(0.1f);
-                @this.SetResult(5);
-            }
-
-            var internalRoutine = Routine.ByEnumerator<int>(Enumerator);
-            var timeoutRoutine = Routine
-                .Timeout(internalRoutine, 0.6f)
-                .Result(out var timeoutRoutineResultContainer);
-            yield return timeoutRoutine;
-            Assert.AreEqual(5, timeoutRoutineResultContainer.Result);
-        }
     }
 }

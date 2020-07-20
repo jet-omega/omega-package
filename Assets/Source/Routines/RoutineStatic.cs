@@ -180,15 +180,5 @@ namespace Omega.Routines
         {
             return new TimeoutRoutine(routine, TimeSpan.FromSeconds(timeoutSeconds));
         }
-        
-        public static Routine<TResult> Timeout<TResult>(Routine<TResult> routine, TimeSpan timeout)
-        {
-            return new TimeoutRoutine<TResult>(routine, timeout);
-        }
-        
-        public static Routine<TResult> Timeout<TResult>(Routine<TResult> routine, float timeoutSeconds)
-        {
-            return new TimeoutRoutine<TResult>(routine, TimeSpan.FromSeconds(timeoutSeconds));
-        }
     }
 }
