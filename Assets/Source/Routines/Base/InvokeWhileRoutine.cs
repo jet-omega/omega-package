@@ -6,22 +6,18 @@ namespace Omega.Routines
     public class InvokeWhileRoutine : Routine
     {
         private readonly Action _updateAction;
-
-        private bool _isTargetRoutineRunning = true;
+        private readonly Routine _targetRoutine;
         
-        internal InvokeWhileRoutine(Routine targetRoutine, Action action)
+        internal InvokeWhileRoutine(Routine targetTargetRoutine, Action action)
         {
-            targetRoutine.Callback(() => _isTargetRoutineRunning = false);
+            _targetRoutine = targetTargetRoutine;
             _updateAction = action;
         }
-        
+
         protected override IEnumerator RoutineUpdate()
         {
-            while (_isTargetRoutineRunning)
-            {
-                _updateAction.Invoke();
-                yield return null;
-            }
+            yield return _targetRoutine;
+            _updateAction.Invoke();
         }
     }
 }

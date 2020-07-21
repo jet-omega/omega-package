@@ -171,7 +171,7 @@ namespace Omega.Routines
 
         public static Routine InvokeWhile(Routine targetRoutine, Action action)
         {
-            return new InvokeWhileRoutine(targetRoutine, action);
+            return WhenAll(targetRoutine, new InvokeWhileRoutine(targetRoutine, action));
         }
 
         public static Routine<T> GetWithResult<T>(T result) => new RoutineWithResult<T>(result);

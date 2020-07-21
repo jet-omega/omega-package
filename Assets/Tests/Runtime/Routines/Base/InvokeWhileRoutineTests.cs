@@ -14,7 +14,7 @@ namespace Omega.Routines.Tests
             var targetRoutine = Routine.Delay(delay);
             var startTime = DateTime.Now;
             var lastInvokeTime = startTime;
-            yield return Routine.WhenAll(targetRoutine, Routine.InvokeWhile(targetRoutine, () => { lastInvokeTime = DateTime.Now; }));
+            yield return Routine.InvokeWhile(targetRoutine, () => { lastInvokeTime = DateTime.Now; });
             Assert.LessOrEqual((lastInvokeTime - startTime).Seconds, delay);
         }
     }
