@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.1] - 2020-10-22
+### Fixed
+- fixed get progress from DelayRoutine when not scheduled
+- fixed bad stack trace format
+
 ## [0.12.0] - 2020-07-01
 ### Changed
 - changed target unity version from 2018.3 to 2019.4 (LTS) (#170)
