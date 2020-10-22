@@ -41,7 +41,6 @@ namespace Omega.Package
             {
                 if(exception.StackTrace is null)
                     break;
-
                 str1 = str1.Length != 0 ? exception.StackTrace + "\n" + str1 : exception.StackTrace;
                 
                 var regex = new Regex(" at ");

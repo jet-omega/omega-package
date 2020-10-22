@@ -11,6 +11,7 @@ namespace Omega.Routines
 
         private readonly TimeSpan _delayInterval;
         private DateTime _releaseTimeSeconds;
+        private bool _scheduled;
 
         public TimeSpan DelayInterval => _delayInterval;
 
@@ -21,7 +22,9 @@ namespace Omega.Routines
 
         protected override IEnumerator RoutineUpdate()
         {
+            _scheduled = true;
             _releaseTimeSeconds = DateTime.UtcNow + _delayInterval;
+            
             // Если рутину завершают синхронно то ждать в while`е пока пройдет заданный интервал не эффективно
             // Так как это полностью занимает поток на все время задержки
             // Поэтому чтобы не занимать поток мы отправляем его в состояние сна
@@ -45,7 +48,8 @@ namespace Omega.Routines
 
         public float GetProgress()
         {
-            if (IsNotStarted) return 0f;
+            if (!_scheduled)
+                return 0f;
 
             var startedIn = _releaseTimeSeconds - _delayInterval;
             var delta = DateTime.UtcNow - startedIn;
