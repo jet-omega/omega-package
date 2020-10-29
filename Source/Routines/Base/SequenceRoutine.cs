@@ -19,6 +19,9 @@ namespace Omega.Routines
 
         public float GetProgress()
         {
+            if (_currentRoutine == _routines.Length)
+                return 1f;
+
             var progressPerRoutine = 1f / _routines.Length;
             return _currentRoutine >= 0
                 ? _currentRoutine * progressPerRoutine +
