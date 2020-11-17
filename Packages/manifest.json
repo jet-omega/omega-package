@@ -23,6 +23,10 @@
     "com.unity.modules.unitywebrequestwww": "1.0.0",
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.vr": "1.0.0",
-    "com.unity.modules.xr": "1.0.0"
-  }
+    "com.unity.modules.xr": "1.0.0",
+    "com.unity.test-framework.performance": "1.2.6-preview"
+  },
+  "testables": [
+    "com.unity.test-framework.performance"
+  ]
 }
