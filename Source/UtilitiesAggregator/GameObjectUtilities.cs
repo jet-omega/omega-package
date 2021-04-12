@@ -122,7 +122,7 @@ namespace Omega.Package.Internal
             if (!gameObject)
                 throw new MissingReferenceException(nameof(gameObject));
 
-            var result = ListPool<Component>.Rent();
+            var result = ListPool<Component>.Shared.Get();
 
             GetComponentsDirectWithoutChecks(gameObject, componentType, result, searchInRoot);
 
@@ -130,7 +130,7 @@ namespace Omega.Package.Internal
                 ? Array.Empty<Component>()
                 : result.ToArray();
 
-            ListPool<Component>.ReturnInternal(result);
+            ListPool<Component>.Shared.Return(result);
 
             return resultArray;
         }
@@ -176,14 +176,14 @@ namespace Omega.Package.Internal
             if (!gameObject)
                 throw new MissingReferenceException(nameof(gameObject));
 
-            var result = ListPool<T>.Rent();
+            var result = ListPool<T>.InternalShared.Get();
             GetComponentsDirectWithoutChecks(gameObject, result, searchInRoot);
 
             var resultArray = result.Count == 0
                 ? Array.Empty<T>()
                 : result.ToArray();
 
-            ListPool<T>.ReturnInternal(result);
+            ListPool<T>.InternalShared.Return(result);
 
             return resultArray;
         }
@@ -243,15 +243,14 @@ namespace Omega.Package.Internal
                     result.Add(component);
 
             var transform = gameObject.transform;
-            var tempList = ListPool<Component>.Rent();
-            for (int i = 0; i < transform.childCount; i++)
-            {
-                var childGameObject = transform.GetChild(i).gameObject;
-                childGameObject.GetComponents(componentType, tempList);
-                result.AddRange(tempList);
-            }
-
-            ListPool<Component>.ReturnInternal(tempList);
+            
+            using (ListPool<Component>.InternalShared.Use(out var tempList))
+                for (int i = 0; i < transform.childCount; i++)
+                {
+                    var childGameObject = transform.GetChild(i).gameObject;
+                    childGameObject.GetComponents(componentType, tempList);
+                    result.AddRange(tempList);
+                }
         }
 
         [CanBeNull]
@@ -281,15 +280,14 @@ namespace Omega.Package.Internal
                 gameObject.GetComponents(result);
 
             var transform = gameObject.transform;
-            var tempList = ListPool<T>.Rent();
-            for (int i = 0; i < transform.childCount; i++)
-            {
-                var childGameObject = transform.GetChild(i).gameObject;
-                childGameObject.GetComponents(tempList);
-                result.AddRange(tempList);
-            }
 
-            ListPool<T>.ReturnInternal(tempList);
+            using (ListPool<T>.InternalShared.Use(out var tempList))
+                for (int i = 0; i < transform.childCount; i++)
+                {
+                    var childGameObject = transform.GetChild(i).gameObject;
+                    childGameObject.GetComponents(tempList);
+                    result.AddRange(tempList);
+                }
         }
     }
 }

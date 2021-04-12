@@ -131,13 +131,13 @@ namespace Omega.Package.Internal
             if (childesCount == 0)
                 return;
 
-            var children = ListPool<Transform>.Rent(childesCount);
+            var children = ListPool<Transform>.InternalShared.Get(childesCount);
             GetChildrenWithoutChecks(root, children);
 
             foreach (var child in children)
                 ObjectUtilities.AutoDestroyWithoutChecks(child.gameObject);
 
-            ListPool<Transform>.ReturnInternal(children);
+            ListPool<Transform>.InternalShared.Return(children);
         }
 
         internal static void GetAllChildrenWithoutChecks([NotNull] Transform root, [NotNull] List<Transform> children)
@@ -151,27 +151,12 @@ namespace Omega.Package.Internal
 
         internal static int GetAllChildrenCountWithoutChecks([NotNull] Transform root)
         {
-            var children = ListPool<Transform>.Rent();
+            var children = ListPool<Transform>.InternalShared.Get();
             GetAllChildrenWithoutChecks(root, children);
             var result = children.Count;
-            ListPool<Transform>.Return(children);
+            ListPool<Transform>.InternalShared.Return(children);
 
             return result;
         }
-
-        [Obsolete("Use DestroyChildren")]
-        public void ClearChilds([NotNull] Transform root) => DestroyChildren(root);
-
-        [NotNull, Obsolete("Use GetChildren")]
-        public Transform[] GetChilds([NotNull] Transform root) => GetChildren(root);
-
-        [Obsolete("User GetChildren")]
-        public void GetChilds(Transform root, List<Transform> result) => GetChildren(root, result);
-
-        [Obsolete("Use GetAllChildren")]
-        public void GetAllChilds(Transform root, List<Transform> result) => GetAllChildren(root, result);
-
-        [Obsolete("Use GetAllChildrenCount")]
-        public int GetAllChildsCount(Transform root) => GetAllChildrenCount(root);
     }
 }

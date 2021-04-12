@@ -175,11 +175,11 @@ public static class GameObjectExtensions
         if (!gameObject)
             throw new MissingReferenceException(nameof(gameObject));
 
-        var result = ListPool<T>.Rent();
+        var result = ListPool<T>.InternalShared.Get();
         GameObjectUtilities.GetComponentsDirectWithoutChecks(gameObject, result, searchInRoot);
 
         var resultArray = result.Count == 0 ? Array.Empty<T>() : result.ToArray();
-        ListPool<T>.ReturnInternal(result);
+        ListPool<T>.InternalShared.Return(result);
 
         return resultArray;
     }
