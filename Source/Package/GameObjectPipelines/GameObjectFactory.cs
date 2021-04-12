@@ -5,7 +5,7 @@ using Object = UnityEngine.Object;
 
 namespace Omega.Tools
 {
-    public abstract class GameObjectFactory
+    internal abstract class GameObjectFactory
     {
         private protected readonly GameObjectPipeline _pipeline = new GameObjectPipeline();
 
@@ -57,7 +57,7 @@ namespace Omega.Tools
         public static GameObjectFactoryPrefab Prefab(GameObject prefab) => new GameObjectFactoryPrefab(prefab); 
     }
 
-    public sealed class GameObjectFactoryPrefab : GameObjectFactory
+    internal sealed class GameObjectFactoryPrefab : GameObjectFactory
     {
         private GameObject _prefab;
 
@@ -156,7 +156,7 @@ namespace Omega.Tools
         }
     }
 
-    public sealed class GameObjectFactoryNew : GameObjectFactory
+    internal sealed class GameObjectFactoryNew : GameObjectFactory
     {
         public GameObjectFactoryNew AddComponent<T>() where T : Component
         {

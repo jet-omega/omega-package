@@ -52,7 +52,7 @@ namespace Omega.Tools
             }
         }
 
-        public class MissingComponent<T> : IPipelineElement where T : Component
+        internal class MissingComponent<T> : IPipelineElement where T : Component
         {
             public void Execute(GameObject gameObject)
                 => gameObject.MissingComponent<T>();
@@ -73,7 +73,7 @@ namespace Omega.Tools
             }
         }
 
-        public class SetParent : IPipelineElement
+        internal class SetParent : IPipelineElement
         {
             private Transform _parent;
             private bool _worldPositionStays;
@@ -90,7 +90,7 @@ namespace Omega.Tools
             }
         }
 
-        public class SetName : IPipelineElement
+        internal class SetName : IPipelineElement
         {
             private string _name;
 
@@ -104,7 +104,7 @@ namespace Omega.Tools
                 => gameObject.name = _name;
         }
 
-        public class SetLayer : IPipelineElement
+        internal class SetLayer : IPipelineElement
         {
             private int _layer;
 
@@ -118,7 +118,7 @@ namespace Omega.Tools
                 => gameObject.layer = _layer;
         }
 
-        public class SetTag : IPipelineElement
+        internal class SetTag : IPipelineElement
         {
             private string _tag;
 
@@ -132,7 +132,7 @@ namespace Omega.Tools
                 => gameObject.tag = _tag;
         }
 
-        public class Custom : IPipelineElement
+        internal class Custom : IPipelineElement
         {
             private readonly Action<GameObject> _action;
 
