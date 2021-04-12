@@ -5,7 +5,8 @@ using System.Reflection;
 
 namespace Omega.Package
 {
-    public class TypeHelper
+    // todo: mb remove?
+    internal class TypeHelper
     {
         private static Dictionary<Type, TypeHelper> _heleprs = new Dictionary<Type, TypeHelper>();
 

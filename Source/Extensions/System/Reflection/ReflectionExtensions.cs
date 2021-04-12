@@ -10,6 +10,9 @@ namespace Omega.Package
     {
         public static Type GetReturnType(this MemberInfo memberInfo)
         {
+            if (memberInfo is null)
+                throw new NullReferenceException(nameof(memberInfo));
+
             switch (memberInfo)
             {
                 case FieldInfo fieldInfo:
@@ -21,7 +24,7 @@ namespace Omega.Package
                 case EventInfo eventInfo:
                     return eventInfo.EventHandlerType;
                 default:
-                    return null;
+                    throw new InvalidOperationException($"not support member type:{memberInfo.GetType()}");
             }
         }
 
@@ -34,7 +37,7 @@ namespace Omega.Package
                 case PropertyInfo info:
                     return info.GetGetMethod(true).Invoke(obj, null);
                 default:
-                    throw new ArgumentException($"Can't get the value of a {member.GetType().Name}");
+                    throw new ArgumentException($"can't get the value of a {member.GetType().Name}");
             }
         }
 
@@ -48,11 +51,11 @@ namespace Omega.Package
                 case PropertyInfo info:
                     var setMethod = info.GetSetMethod(true);
                     if (setMethod == null)
-                        throw new ArgumentException($"Property {info.Name} has no setter");
-                    setMethod.Invoke(obj, new[]{ value });
+                        throw new ArgumentException($"property {info.Name} has no setter");
+                    setMethod.Invoke(obj, new[] {value});
                     break;
                 default:
-                    throw new ArgumentException($"Can't set the value of a {member.GetType().Name}");
+                    throw new ArgumentException($"can't set the value of a {member.GetType().Name}");
             }
         }
     }

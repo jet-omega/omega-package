@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 
 namespace Omega.Package.Internal
 {
@@ -17,7 +18,7 @@ namespace Omega.Package.Internal
         public static char ValueToHex(int value)
         {
             if (value < 0 || value >= Symbols.Length)
-                throw new ArgumentOutOfRangeException();
+                ValueToHexFail_ValueOutOfRange(); // terminate
 
             return Symbols[value];
         }
@@ -35,5 +36,9 @@ namespace Omega.Package.Internal
             var value = b & 0xF;
             return ValueToHex(value);
         }
+
+        [TerminatesProgram]
+        private static void ValueToHexFail_ValueOutOfRange()
+            => throw new ArgumentOutOfRangeException();
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Omega.Package
 {
-    public class Logger
+    internal class Logger
     {
         private RichTextFactory _richTextFactory;
 
@@ -40,6 +40,7 @@ namespace Omega.Package
         public void Log(string message) => Log(message, LogType.Log, LogOption.NoStacktrace);
         public void Log(string message, LogType logType) => Log(message, logType, LogOption.NoStacktrace);
         public void Log(string message, LogOption logOption) => Log(message, LogType.Log, logOption);
+
         public void Log(string message, LogType logType, LogOption logOption, Object context = null)
         {
             var fullMessage = _richTextFactory

@@ -18,6 +18,7 @@ public static class BoxColliderExtensions
         if (!boxCollider)
             throw new MissingReferenceException(nameof(boxCollider));
 
-        BoxColliderUtilities.SetAsBoundsWithoutChecks(boxCollider, bounds);
+        boxCollider.center = bounds.center;
+        boxCollider.size = bounds.size;
     }
 }

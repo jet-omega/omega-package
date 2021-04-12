@@ -63,13 +63,7 @@ public static class TransformExtensions
         rectTransform = self as RectTransform;
         return rectTransform != null;
     }
-    
-    [Obsolete("Use GetChildren")]
-    public static Transform[] GetChilds(this Transform transform) => transform.GetChildren();
-    
-    [Obsolete("Use GetChildren")]
-    public static void GetChilds(this Transform transform, List<Transform> result) => transform.GetChildren(result);
-    
+
     /// <summary>
     /// TryGetComponent that searches component in children
     /// </summary>
