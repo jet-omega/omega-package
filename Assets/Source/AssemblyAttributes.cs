@@ -1,8 +1,8 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Omega.Tools.Editor.Tests")]
-[assembly: InternalsVisibleTo("Omega.Tools.Runtime.Tests")]
+[assembly: InternalsVisibleTo("Omega.Package.Editor.Tests")]
+[assembly: InternalsVisibleTo("Omega.Package.Runtime.Tests")]
 
 // General information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
