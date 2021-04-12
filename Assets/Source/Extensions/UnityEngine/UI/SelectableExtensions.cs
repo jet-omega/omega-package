@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -14,6 +12,7 @@ namespace Omega.Package
         /// <param name="self"></param>
         /// <param name="triggerType">Тип события</param>
         /// <param name="handler">Обработчик события</param>
+        // todo: 0.20.0 how remove subscription? 
         public static void On(this Selectable self, EventTriggerType triggerType, Action handler)
         {
             var missingComponent = self.gameObject.MissingComponent<EventTrigger>();

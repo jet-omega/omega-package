@@ -183,7 +183,4 @@ public static class GameObjectExtensions
 
         return resultArray;
     }
-    
-    [Obsolete("Use GetChildren")]
-    public static Transform[] GetChilds(this GameObject gameObject) => gameObject.GetChildren();
 }

@@ -10,7 +10,6 @@ namespace Omega.Package
         public static RectTransformUtilities RectTransform { get; } = new RectTransformUtilities();
         public static RectUtilities Rect { get; } = new RectUtilities();
         public static ObjectUtilities Object { get; } = new ObjectUtilities();
-        public static BoxColliderUtilities BoxCollider { get; } = new BoxColliderUtilities();
         public static ArrayUtilities Array { get; } = new ArrayUtilities();
         public static LayerUtilities Layer { get; } = new LayerUtilities();
     }

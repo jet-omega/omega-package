@@ -9,11 +9,11 @@ using System.Runtime.CompilerServices;
 // associated with an assembly.
 [assembly: AssemblyTitle( "OmegaPackage" )]
 [assembly: AssemblyDescription( "Tools for Unity" )]
-[assembly: AssemblyCompany( "Ltd. ProfIt" )]
+[assembly: AssemblyCompany( "Ltd. Omega" )]
 
 // Version information for an assembly consists of the following four values:
 //      Major Version
 //      Minor Version
 //      Build Number
 //      Revision
-[assembly: AssemblyVersion( "0.12.3.0" )]
+[assembly: AssemblyVersion( "0.20.0.0" )]
