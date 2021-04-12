@@ -94,9 +94,11 @@ namespace Omega.Package
 
         public FieldInfo[] GetFields(BindingFlags bindingFlags)
         {
-            var list = ListPool<FieldInfo>.Rent();
-            GetFields(list, bindingFlags);
-            return ListPool<FieldInfo>.ReturnToArray(list);
+            using (ListPool<FieldInfo>.InternalShared.Use(out var list))
+            {
+                GetFields(list, bindingFlags);
+                return list.ToArray();
+            }
         }
 
         private TypeHelper(Type type)
