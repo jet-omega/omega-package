@@ -34,16 +34,6 @@ namespace Omega.Package.Internal
             }
         }
 
-        public void SetRect([NotNull] RectTransform rectTransform, Rect rect)
-        {
-            if (rectTransform is null)
-                throw new ArgumentNullException(nameof(rectTransform));
-            if (!rectTransform)
-                throw new MissingReferenceException(nameof(rectTransform));
-
-            SetRectWithoutChecks(rectTransform, rect);
-        }
-
         internal static void SetRectWithoutChecks([NotNull] RectTransform rectTransform, Rect rect)
         {
             var z = rectTransform.position.z;
@@ -67,8 +57,5 @@ namespace Omega.Package.Internal
                     result.Add(rectTransformChild);
             }
         }
-
-        [NotNull, Obsolete("Use GetChildren")]
-        public RectTransform[] GetChilds([NotNull] RectTransform root) => GetChildren(root);
     }
 }

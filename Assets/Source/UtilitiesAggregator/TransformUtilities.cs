@@ -27,44 +27,7 @@ namespace Omega.Package.Internal
 
             ClearChildrenWithoutChecks(root);
         }
-
-        public bool IsChildOf([NotNull] Transform transform, [CanBeNull] Transform parent)
-        {
-            if (transform is null)
-                throw new ArgumentNullException(nameof(transform));
-            if (!transform)
-                throw new MissingReferenceException(nameof(transform));
-
-            return IsChildOfWithoutChecks(transform, parent);
-        }
-
-        /// <summary>
-        /// Возвращает всех потомков переданного трансформа 
-        /// </summary>
-        /// <param name="root">Трансформ, относительно которого будет осуществляться поиск потомков </param>
-        /// <returns>Массив потомков</returns>
-        /// <exception cref="ArgumentNullException">Параметр <param name="root"/>>указывает на null</exception>
-        /// <exception cref="MissingReferenceException">Параметр <param name="root"/>>указывает на уничтоженный объект</exception>
-        [NotNull]
-        public Transform[] GetChildren([NotNull] Transform root)
-        {
-            if (root is null)
-                throw new ArgumentNullException(nameof(root));
-            if (!root)
-                throw new MissingReferenceException(nameof(root));
-
-            return GetChildrenWithoutChecks(root);
-        }
-
-        public void GetChildren(Transform root, List<Transform> result)
-        {
-            if (root is null)
-                throw new ArgumentNullException(nameof(root));
-            if (!root)
-                throw new MissingReferenceException(nameof(root));
-
-            GetChildrenWithoutChecks(root, result);
-        }
+        
 
         public void GetAllChildren(Transform root, List<Transform> result)
         {

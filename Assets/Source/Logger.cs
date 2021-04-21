@@ -5,7 +5,7 @@ namespace Omega.Package
 {
     internal class Logger
     {
-        private RichTextFactory _richTextFactory;
+        private RichTextFluent _richTextFactory;
 
         public readonly string Title;
         public readonly Color TitleColor;
@@ -18,7 +18,7 @@ namespace Omega.Package
             TitleColor = titleColor;
             TitleStyle = titleStyle;
 
-            _richTextFactory = new RichTextFactory(2048);
+            _richTextFactory = new RichTextFluent(2048);
             TitleBacked = _richTextFactory
                 .Style(TitleStyle).Color(TitleColor).Text(Title)
                 .ToString(true);
@@ -30,7 +30,7 @@ namespace Omega.Package
             TitleColor = titleColor;
             TitleStyle = titleStyle;
 
-            _richTextFactory = new RichTextFactory(2048);
+            _richTextFactory = new RichTextFluent(2048);
             TitleBacked = _richTextFactory
                 .UnstyledText(prefix)
                 .Style(TitleStyle).Color(TitleColor).Text(Title)

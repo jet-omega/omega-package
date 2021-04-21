@@ -2,13 +2,13 @@ using UnityEngine;
 
 namespace Omega.Text
 {
-    public sealed class RichTextFactory
+    public sealed class RichTextFluent
     {
         private RichTextBuilder _builder;
 
-        public static RichTextFactory New(int capacity = 30)
+        public static RichTextFluent New(int capacity = 30)
         {
-            return new RichTextFactory(capacity);
+            return new RichTextFluent(capacity);
         }
 
         public void Clear()
@@ -16,19 +16,19 @@ namespace Omega.Text
             _builder.Clear();
         }
         
-        public RichTextFactory()
+        public RichTextFluent()
         {
             _builder = new RichTextBuilder();
         }
         
-        public RichTextFactory(int capacity)
+        public RichTextFluent(int capacity)
         {
             _builder = new RichTextBuilder(capacity);
         }
 
-        public RichTextFactory Default => DefaultColor.DefaultSize.DefaultStyle;
+        public RichTextFluent Default => DefaultColor.DefaultSize.DefaultStyle;
 
-        public RichTextFactory NewLine
+        public RichTextFluent NewLine
         {
             get
             {
@@ -38,13 +38,13 @@ namespace Omega.Text
         }
 
 
-        public RichTextFactory Color(Color color)
+        public RichTextFluent Color(Color color)
         {
             _builder.Color = color;
             return this;
         }
 
-        public RichTextFactory DefaultColor
+        public RichTextFluent DefaultColor
         {
             get
             {
@@ -53,13 +53,13 @@ namespace Omega.Text
             }
         }
 
-        public RichTextFactory Size(int size)
+        public RichTextFluent Size(int size)
         {
             _builder.Size = size;
             return this;
         }
 
-        public RichTextFactory DefaultSize
+        public RichTextFluent DefaultSize
         {
             get
             {
@@ -68,7 +68,7 @@ namespace Omega.Text
             }
         }
 
-        public RichTextFactory DefaultStyle
+        public RichTextFluent DefaultStyle
         {
             get
             {
@@ -78,7 +78,7 @@ namespace Omega.Text
         }
 
 
-        public RichTextFactory Bold
+        public RichTextFluent Bold
         {
             get
             {
@@ -87,7 +87,7 @@ namespace Omega.Text
             }
         }
 
-        public RichTextFactory Italic
+        public RichTextFluent Italic
         {
             get
             {
@@ -96,19 +96,19 @@ namespace Omega.Text
             }
         }
 
-        public RichTextFactory Style(FontStyle fontStyle)
+        public RichTextFluent Style(FontStyle fontStyle)
         {
             _builder.FontStyle = fontStyle;
             return this;
         }
 
-        public RichTextFactory Text(string s)
+        public RichTextFluent Text(string s)
         {
             _builder.Append(s);
             return this;
         }
 
-        public RichTextFactory Space(int spaceCount = 4)
+        public RichTextFluent Space(int spaceCount = 4)
         {
             for (int i = 0; i < spaceCount; i++)
                 _builder.AppendWithoutRich(" ");
@@ -116,7 +116,7 @@ namespace Omega.Text
             return this;
         }
         
-        public RichTextFactory UnstyledText(string s)
+        public RichTextFluent UnstyledText(string s)
         {
             _builder.AppendWithoutRich(s);
             return this;

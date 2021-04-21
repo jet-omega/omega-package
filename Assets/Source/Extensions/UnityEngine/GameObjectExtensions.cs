@@ -138,33 +138,26 @@ public static class GameObjectExtensions
         return component != null;
     }
 
-    /// <summary>
-    /// Возвращает всех потомков для игрового объекта
-    /// </summary>
-    /// 
-    /// <returns>Массив потомков</returns>
-    /// 
-    /// <exception cref="NullReferenceException">Параметр <param name="gameObject"/>>указывает на null</exception>
-    /// <exception cref="MissingReferenceException">Параметр <param name="gameObject"/>>указывает на уничтоженный объект</exception>
-    public static Transform[] GetChildren(this GameObject gameObject)
-    {
-        if (gameObject is null)
-            throw new NullReferenceException(nameof(gameObject));
-        if (!gameObject)
-            throw new MissingReferenceException(nameof(gameObject));
-
-        return TransformUtilities.GetChildrenWithoutChecks(gameObject.transform);
-    }
-
     [CanBeNull]
-    public static T GetComponentInDirectChildren<T>(this GameObject gameObject)
+    public static T GetComponentInDirectChildren<T>(this GameObject gameObject, bool searchInRoot)
     {
         if (gameObject is null)
             throw new NullReferenceException(nameof(gameObject));
         if (!gameObject)
             throw new MissingReferenceException(nameof(gameObject));
 
-        return GameObjectUtilities.GetComponentDirectWithoutChecks<T>(gameObject);
+        return GameObjectUtilities.GetComponentDirectWithoutChecks<T>(gameObject, searchInRoot);
+    }
+    
+    [CanBeNull]
+    public static Component GetComponentInDirectChildren(this GameObject gameObject, Type componentType)
+    {
+        if (gameObject is null)
+            throw new NullReferenceException(nameof(gameObject));
+        if (!gameObject)
+            throw new MissingReferenceException(nameof(gameObject));
+
+        return GameObjectUtilities.GetComponentDirectWithoutChecks(gameObject, componentType);
     }
     
     [NotNull]

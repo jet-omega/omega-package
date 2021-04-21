@@ -1,15 +1,77 @@
-# OmegaTools
+# omega-package _(preview)_
 
-OmegaTools is a assembly of tools for working with scripting in the unit
+Omega packages is a assembly of tools and utils for simplify workflow with unity
 
 ## Installation
+1. Go to Unity and open the Package Manager, and click `Add package from the git URL...`.
+2. Insert a link to the package (_https://github.com/ltd-profit/omega-package.git#upm_), click `Add` and the package will be installed.
 
-1. You will need [UpmGitExtension](https://github.com/mob-sakai/UpmGitExtension) to work with OmegaTools as with UnityPackage.
-2. Open in Unity **Window>PackageManager** 
-![image](https://user-images.githubusercontent.com/10897900/65597589-28941480-dfa2-11e9-8d43-b2ae5f335e42.png)
-3. In the window that opens, click on the button with the Git icon (it is located near the button with a plus sign)
-![image](https://user-images.githubusercontent.com/10897900/65597637-482b3d00-dfa2-11e9-908c-4a1426f91a5f.png)
-4. In the menu that opens, enter the address to the repository ( https://github.com/omega-vr-ar/unity-tools.git ), then click the "FindVersions" button, then select the latest version (or one of the branches with the suffix "upm")
-![image](https://user-images.githubusercontent.com/10897900/65597688-642ede80-dfa2-11e9-9af1-e49a5d12e270.png)
-5. The last step is to click "Install Package"
-![image](https://user-images.githubusercontent.com/10897900/65597714-70b33700-dfa2-11e9-90ae-0b5977f6277b.png)
+## Usage 
+
+#### Extensions
+|Type|Name|Description|
+|---|---|---|
+|`List<T>`|`TryFind`| Вернет `true`, если элемент соответствующий заданному предикату найден в в списке, иначе - `false`. Если элемент был найден то в параметр `item` будет записано найденное значение, в противном случае - значение по-умолчанию|
+|`MemberInfo`|`GetReturnType`| Возвращает возвращаемый тип члена. Например если `MemberInfo` описывает поле то вернется тип этого поля, если это свойство то тип свойства, если метод то тип возвращаемого значения|
+|`MemberInfo`|`SetMemberValue`|Устанавливает значение|
+|`MemberInfo`|`GetMemberValue`|Получает значение|
+|`GameObject`|`MissingComponent`|Возвращает компонент, прикрепленный к объекту. Если экземпляр компонента заданного типа отсутствует на объекте то он будет добавлен к объекту.
+|`GameObject`|`TryGetComponentInChildren`|
+|`GameObject`|`TryGetComponentInParent`|
+|`GameObject`|`GetComponentInDirectChildren`|
+|`GameObject`|`GetComponentsInDirectChildren`|
+|`Transform`|`GetChildren`|
+|`Transform`|`IsChildOf`|
+|`RectTransform`|`SetRect`|
+
+#### Utilities
+|Category|Name|Description|
+|---|---|---|
+|`Transform`|`DestroyChildren`||
+|`Transform`|`GetAllChildren`||
+|`Transform`|`GetAllChildrenCount`||
+|`RectTransform`|`GetChildren`||
+|`Rect`|`BetweenTwoPoints`||
+|`Object`|`AutoDestroy`||
+|`T[]`|`Add`||
+|`T[]`|`AddRange`||
+|`T[]`|`Remove`||
+|`T[]`|`RemoveAt`||
+|`T[]`|`RemoveAll`||
+|`T[]`|`Insert`||
+|`T[]`|`ArrayEquals`||
+|`T[]`|`ArrayReferenceEquals`||
+|`T[]`|`Contains`||
+|`T[]`|`Clear`||
+|`T[]`|`Sort`||
+|`T[]`|`BinarySearch`||
+|`Layer`|`LayersInMask`||
+|`XXX`|`XXX`||
+
+#### Pools
+1. interface `IPool<T>`
+2. class `ListPool<TElement>`; `ListPool<TElement>.Shared`
+3. struct `PoolElementUsageHandler` for pooled object handling with `using` statement
+
+#### RichTextBuilder & RichTextFluent 
+```c#
+ RichTextFactory.New()
+        .Bold.Color(Color.red).Text("TITLE")
+        .NewLine.Default.Text("something text block")
+        .NewLine.Italic.Color(Color.gray).Text("(created by omega)")
+        .NewLine.DefaultStyle.Size(50).Text("lerge text")
+        .NewLine.UnstyledText("text without syle")
+        .ToString();
+    
+     ▾   ▾   ▾   ▾   ▾   ▾   ▾   ▾   ▾   ▾   ▾   ▾   ▾   ▾   ▾   ▾
+  
+    "<b><color=#ff0000ff>TITLE</color></b>" +
+    "\nsomething text block" +
+    "\n<i><color=#808080ff>(created by omega)</color></i>" +
+    "\n<color=#808080ff><size=50>lerge text</size></color>" +
+    "\ntext without syle"
+```
+#### Editor
+1. Copy Scene Path in hierarchy menu.
+
+![image](https://user-images.githubusercontent.com/10897900/115564090-d1ab0a00-a2c0-11eb-91fb-f9b88e15658c.png)
