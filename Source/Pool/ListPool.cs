@@ -8,15 +8,17 @@ namespace Omega.Package
         private static ListPool<TElement> _shared;
         private static ListPool<TElement> _internalShared;
 
-        public static ListPool<TElement> Shared => _shared ??= new ListPool<TElement>(7)
-        {
-            StartCapacity = 7
-        };
+        public static ListPool<TElement> Shared
+            => _shared = _shared ?? new ListPool<TElement>(7)
+            {
+                StartCapacity = 7
+            };
 
-        internal static ListPool<TElement> InternalShared => _internalShared ??= new ListPool<TElement>(1)
-        {
-            StartCapacity = 15
-        };
+        internal static ListPool<TElement> InternalShared
+            => _internalShared = _internalShared ?? new ListPool<TElement>(1)
+            {
+                StartCapacity = 15
+            };
 
         private int _startCapacity;
 

@@ -10,13 +10,13 @@ namespace Omega.Package
         /// </summary>
         /// <param name="list">Лист для поиска</param>
         /// <param name="match">Делегат</param>
-        /// <param name="obj"></param>
+        /// <param name="item"></param>
         /// <typeparam name="T">Тип элемента</typeparam>
         /// <returns>Вернет true если совпадение было и false, если нет</returns>
-        public static bool TryFind<T>(this List<T> list, Predicate<T> match, out T obj)
+        public static bool TryFind<T>(this List<T> list, Predicate<T> match, out T item)
         {
             var index = list.FindIndex(match);
-            obj = index >= 0 ? list[index] : default;
+            item = index >= 0 ? list[index] : default;
             return index >= 0;
         }
     }

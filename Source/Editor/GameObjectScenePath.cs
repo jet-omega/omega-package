@@ -14,9 +14,11 @@ namespace Omega.Package.Editor
         static void CopyGameObjectScenePathToClipboard()
         {
             var selectedGameObjects = Selection.gameObjects;
+            
             var sb = new StringBuilder();
             foreach (var selectedGameObject in selectedGameObjects)
                 sb.AppendLine(GetGameObjectScenePath(selectedGameObject));
+            
             GUIUtility.systemCopyBuffer = sb.ToString();
         }
 
