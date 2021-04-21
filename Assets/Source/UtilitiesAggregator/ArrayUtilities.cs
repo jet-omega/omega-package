@@ -133,31 +133,6 @@ namespace Omega.Package.Internal
             return true;
         }
 
-        public T[] FindAll<T>(T[] array, Predicate<T> match)
-        {
-            return Array.FindAll(array, match);
-        }
-
-        public T Find<T>(T[] array, Predicate<T> match)
-        {
-            return Array.Find(array, match);
-        }
-
-        public int FindIndex<T>(T[] array, Predicate<T> match)
-        {
-            return Array.FindIndex(array, match);
-        }
-
-        public int IndexOf<T>(T[] array, T value)
-        {
-            return Array.IndexOf(array, value);
-        }
-
-        public int LastIndexOf<T>(T[] array, T value)
-        {
-            return Array.LastIndexOf(array, value);
-        }
-
         public bool Contains<T>(T[] array, T item)
         {
             var comparer = EqualityComparer<T>.Default;

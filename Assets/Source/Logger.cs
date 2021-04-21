@@ -3,9 +3,9 @@ using UnityEngine;
 
 namespace Omega.Package
 {
-    public class Logger
+    internal class Logger
     {
-        private RichTextFactory _richTextFactory;
+        private RichTextFluent _richTextFactory;
 
         public readonly string Title;
         public readonly Color TitleColor;
@@ -18,7 +18,7 @@ namespace Omega.Package
             TitleColor = titleColor;
             TitleStyle = titleStyle;
 
-            _richTextFactory = new RichTextFactory(2048);
+            _richTextFactory = new RichTextFluent(2048);
             TitleBacked = _richTextFactory
                 .Style(TitleStyle).Color(TitleColor).Text(Title)
                 .ToString(true);
@@ -30,7 +30,7 @@ namespace Omega.Package
             TitleColor = titleColor;
             TitleStyle = titleStyle;
 
-            _richTextFactory = new RichTextFactory(2048);
+            _richTextFactory = new RichTextFluent(2048);
             TitleBacked = _richTextFactory
                 .UnstyledText(prefix)
                 .Style(TitleStyle).Color(TitleColor).Text(Title)
@@ -40,6 +40,7 @@ namespace Omega.Package
         public void Log(string message) => Log(message, LogType.Log, LogOption.NoStacktrace);
         public void Log(string message, LogType logType) => Log(message, logType, LogOption.NoStacktrace);
         public void Log(string message, LogOption logOption) => Log(message, LogType.Log, logOption);
+
         public void Log(string message, LogType logType, LogOption logOption, Object context = null)
         {
             var fullMessage = _richTextFactory

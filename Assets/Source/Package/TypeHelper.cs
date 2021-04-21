@@ -5,7 +5,8 @@ using System.Reflection;
 
 namespace Omega.Package
 {
-    public class TypeHelper
+    // todo: mb remove?
+    internal class TypeHelper
     {
         private static Dictionary<Type, TypeHelper> _heleprs = new Dictionary<Type, TypeHelper>();
 
@@ -93,9 +94,11 @@ namespace Omega.Package
 
         public FieldInfo[] GetFields(BindingFlags bindingFlags)
         {
-            var list = ListPool<FieldInfo>.Rent();
-            GetFields(list, bindingFlags);
-            return ListPool<FieldInfo>.ReturnToArray(list);
+            using (ListPool<FieldInfo>.InternalShared.Use(out var list))
+            {
+                GetFields(list, bindingFlags);
+                return list.ToArray();
+            }
         }
 
         private TypeHelper(Type type)

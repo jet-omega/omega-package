@@ -14,7 +14,7 @@ namespace Omega.Tools.Tests
         {
             var gameObjectInstance = new GameObject();
 
-            var children = Utilities.Transform.GetChildren(gameObjectInstance.transform);
+            var children = gameObjectInstance.transform.GetChildren();
 
             Assert.NotNull(children);
             Assert.Zero(children.Length);
@@ -23,13 +23,7 @@ namespace Omega.Tools.Tests
             
             Utilities.Object.AutoDestroy(gameObjectInstance);
         }
-
-        [Test]
-        public void GetChildrenShouldThrowArgumentNullExceptionWhenParameterIsNull()
-        {
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => Utilities.Transform.GetChildren(null));
-        }
+        
 
         [Test]
         public void GetChildrenShouldThrowMissingReferenceExceptionWhenParameterWereDestroyed()
@@ -39,7 +33,7 @@ namespace Omega.Tools.Tests
             Utilities.Object.AutoDestroy(gameObjectInstance);
 
             Assert.Throws<MissingReferenceException>(() =>
-                Utilities.Transform.GetChildren(gameObjectInstance.transform));
+                gameObjectInstance.transform.GetChildren());
         }
         
         [Test]
@@ -93,7 +87,7 @@ namespace Omega.Tools.Tests
                 .Custom(go => circuitParent = go.transform)
                 .Build<Transform>(goCount);
 
-            var result = Utilities.Transform.IsChildOf(circuitParent, root);
+            var result = circuitParent.IsChildOf(root);
             Assert.True(result);
             
             Utilities.Object.AutoDestroy(root.gameObject);

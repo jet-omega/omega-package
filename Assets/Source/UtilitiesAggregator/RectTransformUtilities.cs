@@ -27,23 +27,11 @@ namespace Omega.Package.Internal
             if (root.childCount == 0)
                 return Array.Empty<RectTransform>();
 
-            var result = ListPool<RectTransform>.Rent(root.childCount);
-
-            GetChildrenWithoutChecks(root, result);
-
-            var resultArray = result.ToArray();
-
-            return resultArray;
-        }
-
-        public void SetRect([NotNull] RectTransform rectTransform, Rect rect)
-        {
-            if (rectTransform is null)
-                throw new ArgumentNullException(nameof(rectTransform));
-            if (!rectTransform)
-                throw new MissingReferenceException(nameof(rectTransform));
-            
-            SetRectWithoutChecks(rectTransform, rect);
+            using (ListPool<RectTransform>.InternalShared.Use(out var list))
+            {
+                GetChildrenWithoutChecks(root, list);
+                return list.ToArray();
+            }
         }
 
         internal static void SetRectWithoutChecks([NotNull] RectTransform rectTransform, Rect rect)
@@ -69,8 +57,5 @@ namespace Omega.Package.Internal
                     result.Add(rectTransformChild);
             }
         }
-        
-        [NotNull, Obsolete("Use GetChildren")]
-        public RectTransform[] GetChilds([NotNull] RectTransform root) => GetChildren(root);
     }
 }
