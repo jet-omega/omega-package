@@ -1,6 +1,6 @@
 {
   "name": "com.omega.unity.omega-package",
-  "version": "0.12.4",
+  "version": "0.20.0",
   "displayName": "Omega Package",
   "description": "The package contains a number of types that help accelerate product development. The package contains:\n- Extensions for asynchronous programming in Unity as Routine (Omega.Routines)\n- The system of global events (Omega.Events) allows you to conveniently organize the logic of the application.\n- A number of utilities for working with the built-in Unity and BCL types, such as GameObject, BoxCollider, Vector3, Color, Type, etc.\n- Extensions of existing types (e.g. MissingComponents for GameObject)",
   "unity": "2019.4",
