@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.4] - 2021-05-07
+### Changed
+- changed package name from 'omega-package' to 'com.omega.unity.omega-package'
+- starting from version 0.12.4, this package will be published on a private npm server
+
 ## [0.12.3] - 2020-11-17
 ### Added
 - Add `GameObject/Copy Scene Path` context action. Lets copy GameObject relative of scene 

@@ -1,6 +1,6 @@
 {
-  "name": "com.ltd-profit.unity.omega-package",
-  "version": "0.12.3",
+  "name": "com.omega.unity.omega-package",
+  "version": "0.12.4",
   "displayName": "Omega Package",
   "description": "The package contains a number of types that help accelerate product development. The package contains:\n- Extensions for asynchronous programming in Unity as Routine (Omega.Routines)\n- The system of global events (Omega.Events) allows you to conveniently organize the logic of the application.\n- A number of utilities for working with the built-in Unity and BCL types, such as GameObject, BoxCollider, Vector3, Color, Type, etc.\n- Extensions of existing types (e.g. MissingComponents for GameObject)",
   "unity": "2019.4",
@@ -10,20 +10,22 @@
     "code",
     "utility",
     "extensions",
-    "component-notification",
     "routine",
     "coroutine",
     "task",
     "multi-threading",
     "async"
   ],
-  "author": "Ltd. ProfIT (https://github.com/ltd-profit/omega-package)",
+  "author": "LLC Omega (https://github.com/ltd-profit/omega-package)",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ltd-profit/omega-package.git"
   },
   "bugs": { 
     "url": "https://github.com/ltd-profit/omega-package/issues"
+  },
+  "publishConfig": {
+    "registry": "http://62.109.21.178:4873/"
   },
   "homepage": "https://github.com/ltd-profit/omega-package#readme"
 }
