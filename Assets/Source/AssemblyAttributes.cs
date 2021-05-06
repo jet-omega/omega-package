@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 // associated with an assembly.
 [assembly: AssemblyTitle( "OmegaPackage" )]
 [assembly: AssemblyDescription( "Tools for Unity" )]
-[assembly: AssemblyCompany( "Ltd. Omega" )]
+[assembly: AssemblyCompany( "LLC Omega" )]
 
 // Version information for an assembly consists of the following four values:
 //      Major Version
