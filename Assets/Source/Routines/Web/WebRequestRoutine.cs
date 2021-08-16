@@ -30,6 +30,7 @@ namespace Omega.Routines.Web
             if (uploadHandler == null)
                 return "upload handler in undefined";
 
+            
             switch (uploadHandler.contentType)
             {
                 case "application/json":
@@ -50,7 +51,13 @@ namespace Omega.Routines.Web
 
         private static string GetDownloadStringPresent(DownloadHandler downloadHandler)
         {
-            return downloadHandler.text;
+            if (downloadHandler is null)
+                return "no download data";
+            
+            if(downloadHandler is DownloadHandlerBuffer)
+                return downloadHandler.text;
+
+            return $"text representation is not not available for {downloadHandler.GetType().Name}";
         }
 
         internal static string GetErrorMessage(UnityWebRequest webRequest)
