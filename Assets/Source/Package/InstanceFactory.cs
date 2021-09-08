@@ -7,23 +7,27 @@ namespace Omega.Package
     {
         private static Dictionary<Type, InstanceFactory> _factories = new Dictionary<Type, InstanceFactory>(7);
 
+        public static void Prepare<T>()
+            where T : struct
+            => _factories.Add(typeof(T), new StructFactory<T>());
+
         public static InstanceFactory GetFactory(Type type)
         {
-            if(type is null)
+            if (type is null)
                 throw new ArgumentNullException(nameof(type));
-        
+
             if (!_factories.TryGetValue(type, out var factory))
             {
+#if ENABLE_MONO
                 if (type.IsValueType)
                 {
                     var factoryTypeDefinition = typeof(StructFactory<>);
                     var factoryType = factoryTypeDefinition.MakeGenericType(type);
-                    factory = (InstanceFactory) Activator.CreateInstance(factoryType);
+                    factory = (InstanceFactory)Activator.CreateInstance(factoryType);
                 }
                 else
-                {
+#endif
                     factory = new ActivatorFactory(type);
-                }
 
                 _factories.Add(type, factory);
             }
@@ -38,7 +42,7 @@ namespace Omega.Package
 
             return GetFactory(type).Create();
         }
-        
+
         public abstract object Create();
 
         private sealed class StructFactory<T> : InstanceFactory
