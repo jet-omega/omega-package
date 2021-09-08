@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.6] - 2021-08-16
+## [0.12.5] - 2021-08-16
+### Fixed
+- fix exception `NotSupportedException: String access is not supported`
+
 ## [0.12.4] - 2021-05-07
 ### Changed
 - changed package name from 'omega-package' to 'com.omega.unity.omega-package'
@@ -11,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.12.3] - 2020-11-17
 ### Added
-- Add `GameObject/Copy Scene Path` context action. Lets copy GameObject relative of scene 
+- Add `GameObject/Copy Scene Path` context action. Lets copy GameObject relative of scene
 
 ## [0.12.2] - 2020-10-29
 ### Fixed
@@ -27,7 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - changed target unity version from 2018.3 to 2019.4 (LTS) (#170)
 
 ### Improved
-- improved stack-trace format for routines. Now when errors occur within routines, the stack of the trace is formatted so that it is highlighted and is clickable (#165)  
+- improved stack-trace format for routines. Now when errors occur within routines, the stack of the trace is formatted so that it is highlighted and is clickable (#165)
 - improved calculation of progress in the `WebRequestRoutine`. Now progress is growing more linearly and does not start at 50% (#153)
 
 ### Added
@@ -43,7 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.11.4] - 2020-06-25
 ### Added
-- add `SequenceRoutine`. Lets create sequence from routines 
+- add `SequenceRoutine`. Lets create sequence from routines
 
 ## [0.11.3] - 2020-06-25
 ### Added
@@ -73,14 +78,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Utilities for Array
 
 ### Fixes
-- Fix global scope routine execution 
+- Fix global scope routine execution
 
 ### Improved
 - New background worker's system for **Routine**
 
 ## [0.10.5] - 2020-03-29
 ### Added
-- Add `RichTextBuilder` and `RichTextFactory`. Lets conveniently generate rich text 
+- Add `RichTextBuilder` and `RichTextFactory`. Lets conveniently generate rich text
     ```csharp
     //                         Example                          //
     // -------------------------------------------------------- //
@@ -103,13 +108,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         
     // -------------------------------------------------------- //
     ```
-  
+
 - Add `Logger`. Lets create specific logs for system
 
 ### Improved
 - Now, when you try to forcefully complete the asynchronous operation inside the routine, an exception will be thrown (except for `UnityWebRequestAsyncOperation`)
-- Improve stacktrace for exception inside routines 
-- Improve routine logs 
+- Improve stacktrace for exception inside routines
+- Improve routine logs
 
 ### Changed
 - Now the implementation of `IEnumerator.Current` will always return null
@@ -129,10 +134,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Improved
 - Improve stacktrace for TaskRoutines ([513c1cc](https://github.com/ltd-profit/omega-package/commit/513c1cc))
-- Prelude execution routine for background routines ([bf54510](https://github.com/ltd-profit/omega-package/commit/bf54510)) 
+- Prelude execution routine for background routines ([bf54510](https://github.com/ltd-profit/omega-package/commit/bf54510))
 
 ### Changed
-- Now RoutineWorker not support EndOfFrame execution order ([c30aff8](https://github.com/ltd-profit/omega-package/commit/c30aff8)) 
+- Now RoutineWorker not support EndOfFrame execution order ([c30aff8](https://github.com/ltd-profit/omega-package/commit/c30aff8))
 - Now nested routines may be canceled or contain an error ([8cdedcf](https://github.com/ltd-profit/omega-package/commit/8cdedcf))
 
 ## [0.10.2] - 2020-02-11
@@ -172,7 +177,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     
     // -------------------------------------------------------- //
     ```
-    
+
 - You can define cancellation logic in `TaskRoutine`
     ```csharp
     //                         Example                          //
@@ -189,11 +194,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
         
     // -------------------------------------------------------- //
     ```
-    
-## Improved
-- If nested routine have error or canceled then upper routine will throw exception  
 
-## Fixed 
+## Improved
+- If nested routine have error or canceled then upper routine will throw exception
+
+## Fixed
 - Fix multiple invocation callback when you try process completed routine
 
 ## [0.10.1] - 2020-02-07
@@ -203,11 +208,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixes
 - Change assembly for `ObjectRoutine` class to Omega.Tools.Runtime
-- Remove internal usage `Omega.Experimental.Utilities` 
+- Remove internal usage `Omega.Experimental.Utilities`
 
 ## [0.10.0] - 2020-02-06
 ### Added
-- Add extension method `ToRectTransform` for Transform. Lets you easy cast Transform to RectTransform 
+- Add extension method `ToRectTransform` for Transform. Lets you easy cast Transform to RectTransform
     ```csharp
     //                        Examples                          //
     // -------------------------------------------------------- //
@@ -238,11 +243,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     
     // -------------------------------------------------------- //
     ```
-- Add `GetAllChilds` method in `TransformUtilities`. Lets you get all childs in hierarchy relative of the transform instance  
+- Add `GetAllChilds` method in `TransformUtilities`. Lets you get all childs in hierarchy relative of the transform instance
 - Add utilities for `UnityEngine.Rect`
 - Add extension method `SetRect` for `RectTransform`
 ##### Routines
-- Add `WaitRoutine` (Routine.WaitOne). Lets wait the completion of the routine and provides the result 
+- Add `WaitRoutine` (Routine.WaitOne). Lets wait the completion of the routine and provides the result
 - Add unity background worker for routines and extension method `InBackground`. Lets you start routine in background. (You can use it instead `StartCoroutine`)
     ```csharp
     //                          Example                         //
@@ -329,17 +334,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `GetSelf` method lets get out async operation instance
   - `AsRoutine` method lets create routine from async operation
   - `AsRoutine` method overload with `Func<TAsyncOperation, TResult>` argument
-   lets create routine with result from specific async operation
+    lets create routine with result from specific async operation
 - Add progress for routines. Lets you to get the routine progress in float format from 0 to 1
-- Add `GetComponentInDirectChildren` extension methods for `GameObject` 
+- Add `GetComponentInDirectChildren` extension methods for `GameObject`
 
-   
-### Removed 
+
+### Removed
 - Remove routine utilities from utilities aggregator
 
 ### Improved
 - Now the routines themselves determine the sequence of execution of the
- *routines / enumerators / async operations* embedded in it. So to update the routine just call the `MoveNext` method
+  *routines / enumerators / async operations* embedded in it. So to update the routine just call the `MoveNext` method
 - New internal ListPool. Lets create tools that create fewer allocations
 - Optimized `GetChilds` method for `RectTransform` *(by ListPool)*
 - Optimized `ClearChilds` method for `Transform` *(by ListPool)*
@@ -350,20 +355,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.8.3] - 2019-11-19
 ### Added
-- New `ByAction` static methods in `Routine`. Lets create routines by delegates `Action` and `Func<T>` 
+- New `ByAction` static methods in `Routine`. Lets create routines by delegates `Action` and `Func<T>`
 - New `Empty` static methods in `Routine`. Lets create empty uncompleted routines
 - New `FromCompleted<T>` static methods in `Routine`. Lets create completed routines with result
 
 ## [0.8.2] - 2019-11-18
-### Fixes 
+### Fixes
 - Fix callback invocation when routine enumerator is null
 - Fix callback invocation from `FromResultRoutine` (#86)
 
 ### Improved
-- Now if you try to add a callback to a completed or error routine, an exception will be thrown 
+- Now if you try to add a callback to a completed or error routine, an exception will be thrown
 
 ## [0.8.1] - 2019-11-14
-### Added 
+### Added
 - Assembly attributes for `Omega.Tools.Runtime`
 - Additional information about the web request when an error occurs in `WebRequestRoutine`
 - New `GetComponentsInDirectChildren` methods. Lets find components in direct childs in `GameObject`
@@ -373,20 +378,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Change equals operator from UnityObject.Object to System.Object for internal methods in GameObjectUtilities
 
 ## [0.8.0] - 2019-11-11
-### Added 
+### Added
 - New web routines. Lets use `UnityWebRequest` as routine
 - New convertions routines. Lets convert result from `Routine<T1>` to `Routine<T2> `
 
 ### Fixes
 - Fix infinity loop in `DelayRoutine` (#67)
-- Solve compilation warnings in unit-test assemblies 
+- Solve compilation warnings in unit-test assemblies
 
 ### Deleted
 - Delete `CREATION_STACK_TRACE` word. Now you use only `CreationStackTrace` method in routine
 
 ## [0.7.4] - 2019-11-11
 ### Fiexes
-- Fix ignoring AsyncOperation nested in routine (#69)  
+- Fix ignoring AsyncOperation nested in routine (#69)
 
 ## [0.7.3] - 2019-11-09
 ### Added
@@ -401,7 +406,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixes
 - Fix `GroupRoutine` (`WhenAll` method). Now `GroupRoutine` process nested routines
 
-## [0.7.1] - 2019-11-06 
+## [0.7.1] - 2019-11-06
 ### Fixes
 - Fix build error in `Assets/Source/Experimental/Event/Internals/EventManagers/SceneEventManager.cs`
 
@@ -452,17 +457,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Improved
 - Improve messages in exceptions and logs
 ### Changed
-- Rename functions `GetChildes` to `GetChilds`   
+- Rename functions `GetChildes` to `GetChilds`
 - Namespace refactoring
 - Rename `IEventHandler<TEvent>.Execute` to `IEventHandler<TEvent>.OnEvent`
 ##### ProjectSettings
 - Rename package name (from omega.tools to com.ltd-profit.unity.omega-package)
-- Rename company name 
+- Rename company name
 
 ## [0.4.0] - 2019-10-15
 ### Added
 - Runtime unit-tests
-- UnityHandlerAdapter 
+- UnityHandlerAdapter
 - GameObjectFactory
 - HandlerRunners
 - Documents
@@ -470,7 +475,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Rename InvocationConvention to InvocationPolicy
 - HandlerAdapters
-- EventManager sending logic 
+- EventManager sending logic
 - Omega.Events can be running only in runtime
 - Unit-tests for Omega.Events moved to runtime tests
 - Coverage Events Attributes
@@ -496,7 +501,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - All runtime unit-tests were converted to edittime tests
-- ReflectionUtiltiyTests 
+- ReflectionUtiltiyTests
 
 ## [0.2.0] - 2019-10-03
 ### Added
@@ -526,7 +531,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixes
 - Compile fix in file GameObjectExtension.cs
 - Fix name testing game object in
- GameObjectUtilityTests.MissingComponentShouldThrowMissingReferenceExceptionWhenParameterIsDestroyedGameObjectTest
+  GameObjectUtilityTests.MissingComponentShouldThrowMissingReferenceExceptionWhenParameterIsDestroyedGameObjectTest
 
 ## [0.0.1] - 2019-09-25
 - Initial Release
