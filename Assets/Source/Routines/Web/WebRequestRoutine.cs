@@ -11,7 +11,7 @@ namespace Omega.Routines.Web
     public class WebRequestRoutine : Routine, IProgressRoutineProvider
     {
         public readonly UnityWebRequest WebRequest;
-        private AsyncOperation _asyncOperation;
+        private UnityWebRequestAsyncOperation _webRequestAsyncOperation;
 
         public WebRequestRoutine(UnityWebRequest webRequest)
         {
@@ -20,7 +20,7 @@ namespace Omega.Routines.Web
 
         protected override IEnumerator RoutineUpdate()
         {
-            yield return WebRequest.SendWebRequest().Self(out _asyncOperation);
+            yield return WebRequest.SendWebRequest().Self(out _webRequestAsyncOperation);
             if (WebRequest.isNetworkError || WebRequest.isHttpError)
                 throw new HttpRequestException(GetErrorMessage(WebRequest));
         }
@@ -30,7 +30,7 @@ namespace Omega.Routines.Web
             if (uploadHandler == null)
                 return "upload handler in undefined";
 
-            
+
             switch (uploadHandler.contentType)
             {
                 case "application/json":
@@ -53,8 +53,8 @@ namespace Omega.Routines.Web
         {
             if (downloadHandler is null)
                 return "no download data";
-            
-            if(downloadHandler is DownloadHandlerBuffer)
+
+            if (downloadHandler is DownloadHandlerBuffer)
                 return downloadHandler.text;
 
             return $"text representation is not not available for {downloadHandler.GetType().Name}";
@@ -69,12 +69,19 @@ namespace Omega.Routines.Web
                    $"Download: {GetDownloadStringPresent(webRequest.downloadHandler)}";
         }
 
-        public float GetProgress()
+        internal static float GetProgressFromWebRequest(UnityWebRequest webRequest,
+            UnityWebRequestAsyncOperation asyncOperation)
         {
-            var rawProgress = _asyncOperation?.progress ?? 0;
+            var rawProgress = asyncOperation?.progress ?? 0;
+            // see https://docs.unity3d.com/ScriptReference/Networking.DownloadHandler.GetProgress.html
+            // > DownloadHandler.GetProgress: If not overridden, the default behavior of this callback is to return 0.5.
+            if (!(webRequest.downloadHandler is DownloadHandlerBuffer))
+                return rawProgress;
+
             var normalized = (rawProgress - 0.5f) * 2;
-            var clamped = Mathf.Clamp(normalized, 0, 1);
-            return clamped;
+            return Mathf.Clamp01(normalized);
         }
+
+        public float GetProgress() => GetProgressFromWebRequest(WebRequest, _webRequestAsyncOperation);
     }
 }

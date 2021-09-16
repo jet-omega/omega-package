@@ -10,7 +10,7 @@ namespace Omega.Routines.Web
     {
         public readonly UnityWebRequest WebRequest;
         private Func<DownloadHandler, T> _resultProvider;
-        private AsyncOperation _webRequestAsyncOperation;
+        private UnityWebRequestAsyncOperation _webRequestAsyncOperation;
 
         public WebRequestRoutine(UnityWebRequest webRequest, Func<DownloadHandler, T> resultProvider)
         {
@@ -25,17 +25,12 @@ namespace Omega.Routines.Web
                 throw new HttpRequestException(WebRequestRoutine.GetErrorMessage(WebRequest));
 
             var downloadHandler = WebRequest.downloadHandler;
-            
+
             var result = downloadHandler != null ? _resultProvider(WebRequest.downloadHandler) : default;
             SetResult(result);
         }
 
         public float GetProgress()
-        {
-            var rawProgress = _webRequestAsyncOperation?.progress ?? 0;
-            var normalized = (rawProgress - 0.5f) * 2;
-            var clamped = Mathf.Clamp(normalized, 0, 1);
-            return clamped;
-        }
+            => WebRequestRoutine.GetProgressFromWebRequest(WebRequest, _webRequestAsyncOperation);
     }
 }
